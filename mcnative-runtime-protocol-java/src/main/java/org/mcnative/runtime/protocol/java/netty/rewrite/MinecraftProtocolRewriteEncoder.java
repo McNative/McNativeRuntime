@@ -22,12 +22,11 @@ package org.mcnative.runtime.protocol.java.netty.rewrite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.libraries.utility.reflect.UnsafeInstanceCreator;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.Endpoint;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolData;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolStateDefinition;
 import org.mcnative.runtime.api.protocol.packet.*;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 import org.mcnative.runtime.protocol.java.netty.PacketCanceledException;
@@ -58,15 +57,16 @@ public class MinecraftProtocolRewriteEncoder extends MessageToByteEncoder<ByteBu
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out) throws Exception {
         int packetId = MinecraftProtocolUtil.readVarInt(in);
 
-        MinecraftProtocolStateDefinition definition = connection.getProtocolDefinition();
-        MinecraftProtocolData data = definition.getProtocolData(direction,packetId);
-
+        PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,version,packetId);
         MinecraftProtocolUtil.writeVarInt(out,packetId);
-        if(data != null){
-            MinecraftPacketCodec codec = data.getCodec();
-            List<MinecraftPacketListener> listeners = packetManager.getPacketListeners(endpoint,direction,data.getPacketClass());
+
+        if(registration != null){
+            Pair<Integer,MinecraftPacketCodec> data = registration.getCodecData(direction,connection.getState(),version);
+
+            MinecraftPacketCodec codec = data.getValue();
+            List<MinecraftPacketListener> listeners = packetManager.getPacketListeners(endpoint,direction, registration.getPacketClass());
             if(listeners != null && !listeners.isEmpty()){
-                MinecraftPacket packet = UnsafeInstanceCreator.newInstance(data.getPacketClass());
+                MinecraftPacket packet = UnsafeInstanceCreator.newInstance(registration.getPacketClass());
                 in.markReaderIndex();
                 codec.read(packet,connection,direction,in);
 

@@ -32,22 +32,6 @@ import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftChatCodecV1_7 implements MinecraftPacketCodec<MinecraftChatPacket> {
 
-    /*
-    public final static PacketIdentifier IDENTIFIER = newIdentifier(MinecraftChatCodecV1_7.class
-            ,on(PacketDirection.OUTGOING
-                    ,map(MinecraftProtocolVersion.JE_1_7,0x02)
-                    ,map(MinecraftProtocolVersion.JE_1_9,0x0F)
-                    ,map(MinecraftProtocolVersion.JE_1_13,0x0E)
-                    ,map(MinecraftProtocolVersion.JE_1_15,0x0F)
-                    ,map(MinecraftProtocolVersion.JE_1_16,0x0E))
-            ,on(PacketDirection.INCOMING
-                    ,map(MinecraftProtocolVersion.JE_1_7,0x01)
-                    ,map(MinecraftProtocolVersion.JE_1_9,0x02)
-                    ,map(MinecraftProtocolVersion.JE_1_12,0x03)
-                    ,map(MinecraftProtocolVersion.JE_1_12_1,0x02)
-                    ,map(MinecraftProtocolVersion.JE_1_14,0x03)));
-     */
-
     @Override
     public void read(MinecraftChatPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){

@@ -22,12 +22,10 @@ package org.mcnative.runtime.protocol.java.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import net.pretronic.libraries.utility.reflect.UnsafeInstanceCreator;
+import net.pretronic.libraries.utility.map.Pair;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.Endpoint;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolData;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolStateDefinition;
 import org.mcnative.runtime.api.protocol.packet.*;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
@@ -56,11 +54,10 @@ public class MinecraftProtocolDecoder extends MessageToMessageDecoder<ByteBuf> {
         try {
             int packetId = MinecraftProtocolUtil.readVarInt(in);
 
-            MinecraftProtocolStateDefinition definition = connection.getProtocolDefinition();
-            MinecraftProtocolData data = definition.getProtocolData(direction,packetId);
-            if(data != null){
-                MinecraftPacketCodec codec = data.getCodec();
-                MinecraftPacket packet = UnsafeInstanceCreator.newInstance(data.getPacketClass());
+            PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,connection.getProtocolVersion(),packetId);
+            if(registration != null){
+                MinecraftPacketCodec codec = registration.getCodec(direction,connection.getState(),connection.getProtocolVersion());
+                MinecraftPacket packet = registration.newPacketInstance();
                 codec.read(packet,connection,direction,in);
                 List<MinecraftPacketListener> listeners = packetManager.getPacketListeners(endpoint,direction,packet.getClass());
                 if(listeners != null && !listeners.isEmpty()){

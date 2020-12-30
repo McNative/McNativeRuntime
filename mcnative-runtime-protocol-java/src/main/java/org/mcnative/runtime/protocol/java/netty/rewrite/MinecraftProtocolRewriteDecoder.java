@@ -22,12 +22,11 @@ package org.mcnative.runtime.protocol.java.netty.rewrite;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import net.pretronic.libraries.utility.map.Pair;
 import net.pretronic.libraries.utility.reflect.UnsafeInstanceCreator;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.Endpoint;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolData;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolStateDefinition;
 import org.mcnative.runtime.api.protocol.packet.*;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
@@ -42,14 +41,12 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
     private final Endpoint endpoint;
     private final PacketDirection direction;
     private final MinecraftConnection connection;
-    private final MinecraftProtocolVersion version;
 
     public MinecraftProtocolRewriteDecoder(PacketManager packetManager, Endpoint endpoint, PacketDirection direction, MinecraftConnection connection) {
         this.packetManager = packetManager;
         this.endpoint = endpoint;
         this.direction = direction;
         this.connection = connection;
-        this.version = connection.getProtocolVersion();
     }
 
     @SuppressWarnings("unchecked")
@@ -57,14 +54,14 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
     protected void decode(ChannelHandlerContext context, ByteBuf in, List<Object> output) {
         ByteBuf out = in.copy();
         int packetId = MinecraftProtocolUtil.readVarInt(in);
-        MinecraftProtocolStateDefinition definition = connection.getProtocolDefinition();
-        MinecraftProtocolData data = definition.getProtocolData(direction,packetId);
-        if(data != null){
+
+        PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,connection.getProtocolVersion(),packetId);
+        if(registration != null){
             try {
-                List<MinecraftPacketListener> listeners = packetManager.getPacketListeners(endpoint,direction,data.getPacketClass());
+                List<MinecraftPacketListener> listeners = packetManager.getPacketListeners(endpoint,direction,registration.getPacketClass());
                 if(listeners != null && !listeners.isEmpty()){
-                    MinecraftPacketCodec codec = data.getCodec();
-                    MinecraftPacket packet = UnsafeInstanceCreator.newInstance(data.getPacketClass());
+                    MinecraftPacketCodec codec = registration.getCodec(direction,connection.getState(),connection.getProtocolVersion());
+                    MinecraftPacket packet = UnsafeInstanceCreator.newInstance(registration.getPacketClass());
                     codec.read(packet,connection,direction,in);
 
                     MinecraftPacketEvent event = new MinecraftPacketEvent(endpoint,direction,connection,packet);
@@ -79,7 +76,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Packet:" + packetId + ":" + data.getPacketClass());
+                System.out.println("Packet:" + packetId + ":" + registration.getPacketClass());
                 e.printStackTrace();
             }
         }

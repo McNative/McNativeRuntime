@@ -19,16 +19,15 @@
 
 package org.mcnative.runtime.common.protocol;
 
+import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.Validate;
+import net.pretronic.libraries.utility.map.Pair;
+import org.mcnative.runtime.api.connection.ConnectionState;
 import org.mcnative.runtime.api.protocol.Endpoint;
-import org.mcnative.runtime.api.protocol.packet.MinecraftPacket;
-import org.mcnative.runtime.api.protocol.packet.MinecraftPacketListener;
-import org.mcnative.runtime.api.protocol.packet.PacketDirection;
-import org.mcnative.runtime.api.protocol.packet.PacketManager;
+import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
+import org.mcnative.runtime.api.protocol.packet.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -38,17 +37,59 @@ public class DefaultPacketManager implements PacketManager {
 
     private static final Function<Class<?>, List<MinecraftPacketListener>> COMPUTE_FUNCTION = class0 -> new ArrayList<>();
 
+    private final Collection<PacketRegistration> registrations;
     private final Map<Class<?>, List<MinecraftPacketListener>> upstreamOutgoingListeners;
     private final Map<Class<?>, List<MinecraftPacketListener>> upstreamIncomingListeners;
     private final Map<Class<?>, List<MinecraftPacketListener>> downstreamOutgoingListeners;
     private final Map<Class<?>, List<MinecraftPacketListener>> downstreamIncomingListeners;
 
     public DefaultPacketManager() {
+        this.registrations = new ArrayList<>();
         this.upstreamOutgoingListeners = new HashMap<>();
         this.upstreamIncomingListeners = new HashMap<>();
         this.downstreamOutgoingListeners = new HashMap<>();
         this.downstreamIncomingListeners = new HashMap<>();
     }
+
+    @Override
+    public Collection<PacketRegistration> getPacketRegistrations() {
+        return this.registrations;
+    }
+
+    @Override
+    public PacketRegistration getPacketRegistration(Class<?> packetClass) {
+        PacketRegistration identifier = Iterators.findOne(registrations, identifier0 -> identifier0.getPacketClass().equals(packetClass));
+        if(identifier == null) throw new IllegalArgumentException("No packet registration for "+packetClass+" found.");
+        return identifier;
+    }
+
+    @Override
+    public PacketRegistration getPacketRegistration(ConnectionState state, PacketDirection direction, MinecraftProtocolVersion version, int packetId) {
+        for (PacketRegistration registration : registrations) {
+            PacketRegistration.PacketCondition condition = registration.getCondition(direction, state);
+            if(condition != null){
+                for (int i = condition.getMappings().length - 1; i >= 0; i--) {
+                    PacketRegistration.IdMapping mapping = condition.getMappings()[i];
+                    if(version.isNewerOrSame(mapping.getVersion()) && mapping.getId() == packetId){
+                        return registration;
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("No packet registration for "+version+" and "+packetId+" found.");
+    }
+
+    @Override
+    public void registerPacket(PacketRegistration registration) {
+        Validate.notNull(registration);
+        this.registrations.add(registration);
+    }
+
+    @Override
+    public Pair<PacketRegistration, MinecraftPacketCodec<?>> getPacketCodecData(ConnectionState state, PacketDirection direction, MinecraftProtocolVersion version, int packetId) {
+        throw new UnsupportedOperationException();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends MinecraftPacket> List<MinecraftPacketListener> getPacketListeners(Endpoint endpoint, PacketDirection direction, Class<T> packetClass) {

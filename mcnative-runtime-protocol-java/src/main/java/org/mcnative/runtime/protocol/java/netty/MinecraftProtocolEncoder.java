@@ -22,9 +22,7 @@ package org.mcnative.runtime.protocol.java.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolData;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolDefinition;
-import org.mcnative.runtime.api.protocol.definition.MinecraftProtocolStateDefinition;
+import net.pretronic.libraries.utility.map.Pair;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
@@ -74,12 +72,11 @@ public class MinecraftProtocolEncoder extends MessageToByteEncoder<MinecraftPack
                 packet = event.getPacket();
             }
 
-            MinecraftProtocolStateDefinition definition = connection.getProtocolDefinition();
-            MinecraftProtocolData data = definition.getProtocolData(direction,packet.getClass());
-            MinecraftPacketCodec codec = data.getCodec();
+            PacketRegistration registration = packetManager.getPacketRegistration(packet.getClass());
+            Pair<Integer,MinecraftPacketCodec> data = registration.getCodecData(direction,connection.getState(),version);
 
-            MinecraftProtocolUtil.writeVarInt(buffer,data.getPacketId());
-            codec.write(packet,connection,direction,buffer);
+            MinecraftProtocolUtil.writeVarInt(buffer,data.getKey());
+            data.getValue().write(packet,connection,direction,buffer);
         } catch (Exception exception) {
             McNative.getInstance().getLogger().error("An error occurred in McNative:", exception.getMessage());
         }
