@@ -23,8 +23,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.mcnative</groupId>
-    <artifactId>McNative</artifactId>
+    <groupId>org.mcnative.runtime</groupId>
+    <artifactId>McNativeRuntime</artifactId>
     <packaging>pom</packaging>
     <version>1.7.75.489-SNAPSHOT</version>
 
@@ -44,52 +44,30 @@
         <!-- Project settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Dependency version -->
-        <dependency.bungeecord.version>1.16-R0.4-SNAPSHOT</dependency.bungeecord.version>
-        <dependency.bukkit.version>1.14.2-R0.1-SNAPSHOT</dependency.bukkit.version>
-        <dependency.placeholderapi.version>2.10.9</dependency.placeholderapi.version>
-        <dependency.cloudnet.v2.version>2.1.17</dependency.cloudnet.v2.version>
+        <dependency.mcnative.api>1.0.6.13-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.maf>1.0.8.18-SNAPSHOT</dependency.mcnative.maf>
 
-        <dependency.pretronic.libraries.utility>${dependency.pretronic.libraries}</dependency.pretronic.libraries.utility>
-        <dependency.pretronic.libraries.document>${dependency.pretronic.libraries}</dependency.pretronic.libraries.document>
-        <dependency.pretronic.libraries.concurrent>${dependency.pretronic.libraries}</dependency.pretronic.libraries.concurrent>
-        <dependency.pretronic.libraries.command>${dependency.pretronic.libraries}</dependency.pretronic.libraries.command>
-        <dependency.pretronic.libraries.event>${dependency.pretronic.libraries}</dependency.pretronic.libraries.event>
-        <dependency.pretronic.libraries.plugin>${dependency.pretronic.libraries}</dependency.pretronic.libraries.plugin>
-        <dependency.pretronic.libraries.dependency>${dependency.pretronic.libraries}</dependency.pretronic.libraries.dependency>
-        <dependency.pretronic.libraries.caching>${dependency.pretronic.libraries}</dependency.pretronic.libraries.caching>
-        <dependency.pretronic.libraries.resourceloader>${dependency.pretronic.libraries}</dependency.pretronic.libraries.resourceloader>
-        <dependency.pretronic.libraries.synchronisation>${dependency.pretronic.libraries}</dependency.pretronic.libraries.synchronisation>
-        <dependency.pretronic.libraries.logging>${dependency.pretronic.libraries}</dependency.pretronic.libraries.logging>
-        <dependency.pretronic.libraries.message>${dependency.pretronic.libraries}</dependency.pretronic.libraries.message>
+        <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
+        <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>
+
         <dependency.pretronic.libraries>1.2.37.175-SNAPSHOT</dependency.pretronic.libraries>
-
         <dependency.pretronic.databasequery>1.2.53.80-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.slf4j>1.7.25</dependency.slf4j>
-
-        <!-- Test dependencies -->
-        <test.junit.jupiter>5.5.2</test.junit.jupiter>
 
         <!-- Maven plugins -->
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
         <plugin.source.version>3.2.1</plugin.source.version>
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.jar.version>3.2.0</plugin.jar.version>
+
     </properties>
 
     <modules>
-        <module>mcnative-common</module>
-        <module>mcnative-network-integrations</module>
-        <module>mcnative-proxy</module>
-        <module>mcnative-service</module>
-        <module>mcnative-bukkit</module>
-        <module>mcnative-bungeecord</module>
-        <module>mcnative-buildtool-maven</module>
-        <module>mcnative-loader</module>
-        <module>mcnative-build</module>
-        <module>mcnative-licensing</module>
+        <module>mcnative-runtime-common</module>
+        <module>mcnative-runtime-network-integrations</module>
+        <module>mcnative-runtime-protocol-java</module>
     </modules>
 
     <repositories>
