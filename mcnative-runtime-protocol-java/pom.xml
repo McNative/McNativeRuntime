@@ -30,6 +30,12 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${dependency.netty}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

@@ -55,6 +55,7 @@
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
         <dependency.slf4j>1.7.25</dependency.slf4j>
+        <dependency.netty>4.1.56.Final</dependency.netty>
 
         <!-- Maven plugins -->
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
