@@ -17,20 +17,26 @@
  * under the License.
  */
 
-package org.mcnative.runtime.protocol.java.version.v1_7;
+package org.mcnative.runtime.protocol.java.codec.chat;
 
 import io.netty.buffer.ByteBuf;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.message.language.Language;
 import net.pretronic.libraries.message.language.LanguageAble;
+import org.mcnative.actionframework.sdk.common.protocol.codec.BufferUtil;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
+import org.mcnative.runtime.api.player.chat.ChatPosition;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftChatPacket;
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
-public class MinecraftChatCodecV1_7 implements MinecraftPacketCodec<MinecraftChatPacket> {
+import java.util.UUID;
+
+public class MinecraftChatCodecV1_16 implements MinecraftPacketCodec<MinecraftChatPacket> {
+
+    private final static UUID EMPTY = new UUID(0,0);
 
     /*
     public final static PacketIdentifier IDENTIFIER = newIdentifier(MinecraftChatCodecV1_7.class
@@ -51,7 +57,9 @@ public class MinecraftChatCodecV1_7 implements MinecraftPacketCodec<MinecraftCha
     @Override
     public void read(MinecraftChatPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){
-            packet.setMessage(Text.of(MinecraftProtocolUtil.readString(buffer)));
+            packet.setMessage(Text.decompile(MinecraftProtocolUtil.readString(buffer)));
+            packet.setPosition(ChatPosition.of(buffer.readByte()));
+            packet.setSender(BufferUtil.readUniqueId(buffer));
         }else if(direction == PacketDirection.INCOMING){
             packet.setMessage(Text.of(MinecraftProtocolUtil.readString(buffer)));
         }
@@ -60,13 +68,14 @@ public class MinecraftChatCodecV1_7 implements MinecraftPacketCodec<MinecraftCha
     @Override
     public void write(MinecraftChatPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){
-
             Language language = null;
             if(connection instanceof LanguageAble) language = ((LanguageAble) connection).getLanguage();
             VariableSet variables = packet.getVariables()!=null?packet.getVariables():VariableSet.createEmpty();
+            UUID sender = packet.getSender() != null ? packet.getSender() : EMPTY;
 
-            MinecraftProtocolUtil.writeString(buffer,packet.getMessage().toPlainText(variables,language));
+            MinecraftProtocolUtil.writeString(buffer,packet.getMessage().compileToString(connection,variables,language));
             buffer.writeByte(packet.getPosition().getId());
+            BufferUtil.writeUniqueId(buffer,sender);
         }else if(direction == PacketDirection.INCOMING){
             MinecraftProtocolUtil.writeString(buffer,packet.getMessage().toPlainText());
         }
