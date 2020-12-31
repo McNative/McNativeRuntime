@@ -75,8 +75,6 @@ public class MinecraftProtocolEncoder extends MessageToByteEncoder<MinecraftPack
             PacketRegistration registration = packetManager.getPacketRegistration(packet.getClass());
             Pair<Integer,MinecraftPacketCodec> data = registration.getCodecData(direction,connection.getState(),version);
 
-            System.out.println("Codec: "+data.getValue().getClass());
-
             MinecraftProtocolUtil.writeVarInt(buffer,data.getKey());
             data.getValue().write(packet,connection,direction,buffer);
         } catch (Exception exception) {

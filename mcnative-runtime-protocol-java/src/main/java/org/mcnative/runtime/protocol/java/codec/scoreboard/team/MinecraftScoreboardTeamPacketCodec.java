@@ -4,6 +4,7 @@ import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.PacketManager;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftChatPacket;
+import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
 import org.mcnative.runtime.protocol.java.codec.chat.MinecraftChatPacketCodecV1_16;
 import org.mcnative.runtime.protocol.java.codec.chat.MinecraftChatPacketCodecV1_7;
 import org.mcnative.runtime.protocol.java.codec.chat.MinecraftChatPacketCodecV1_8;
@@ -13,7 +14,7 @@ import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
 public class MinecraftScoreboardTeamPacketCodec {
 
     public static void register(PacketManager manager){
-        manager.registerPacket(create(MinecraftChatPacket.class
+        manager.registerPacket(create(MinecraftScoreboardTeamsPacket.class
                 ,on(PacketDirection.OUTGOING
                         ,map(MinecraftProtocolVersion.JE_1_7,0x3E,new MinecraftScoreboardTeamPacketCodecV1_7())
                         ,map(MinecraftProtocolVersion.JE_1_9,0x41,new MinecraftScoreboardTeamPacketCodecV1_9())
