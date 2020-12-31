@@ -95,6 +95,7 @@ public class DefaultPacketManager implements PacketManager {
     public <T extends MinecraftPacket> List<MinecraftPacketListener> getPacketListeners(Endpoint endpoint, PacketDirection direction, Class<T> packetClass) {
         Map<Class<?>, List<MinecraftPacketListener>> listeners =  getListenerMap(endpoint, direction);
         List<?> listeners0 = listeners.get(packetClass);
+        if(listeners0 == null) return null;
         List<MinecraftPacketListener> result = new ArrayList<>();
         for (Object o : listeners0) result.add((MinecraftPacketListener) o);
         return result;
