@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.mcnative.runtime.protocol.java.codec.chat;
+package org.mcnative.runtime.protocol.java.codec.disconnect;
 
 import io.netty.buffer.ByteBuf;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
@@ -27,32 +27,22 @@ import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftChatPacket;
+import org.mcnative.runtime.api.protocol.packet.type.MinecraftDisconnectPacket;
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
-public class MinecraftChatCodecV1_7 implements MinecraftPacketCodec<MinecraftChatPacket> {
+public class MinecraftDisconnectPacketCodecV1_7 implements MinecraftPacketCodec<MinecraftDisconnectPacket> {
 
     @Override
-    public void read(MinecraftChatPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
-        if(direction == PacketDirection.OUTGOING){
-            packet.setMessage(Text.of(MinecraftProtocolUtil.readString(buffer)));
-        }else if(direction == PacketDirection.INCOMING){
-            packet.setMessage(Text.of(MinecraftProtocolUtil.readString(buffer)));
-        }
+    public void read(MinecraftDisconnectPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
+        packet.setReason(Text.decompile(MinecraftProtocolUtil.readString(buffer)));
     }
 
     @Override
-    public void write(MinecraftChatPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
-        if(direction == PacketDirection.OUTGOING){
-
-            Language language = null;
-            if(connection instanceof LanguageAble) language = ((LanguageAble) connection).getLanguage();
-            VariableSet variables = packet.getVariables()!=null?packet.getVariables():VariableSet.createEmpty();
-
-            MinecraftProtocolUtil.writeString(buffer,packet.getMessage().toPlainText(variables,language));
-            buffer.writeByte(packet.getPosition().getId());
-        }else if(direction == PacketDirection.INCOMING){
-            MinecraftProtocolUtil.writeString(buffer,packet.getMessage().toPlainText());
-        }
+    public void write(MinecraftDisconnectPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
+        Language language = null;
+        if(connection instanceof LanguageAble) language = ((LanguageAble) connection).getLanguage();
+        VariableSet variables0 = packet.getVariables()!=null?packet.getVariables(): VariableSet.newEmptySet();
+        MinecraftProtocolUtil.writeString(buffer,packet.getReason().compileToString(connection,variables0,language));
     }
 }

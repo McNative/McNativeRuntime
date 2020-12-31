@@ -76,7 +76,7 @@ public class DefaultPacketManager implements PacketManager {
                 }
             }
         }
-        throw new IllegalArgumentException("No packet registration for "+version+" and "+packetId+" found.");
+        return null;//Missing registrations are currently allowed and should be handled
     }
 
     @Override
