@@ -26,7 +26,7 @@
     <groupId>org.mcnative.runtime</groupId>
     <artifactId>McNativeRuntime</artifactId>
     <packaging>pom</packaging>
-    <version>1.7.79.5-SNAPSHOT</version>
+    <version>1.7.81.8-SNAPSHOT</version>
 
     <distributionManagement>
         <repository>
@@ -57,6 +57,9 @@
         <dependency.slf4j>1.7.25</dependency.slf4j>
         <dependency.netty>4.1.56.Final</dependency.netty>
 
+        <dependency.bungeecord.version>1.16-R0.4-SNAPSHOT</dependency.bungeecord.version>
+        <dependency.bukkit.version>1.14.2-R0.1-SNAPSHOT</dependency.bukkit.version>
+
         <!-- Maven plugins -->
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
         <plugin.source.version>3.2.1</plugin.source.version>
@@ -69,6 +72,7 @@
         <module>mcnative-runtime-common</module>
         <module>mcnative-runtime-network-integrations</module>
         <module>mcnative-runtime-protocol-java</module>
+        <module>mcnative-runtime-build</module>
     </modules>
 
     <repositories>
