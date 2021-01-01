@@ -53,7 +53,9 @@ public class MAFListener {
         }
 
         //@Todo implement server group
-        client.sendAction(new ServerStartupAction(event.getRuntime().getLocal().getAddress(),"Unknown"
+        client.sendAction(new ServerStartupAction(
+                event.getRuntime().getLocal().getName()
+                ,event.getRuntime().getLocal().getAddress(),"Unknown"
                 ,platform.getName()
                 ,platform.getVersion()
                 ,platform.isProxy()
