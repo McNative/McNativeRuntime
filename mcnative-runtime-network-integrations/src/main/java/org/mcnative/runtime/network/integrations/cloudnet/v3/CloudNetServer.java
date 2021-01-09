@@ -195,7 +195,7 @@ public class CloudNetServer implements MinecraftServer {
 
     @Override
     public NetworkIdentifier getIdentifier() {
-        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId());
+        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId(), getGroup());
     }
 
     @Override

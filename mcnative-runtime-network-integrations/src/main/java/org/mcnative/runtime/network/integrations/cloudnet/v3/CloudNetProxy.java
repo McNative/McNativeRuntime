@@ -125,7 +125,7 @@ public class CloudNetProxy implements ProxyServer {
 
     @Override
     public NetworkIdentifier getIdentifier() {
-        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId());
+        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId(), getGroup());
     }
 
     @Override
