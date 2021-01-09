@@ -15,6 +15,7 @@ import org.mcnative.actionframework.sdk.client.MAFClient;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.MinecraftPlatform;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
+import org.mcnative.runtime.api.event.player.login.MinecraftPlayerLoginConfirmEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerPostLoginEvent;
 import org.mcnative.runtime.api.event.service.local.LocalServiceReloadEvent;
 import org.mcnative.runtime.api.event.service.local.LocalServiceShutdownEvent;
@@ -103,7 +104,7 @@ public class MAFListener {
     /* Player */
 
     @Listener(priority = EventPriority.HIGHEST)
-    public void onLogin(MinecraftPlayerPostLoginEvent event){
+    public void onLogin(MinecraftPlayerLoginConfirmEvent event){
         client.sendAction(new PlayerJoinAction(event.getPlayer().getUniqueId()
                 ,event.getPlayer().getAsConnectedPlayer().getProtocolVersion().getNumber()));
     }
