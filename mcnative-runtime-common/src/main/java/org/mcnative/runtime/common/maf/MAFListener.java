@@ -75,7 +75,9 @@ public class MAFListener {
 
         event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM).delay(20, TimeUnit.SECONDS)
                 .execute(this::sendInfoAction);
-        event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM).delay(30, TimeUnit.SECONDS)
+        event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM)
+                .delay(10, TimeUnit.SECONDS)
+                .interval(30, TimeUnit.SECONDS)
                 .execute(this::sendStatusAction);
     }
 
