@@ -11,9 +11,11 @@ import org.mcnative.actionframework.sdk.actions.player.PlayerLeaveAction;
 import org.mcnative.actionframework.sdk.actions.server.ServerInfoAction;
 import org.mcnative.actionframework.sdk.actions.server.ServerShutdownAction;
 import org.mcnative.actionframework.sdk.actions.server.ServerStartupAction;
+import org.mcnative.actionframework.sdk.actions.server.ServerStatusAction;
 import org.mcnative.actionframework.sdk.client.MAFClient;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.MinecraftPlatform;
+import org.mcnative.runtime.api.ServerPerformance;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerLoginConfirmEvent;
 import org.mcnative.runtime.api.event.player.login.MinecraftPlayerPostLoginEvent;
@@ -53,7 +55,6 @@ public class MAFListener {
             index++;
         }
 
-        //@Todo implement server group
         client.sendAction(new ServerStartupAction(
                 event.getRuntime().getLocal().getName()
                 ,event.getRuntime().getLocal().getAddress()
@@ -74,11 +75,14 @@ public class MAFListener {
 
         event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM).delay(20, TimeUnit.SECONDS)
                 .execute(this::sendInfoAction);
+        event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM).delay(30, TimeUnit.SECONDS)
+                .execute(this::sendStatusAction);
     }
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onStartup(LocalServiceReloadEvent event){
         sendInfoAction();
+        sendStatusAction();
     }
 
     private void sendInfoAction(){
@@ -94,6 +98,16 @@ public class MAFListener {
 
         Collection<String> drivers = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class).getDatabaseTypes();
         client.sendAction(new ServerInfoAction(pluginInfo,drivers.toArray(new String[]{})));
+    }
+
+    private void sendStatusAction() {
+        ServerPerformance performance = McNative.getInstance().getLocal().getServerPerformance();
+
+        ServerStatusAction action = new ServerStatusAction(McNative.getInstance().getLocal().getMaxPlayerCount(),
+                performance.getRecentTps(),
+                performance.getUsedMemory(),
+                performance.getCpuUsage());
+        this.client.sendAction(action);
     }
 
     @Listener(priority = EventPriority.HIGHEST)
