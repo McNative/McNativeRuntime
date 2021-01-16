@@ -14,12 +14,13 @@ public class MAFService {
 
     public static void start(){
         McNativeConsoleCredentials credentials = McNative.getInstance().getConsoleCredentials();
+        MAFStatusListener statusListener = new MAFStatusListener();
         MAFClient client = MAFClient.build()
                 .serviceDiscovery(new DnsServiceDiscovery("_maf._tcp.mcnative.org"))
                 .authentication(new KeyAuthentication(UUID.fromString(credentials.getNetworkId()),credentials.getSecret()))
                 .logger(McNative.getInstance().getLogger())
                 .autoReconnect(1000)
-                .statusListener(new MAFStatusListener())
+                .statusListener(statusListener)
                 .uniqueId(McNative.getInstance().getLocal().getUniqueId())
                 .name(McNative.getInstance().getLocal().getName())
                 .type(ClientType.GENERIC)
@@ -27,7 +28,7 @@ public class MAFService {
 
         try{
             client.connect();
-
+            statusListener.setClient(client);
             McNative.getInstance().getLocal().getEventBus().subscribe(ObjectOwner.SYSTEM,new MAFListener(client));
         }catch (Exception exception){
             McNative.getInstance().getLogger().info("[MAF] Could not connect to McNative action framework");

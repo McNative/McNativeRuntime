@@ -45,7 +45,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <dependency.mcnative.api>1.0.15.22-SNAPSHOT</dependency.mcnative.api>
-        <dependency.mcnative.maf>1.0.13.23-SNAPSHOT</dependency.mcnative.maf>
+        <dependency.mcnative.maf>1.0.15.25-SNAPSHOT</dependency.mcnative.maf>
 
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
         <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>
