@@ -99,8 +99,7 @@ public class CloudNetProxy implements ProxyServer {
 
     @Override
     public String getGroup() {
-        String[] groups = snapshot.getConfiguration().getGroups();
-        return groups.length > 0 ? groups[0] : "NONE";
+        return getIdentifier().getGroup();
     }
 
     @Override
@@ -125,7 +124,9 @@ public class CloudNetProxy implements ProxyServer {
 
     @Override
     public NetworkIdentifier getIdentifier() {
-        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId(), getGroup());
+        String[] groups = snapshot.getConfiguration().getGroups();
+        String group =  groups.length > 0 ? groups[0] : null;
+        return new NetworkIdentifier(snapshot.getServiceId().getName(),snapshot.getServiceId().getUniqueId(), group);
     }
 
     @Override

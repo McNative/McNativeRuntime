@@ -114,7 +114,7 @@ public class CloudNetProxy implements ProxyServer {
 
     @Override
     public String getGroup() {
-        return info.getServiceId().getGroup();
+        return getIdentifier().getGroup();
     }
 
     @Override
