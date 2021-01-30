@@ -50,13 +50,13 @@ public class DefaultLoaderConfiguration implements LoaderConfiguration {
     @Override
     public ResourceConfig getResourceConfig(UUID uuid) {
         Validate.notNull(uuid);
-        return Iterators.findOne(this.configs, config -> config.getId().equals(uuid));
+        return Iterators.findOne(this.configs, config -> config.getId() != null && config.getId().equals(uuid));
     }
 
     @Override
     public ResourceConfig getResourceConfig(String name) {
         Validate.notNull(name);
-        return Iterators.findOne(this.configs, config -> config.getName().equalsIgnoreCase(name));
+        return Iterators.findOne(this.configs, config -> config.getName() != null && config.getName().equalsIgnoreCase(name));
     }
 
     @Override
@@ -72,11 +72,14 @@ public class DefaultLoaderConfiguration implements LoaderConfiguration {
             String template = document.getString("template");
             Collection<ResourceConfig> configs = new ArrayList<>();
 
-            for (DocumentEntry entry : document.getDocument("localProfile").entries()) {
-                Document profileEntry = entry.toDocument();
-                configs.add(new ResourceConfig(entry.getKey(),null
-                        ,profileEntry.getString("qualifier")
-                        ,profileEntry.getString("version")));
+            Document localProfile = document.getDocument("localProfile");
+            if(localProfile != null){
+                for (DocumentEntry entry : localProfile.entries()) {
+                    Document profileEntry = entry.toDocument();
+                    configs.add(new ResourceConfig(entry.getKey(),null
+                            ,profileEntry.getString("qualifier")
+                            ,profileEntry.getString("version")));
+                }
             }
 
             return new DefaultLoaderConfiguration(endpoint,template,profile,configs);
