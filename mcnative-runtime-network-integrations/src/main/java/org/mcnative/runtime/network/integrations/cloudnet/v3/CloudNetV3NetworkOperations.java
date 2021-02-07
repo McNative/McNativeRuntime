@@ -20,9 +20,12 @@
 
 package org.mcnative.runtime.network.integrations.cloudnet.v3;
 
-import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.driver.CloudNetDriver;
+import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.network.NetworkOperations;
 import org.mcnative.runtime.api.network.component.server.MinecraftServer;
 import org.mcnative.runtime.api.network.component.server.ProxyServer;
@@ -31,6 +34,7 @@ import org.mcnative.runtime.api.network.component.server.ServerConnectResult;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CloudNetV3NetworkOperations implements NetworkOperations {
@@ -42,15 +46,20 @@ public class CloudNetV3NetworkOperations implements NetworkOperations {
     }
 
     @Override
-    public ProxyServer getProxy(OnlineMinecraftPlayer player) {
-        CloudPlayer cloudPlayer = CloudAPI.getInstance().getOnlinePlayer(player.getUniqueId());
-        return cloudPlayer != null ? network.getProxy(cloudPlayer.getProxy()) : null;
+    public ProxyServer getProxy(OnlineMinecraftPlayer player0) {
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        ICloudPlayer player = playerManager.getOnlinePlayer(player0.getUniqueId());
+        if(player == null) return null;
+        return McNative.getInstance().getNetwork().getProxy(player.getLoginService().getUniqueId());
     }
 
     @Override
-    public MinecraftServer getServer(OnlineMinecraftPlayer player) {
-        CloudPlayer cloudPlayer = CloudAPI.getInstance().getOnlinePlayer(player.getUniqueId());
-        return cloudPlayer != null ? network.getServer(cloudPlayer.getServer()) : null;
+    public MinecraftServer getServer(OnlineMinecraftPlayer player0) {
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        ICloudPlayer player = playerManager.getFirstOnlinePlayer(player0.getName());
+        if(player == null) return null;
+        UUID uniqueId = player.getConnectedService().getUniqueId();
+        return McNative.getInstance().getNetwork().getServer(uniqueId);
     }
 
     @Override

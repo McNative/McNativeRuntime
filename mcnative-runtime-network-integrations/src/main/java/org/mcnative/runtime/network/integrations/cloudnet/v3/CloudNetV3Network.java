@@ -293,12 +293,14 @@ public class CloudNetV3Network implements Network {
         OnlineMinecraftPlayer connectedPlayer = McNative.getInstance().getLocal().getConnectedPlayer(uniqueId);
         if(connectedPlayer != null) return connectedPlayer;
 
-        ICloudPlayer player = BridgePlayerManager.getInstance().getOnlinePlayer(uniqueId);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        ICloudPlayer player = playerManager.getOnlinePlayer(uniqueId);
         return player != null ? new CloudNetOnlinePlayer(player) : null;
     }
 
     public OnlineMinecraftPlayer getDirectOnlinePlayer(UUID uniqueId) {
-        ICloudPlayer player = BridgePlayerManager.getInstance().getOnlinePlayer(uniqueId);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        ICloudPlayer player = playerManager.getOnlinePlayer(uniqueId);
         return player != null ? new CloudNetOnlinePlayer(player) : null;
     }
 
@@ -307,7 +309,8 @@ public class CloudNetV3Network implements Network {
         OnlineMinecraftPlayer connectedPlayer = McNative.getInstance().getLocal().getConnectedPlayer(name);
         if(connectedPlayer != null) return connectedPlayer;
 
-        ICloudPlayer player = BridgePlayerManager.getInstance().getFirstOnlinePlayer(name);
+        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
+        ICloudPlayer player = playerManager.getFirstOnlinePlayer(name);
         return player != null ? new CloudNetOnlinePlayer(player) : null;
     }
 
