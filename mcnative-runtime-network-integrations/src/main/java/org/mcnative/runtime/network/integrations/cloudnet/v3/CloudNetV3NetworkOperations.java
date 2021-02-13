@@ -38,7 +38,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CloudNetV3NetworkOperations implements NetworkOperations {
-
+ 
     private final CloudNetV3Network network;
 
     public CloudNetV3NetworkOperations(CloudNetV3Network network) {
