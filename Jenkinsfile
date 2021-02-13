@@ -251,6 +251,8 @@ pipeline {
                             git push origin HEAD:$BRANCH_MASTER -v
                             """
 
+                            version = major + "." + minorVersion + "." + patchVersion+ "." + BUILD_NUMBER + "-SNAPSHOT"
+
                             if(BRANCH_BETA == null) {
                                 sh """
                                 if [ -d "tempDevelopment" ]; then rm -Rf tempDevelopment; fi
