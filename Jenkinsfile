@@ -251,7 +251,12 @@ pipeline {
                             git push origin HEAD:$BRANCH_MASTER -v
                             """
 
-                            version = major + "." + minorVersion + "." + patchVersion+ "." + BUILD_NUMBER + "-SNAPSHOT"
+                            BUILD_NUMBER++
+                            minorVersion++
+                            patchVersion = 0
+
+                            version = major + "." + minorVersion + "." + patchVersion + "." + BUILD_NUMBER + "-SNAPSHOT"
+                            commitMessage = COMMIT_MESSAGE.replace("%version%", version)
 
                             if(BRANCH_BETA == null) {
                                 sh """
