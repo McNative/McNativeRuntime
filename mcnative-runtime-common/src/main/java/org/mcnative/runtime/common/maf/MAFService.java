@@ -31,8 +31,7 @@ public class MAFService {
             statusListener.setClient(client);
             McNative.getInstance().getLocal().getEventBus().subscribe(ObjectOwner.SYSTEM,new MAFListener(client));
         }catch (Exception exception){
-            McNative.getInstance().getLogger().info("[MAF] Could not connect to McNative action framework");
-            exception.printStackTrace();
+            McNative.getInstance().getLogger().info("[MAF] Could not connect to McNative action framework ("+exception.getMessage()+")");
         }
     }
 
