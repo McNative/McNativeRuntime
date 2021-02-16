@@ -61,11 +61,12 @@ public class CloudNetV2Network implements Network {
         this.messenger = new CloudNetV2Messenger(executor);
         this.operations = new CloudNetV2NetworkOperations(this);
         this.localIdentifier = new NetworkIdentifier(CloudAPI.getInstance().getServerId(),CloudAPI.getInstance().getUniqueId());
-        this.networkIdentifier = new NetworkIdentifier(getName(),loadId());
+        this.networkIdentifier = new NetworkIdentifier(getName(),NetworkIdentifier.BROADCAST.getUniqueId());
         this.eventBus = new NetworkEventBus();
         this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
     }
 
+    //@Todo currently unused
     private UUID loadId(){
         Database database = CloudAPI.getInstance().getDatabaseManager().getDatabase("mcnative");
         try{//Used because of performance reasons
