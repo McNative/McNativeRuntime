@@ -33,7 +33,10 @@ import java.util.UUID;
 public class MinecraftProtocolUtil {
 
     public static void writeString(ByteBuf buffer, String message) {
-        if(message.length() > Short.MAX_VALUE) throw new IllegalArgumentException(String.format("String is longer than Short.MAX_VALUE (%s characters)",message.length()));
+        if(message.length() > Short.MAX_VALUE){
+            System.out.println(message);
+            throw new IllegalArgumentException(String.format("String is longer than Short.MAX_VALUE (%s characters)",message.length()));
+        }
         byte[] data = message.getBytes(StandardCharsets.UTF_8);
         writeVarInt(buffer,data.length);
         buffer.writeBytes(data);

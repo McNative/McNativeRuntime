@@ -50,7 +50,7 @@
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>
         <dependency.cloudnet.v3>3.3.0-RELEASE</dependency.cloudnet.v3>
 
-        <dependency.pretronic.libraries>1.2.39.177-SNAPSHOT</dependency.pretronic.libraries>
+        <dependency.pretronic.libraries>1.2.40.178-SNAPSHOT</dependency.pretronic.libraries>
         <dependency.pretronic.databasequery>1.2.54.81-SNAPSHOT</dependency.pretronic.databasequery>
 
         <dependency.hikaricp>3.4.1</dependency.hikaricp>
