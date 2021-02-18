@@ -25,6 +25,7 @@ import net.pretronic.libraries.message.bml.builder.BuildContext;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderProvider;
 import org.mcnative.runtime.api.text.context.MinecraftTextBuildContext;
+import org.mcnative.runtime.api.text.context.TextBuildType;
 
 public class PlaceholderVariableBuilder implements BasicMessageBuilder {
 
@@ -39,14 +40,21 @@ public class PlaceholderVariableBuilder implements BasicMessageBuilder {
             if(context instanceof MinecraftTextBuildContext){
                 MinecraftTextBuildContext minecraftContext = (MinecraftTextBuildContext) context;
                 if(minecraftContext.getPlayer() != null){
-                    String result0 = provider.translate(minecraftContext.getPlayer(),(String)parameters[0]);
-                    if(result0 != null) result = result0;
+                    String value = provider.translate(minecraftContext.getPlayer(),(String)parameters[0]);
+                    if(value != null) result = value;
                 }
             }
         }
 
-        if(next != null) return new Object[]{result,next};
-        else return new Object[]{result};
+        if(context instanceof MinecraftTextBuildContext){
+            MinecraftTextBuildContext minecraftContext = context.getAs(MinecraftTextBuildContext.class);
+            if(minecraftContext.getType() == TextBuildType.COMPILE){
+                return TextBuildUtil.buildCompileText(minecraftContext,result,next);
+            }else if(minecraftContext.getType() == TextBuildType.LEGACY){
+                return TextBuildUtil.buildLegacyText(result,next);
+            }
+        }
+        return TextBuildUtil.buildPlainText(result,next);
     }
 
     @Override
