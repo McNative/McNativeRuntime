@@ -48,9 +48,9 @@ public class MinecraftScoreboardTeamPacketCodecV1_7 implements MinecraftPacketCo
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
 
-                MinecraftProtocolUtil.writeString(buffer, packet.getDisplayName() == null ? "" : packet.getDisplayName().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
-                MinecraftProtocolUtil.writeString(buffer, packet.getPrefix() == null ? "" : packet.getPrefix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
-                MinecraftProtocolUtil.writeString(buffer, packet.getSuffix() == null ? "" : packet.getSuffix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
+                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getDisplayName() == null ? "" : packet.getDisplayName().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
+                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getPrefix() == null ? "" : packet.getPrefix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
+                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getSuffix() == null ? "" : packet.getSuffix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
                 MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
 
@@ -64,5 +64,10 @@ public class MinecraftScoreboardTeamPacketCodecV1_7 implements MinecraftPacketCo
                 MinecraftProtocolUtil.writeStringArray(buffer, packet.getEntities());
             }
         }
+    }
+
+    private String checkLength(String text){
+        if(text.length() > 16) return text.substring(0,16);
+        return text;
     }
 }
