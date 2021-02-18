@@ -30,6 +30,7 @@ import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftChatPacket;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
 import org.mcnative.runtime.api.text.Text;
+import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftScoreboardTeamPacketCodecV1_7 implements MinecraftPacketCodec<MinecraftScoreboardTeamsPacket> {
@@ -48,9 +49,9 @@ public class MinecraftScoreboardTeamPacketCodecV1_7 implements MinecraftPacketCo
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
 
-                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getDisplayName() == null ? "" : packet.getDisplayName().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
-                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getPrefix() == null ? "" : packet.getPrefix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
-                MinecraftProtocolUtil.writeString(buffer, checkLength(packet.getSuffix() == null ? "" : packet.getSuffix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables())));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getDisplayName(),connection,packet));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getPrefix(),connection,packet));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getSuffix(),connection,packet));
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
                 MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
 
@@ -66,7 +67,10 @@ public class MinecraftScoreboardTeamPacketCodecV1_7 implements MinecraftPacketCo
         }
     }
 
-    private String checkLength(String text){
+    private String compileText(MessageComponent<?> component, MinecraftConnection connection, MinecraftScoreboardTeamsPacket packet) {
+        if(component == null) return "";
+        Language language = component instanceof LanguageAble ? ((LanguageAble) component).getLanguage() : null;
+        String text = component.compileToString(connection,MinecraftProtocolVersion.JE_1_7,packet.getVariables(),language);
         if(text.length() > 16) return text.substring(0,16);
         return text;
     }
