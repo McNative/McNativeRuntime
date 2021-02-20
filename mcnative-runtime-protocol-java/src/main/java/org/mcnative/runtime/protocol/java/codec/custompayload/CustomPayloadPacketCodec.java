@@ -22,7 +22,13 @@ public class CustomPayloadPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_16,0x18)
                         ,map(MinecraftProtocolVersion.JE_1_16_3,0x17))
                 ,on(PacketDirection.OUTGOING, ConnectionState.LOGIN
-                        ,map(MinecraftProtocolVersion.JE_1_7,0x00,new CustomPayloadPacketCodecV1_7()))));
+                        ,map(MinecraftProtocolVersion.JE_1_7,0x3F,new CustomPayloadPacketCodecV1_7())
+                        ,map(MinecraftProtocolVersion.JE_1_9,0x18)
+                        ,map(MinecraftProtocolVersion.JE_1_13,0x19)
+                        ,map(MinecraftProtocolVersion.JE_1_14,0x18)
+                        ,map(MinecraftProtocolVersion.JE_1_15,0x19)
+                        ,map(MinecraftProtocolVersion.JE_1_16,0x18)
+                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x17))));
     }
 
 }
