@@ -131,7 +131,6 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
 
     @Override
     public Document onMessageReceive(MessageReceiver sender, UUID requestId, Document request) {
-        if(sender.getUniqueId().equals(McNative.getInstance().getLocal().getUniqueId())) return null;
         executeNetworkEvent(sender,request);
         return null;
     }

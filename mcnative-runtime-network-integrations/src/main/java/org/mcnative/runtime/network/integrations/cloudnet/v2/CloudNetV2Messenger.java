@@ -21,6 +21,7 @@
 package org.mcnative.runtime.network.integrations.cloudnet.v2;
 
 import de.dytanic.cloudnet.api.CloudAPI;
+import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
@@ -119,10 +120,11 @@ public class CloudNetV2Messenger extends AbstractMessenger {
     public void handleMessageEvent(String channel0,String message, de.dytanic.cloudnet.lib.utility.document.Document document){
         if(channel0.equals(CHANNEL_NAME)){
             if(message.equals(MESSAGE_NAME_REQUEST)){
+                String sender = document.getString("sender");
+                if(sender.equals(CloudAPI.getInstance().getUniqueId().toString())) return;
 
                 String channel = document.getString("channel");
                 boolean proxy = document.getBoolean("proxy");
-                String sender = document.getString("sender");
                 UUID identifier = UUID.fromString(document.getString("identifier"));
                 Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
 
