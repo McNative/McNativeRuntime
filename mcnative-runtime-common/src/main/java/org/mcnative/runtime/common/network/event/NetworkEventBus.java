@@ -44,12 +44,10 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         Objects.requireNonNull(listener, "Listener can't be null.");
 
         for (Method method : listener.getClass().getDeclaredMethods()) {
-            System.out.println("sub-> "+method.getName());
             try {
                 NetworkListener info = method.getAnnotation(NetworkListener.class);
                 if (info != null && (method.getParameterTypes().length == 1 || method.getParameterTypes().length == 2)) {
                     Class<?> eventClass = method.getParameterTypes()[0];
-                    System.out.println("SUBSCRIBING EVENT "+eventClass);
                     Class<?> mappedClass = getMappedClass(eventClass);
                     if (mappedClass == null) mappedClass = eventClass;
                     addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(),info.execution(), listener, eventClass, method));
@@ -67,7 +65,6 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        System.out.println("[Debug] Call network event sync "+executionClass);
         super.callEvents(origin,executionClass, events);
     }
 
@@ -78,7 +75,6 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        System.out.println("[Debug] Call network event async "+executionClass);
         super.callEventsAsync(origin,executionClass,callback, events);
     }
 
@@ -90,7 +86,6 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
 
     private <T> void callNetworkEvents(Class<T> executionClass,Object[] events){
         McNative.getInstance().getExecutorService().execute(() -> {
-            System.out.println("[Debug] post call broadcast "+executionClass);
             Object event = events[0];
 
             Document eventData;
@@ -123,7 +118,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
             }else{
                 event = data.getAsObject(eventClass);
             }
-            super.callEventsAsync(origin,executionClass,event);
+            super.callEventsAsync(origin,executionClass,null,event);
         }catch (ReflectException exception){
             exception.printStackTrace();
         }
