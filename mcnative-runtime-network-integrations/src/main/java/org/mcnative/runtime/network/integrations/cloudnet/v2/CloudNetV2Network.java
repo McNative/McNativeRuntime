@@ -29,6 +29,7 @@ import net.pretronic.libraries.command.manager.CommandManager;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.event.EventBus;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.synchronisation.NetworkSynchronisationCallback;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
@@ -64,6 +65,9 @@ public class CloudNetV2Network implements Network {
         this.networkIdentifier = new NetworkIdentifier(getName(),NetworkIdentifier.BROADCAST.getUniqueId());
         this.eventBus = new NetworkEventBus();
         this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
+
+        VariableDescriberRegistry.registerDescriber(CloudNetServer.class);
+        VariableDescriberRegistry.registerDescriber(CloudNetProxy.class);
     }
 
     //@Todo currently unused
