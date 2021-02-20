@@ -39,7 +39,7 @@ public class NetworkEventHandler extends DefaultEventBus.NetworkEventHandler {
             NetworkEvent info = executionClass.getAnnotation(NetworkEvent.class);
             if(info.ignoreNetworkException()) return;
         }
-        EventOrigin origin = origin0 != null ? origin0  : getLocal();
+        EventOrigin origin = origin0 != null ? origin0 : getLocal();
         McNative.getInstance().getNetwork().getEventBus().callEventsAsync(origin,executionClass,events);
     }
 }

@@ -99,11 +99,10 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
                 ((NetworkEventAdapter) event).write(eventData);
             }else eventData = Document.newDocument(event);
 
-            eventData.set("MCNATIVE_EVENT_ACTION","call");
-            eventData.set("eventClass",event.getClass());
+            eventData.set("EVENT_CLASS",event.getClass());
 
             if(executionClass != event.getClass()){
-                eventData.set("executionClass",executionClass);
+                eventData.set("EXECUTION_CLASS",executionClass);
             }
 
             McNative.getInstance().getNetwork().sendBroadcastMessage("mcnative_event",eventData);
@@ -113,8 +112,8 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
     @Internal
     public void executeNetworkEvent(EventOrigin origin,Document data){
         try{
-            Class<?> executionClass = data.getObject("executionClass",Class.class);
-            Class<?> eventClass = data.getObject("eventClass",Class.class);
+            Class<?> executionClass = data.getObject("EXECUTION_CLASS",Class.class);
+            Class<?> eventClass = data.getObject("EVENT_CLASS",Class.class);
             if(executionClass == null) executionClass = eventClass;
 
             Object event;
@@ -125,15 +124,15 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
                 event = data.getAsObject(eventClass);
             }
             super.callEventsAsync(origin,executionClass,event);
-        }catch (ReflectException ignored){}
+        }catch (ReflectException exception){
+            exception.printStackTrace();
+        }
     }
 
     @Override
     public Document onMessageReceive(MessageReceiver sender, UUID requestId, Document request) {
-        String action = request.getString("MCNATIVE_EVENT_ACTION");
-        if(action.equalsIgnoreCase("call")){
-            executeNetworkEvent(sender,request);
-        }
+        if(sender.getUniqueId().equals(McNative.getInstance().getLocal().getUniqueId())) return null;
+        executeNetworkEvent(sender,request);
         return null;
     }
 }
