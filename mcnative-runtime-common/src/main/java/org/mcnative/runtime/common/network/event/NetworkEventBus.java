@@ -44,10 +44,12 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         Objects.requireNonNull(listener, "Listener can't be null.");
 
         for (Method method : listener.getClass().getDeclaredMethods()) {
+            System.out.println("sub-> "+method.getName());
             try {
                 NetworkListener info = method.getAnnotation(NetworkListener.class);
-                if (info != null && method.getParameterTypes().length == 1) {
+                if (info != null && (method.getParameterTypes().length == 1 || method.getParameterTypes().length == 2)) {
                     Class<?> eventClass = method.getParameterTypes()[0];
+                    System.out.println("SUBSCRIBING EVENT "+eventClass);
                     Class<?> mappedClass = getMappedClass(eventClass);
                     if (mappedClass == null) mappedClass = eventClass;
                     addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(),info.execution(), listener, eventClass, method));
@@ -65,17 +67,18 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        super.callEvents(executionClass, events);
+        super.callEvents(origin,executionClass, events);
     }
 
     @Override
-    public <T> void callEventsAsync(Class<T> executionClass, Runnable callback, Object... events) {
+    public <T> void callEventsAsync(EventOrigin origin,Class<T> executionClass, Runnable callback, Object... events) {
         if(events.length > 1) throw new IllegalArgumentException("Network eventbus can not execute multiple events for the same execution class");
         NetworkEvent event = getNetworkEvent(executionClass);
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        super.callEventsAsync(executionClass,callback, events);
+        System.out.println("[Debug] Call network event "+executionClass);
+        super.callEventsAsync(origin,executionClass,callback, events);
     }
 
     private <T> NetworkEvent getNetworkEvent(Class<T> executionClass){

@@ -20,7 +20,7 @@ public class MAFService {
                 .authentication(new KeyAuthentication(UUID.fromString(credentials.getNetworkId()),credentials.getSecret()))
                 .logger(McNative.getInstance().getLogger())//@Todo add and implement prefixed logger
                 .autoReconnect(2500)
-                .statusListener(new MAFStatusListener())
+                .statusListener(statusListener)
                 .uniqueId(McNative.getInstance().getLocal().getUniqueId())
                 .name(McNative.getInstance().getLocal().getName())
                 .type(ClientType.GENERIC)
