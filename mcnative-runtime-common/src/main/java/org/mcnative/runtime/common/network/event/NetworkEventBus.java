@@ -67,6 +67,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
+        System.out.println("[Debug] Call network event sync "+executionClass);
         super.callEvents(origin,executionClass, events);
     }
 
@@ -77,7 +78,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        System.out.println("[Debug] Call network event "+executionClass);
+        System.out.println("[Debug] Call network event async "+executionClass);
         super.callEventsAsync(origin,executionClass,callback, events);
     }
 
@@ -89,6 +90,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
 
     private <T> void callNetworkEvents(Class<T> executionClass,Object[] events){
         McNative.getInstance().getExecutorService().execute(() -> {
+            System.out.println("[Debug] post call broadcast "+executionClass);
             Object event = events[0];
 
             Document eventData;
