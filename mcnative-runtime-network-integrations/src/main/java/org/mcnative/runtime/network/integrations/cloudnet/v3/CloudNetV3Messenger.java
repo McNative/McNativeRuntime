@@ -116,20 +116,10 @@ public class CloudNetV3Messenger extends AbstractMessenger {
     public void handleMessageEvent(String channel0,String message, JsonDocument document){
         if(channel0.equals(CHANNEL_NAME)){
             if(message.equals(MESSAGE_NAME_REQUEST)){
-
                 UUID sender = UUID.fromString(document.getString("sender"));
                 if(sender.equals(Wrapper.getInstance().getServiceId().getUniqueId())) return;
                 String channel = document.getString("channel");
                 UUID identifier = UUID.fromString(document.getString("identifier"));
-
-                System.out.println("------- [RECEIVED MESSAGE]");
-                System.out.println("Sender "+sender);
-                System.out.println("Channel "+channel);
-                System.out.println("Identifier "+identifier);
-                System.out.println(">Local "+Wrapper.getInstance().getServiceId().getUniqueId());
-                System.out.println(">Message "+document.getString("data"));
-                System.out.println("---------------------");
-
                 Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
 
                 String type = document.getString("type");

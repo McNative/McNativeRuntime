@@ -34,7 +34,6 @@ public class NetworkEventHandler extends DefaultEventBus.NetworkEventHandler {
 
     @Override
     public void handleNetworkEventsAsync(EventOrigin origin0, Class<?> executionClass, Object[] events) {
-        System.out.println("[DEBUG] Executing network event "+executionClass);
         if(!McNative.getInstance().isNetworkAvailable()){
             NetworkEvent info = executionClass.getAnnotation(NetworkEvent.class);
             if(info.ignoreNetworkException()) return;
