@@ -44,7 +44,7 @@
         <!-- Project settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <dependency.mcnative.api>1.0.23.32-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.api>1.0.24.33-SNAPSHOT</dependency.mcnative.api>
         <dependency.mcnative.maf>1.0.17.27-SNAPSHOT</dependency.mcnative.maf>
 
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>

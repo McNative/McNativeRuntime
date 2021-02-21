@@ -5,7 +5,6 @@ import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.PacketManager;
 import org.mcnative.runtime.api.protocol.packet.type.CustomPayloadPacket;
-import org.mcnative.runtime.api.protocol.packet.type.MinecraftDisconnectPacket;
 
 import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
 
