@@ -1,5 +1,6 @@
 package org.mcnative.runtime.common.maf;
 
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import org.mcnative.actionframework.sdk.actions.server.ServerRecoveryAction;
 import org.mcnative.actionframework.sdk.client.MAFClient;
 import org.mcnative.actionframework.sdk.client.StatusListener;
@@ -21,7 +22,7 @@ public class MAFStatusListener implements StatusListener {
 
     @Override
     public void onConnect() {
-        McNative.getInstance().getLogger().info("[MAF] Connected to McNative Action Framework");
+        McNative.getInstance().getLocal().getEventBus().subscribe(ObjectOwner.SYSTEM,new MAFListener(client));
         if(recovery) {
             ServerRecoveryAction recoveryAction = new ServerRecoveryAction(getOnlinePlayers());
             this.client.sendAction(recoveryAction);
@@ -31,10 +32,8 @@ public class MAFStatusListener implements StatusListener {
 
     @Override
     public void onDisconnect() {
-        McNative.getInstance().getLogger().info("[MAF] Disconnected from McNative Action Framework");
-        if(client != null) {
-            this.recovery = true;
-        }
+        McNative.getInstance().getLocal().getEventBus().unsubscribeAll(MAFListener.class);
+        if(client != null) this.recovery = true;
     }
 
     private Map<UUID, Integer> getOnlinePlayers() {

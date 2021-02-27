@@ -29,6 +29,7 @@ import org.mcnative.runtime.api.player.chat.ChatFormatter;
 import org.mcnative.runtime.api.player.chat.GroupChatFormatter;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
+import org.mcnative.runtime.api.text.format.ColoredString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,7 +143,10 @@ public class DefaultChatChannel implements ChatChannel {
         variables.addDescribed("player",sender);
         variables.addDescribed("sender",sender);
         variables.addDescribed("design",sender.getDesign());
-        variables.add("message",message);
+        variables.add("rawMessage",message);
+
+        if(sender.hasPermission("mcnative.chat.color")) variables.add("message",new ColoredString(message));
+        else variables.add("message",message);
 
         sender.getDesign().appendAdditionalVariables(variables);
 

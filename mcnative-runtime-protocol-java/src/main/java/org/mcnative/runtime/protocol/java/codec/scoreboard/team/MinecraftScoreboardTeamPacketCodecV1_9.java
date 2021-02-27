@@ -20,11 +20,14 @@
 package org.mcnative.runtime.protocol.java.codec.scoreboard.team;
 
 import io.netty.buffer.ByteBuf;
+import net.pretronic.libraries.message.language.Language;
+import net.pretronic.libraries.message.language.LanguageAble;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
+import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftScoreboardTeamPacketCodecV1_9 implements MinecraftPacketCodec<MinecraftScoreboardTeamsPacket> {
@@ -43,9 +46,9 @@ public class MinecraftScoreboardTeamPacketCodecV1_9 implements MinecraftPacketCo
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
 
-                MinecraftProtocolUtil.writeString(buffer, packet.getDisplayName() == null ? "" : packet.getDisplayName().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
-                MinecraftProtocolUtil.writeString(buffer, packet.getPrefix() == null ? "" : packet.getPrefix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
-                MinecraftProtocolUtil.writeString(buffer, packet.getSuffix() == null ? "" : packet.getSuffix().compileToString(MinecraftProtocolVersion.JE_1_7,packet.getVariables()));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getDisplayName(),connection,packet));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getPrefix(),connection,packet));
+                MinecraftProtocolUtil.writeString(buffer, compileText(packet.getSuffix(),connection,packet));
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
                 MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
                 MinecraftProtocolUtil.writeString(buffer,packet.getCollisionRule().getCollisionRuleName());
@@ -60,5 +63,13 @@ public class MinecraftScoreboardTeamPacketCodecV1_9 implements MinecraftPacketCo
                 MinecraftProtocolUtil.writeStringArray(buffer, packet.getEntities());
             }
         }
+    }
+
+    private String compileText(MessageComponent<?> component, MinecraftConnection connection, MinecraftScoreboardTeamsPacket packet) {
+        if(component == null) return "";
+        Language language = component instanceof LanguageAble ? ((LanguageAble) component).getLanguage() : null;
+        String text = component.compileToString(connection,MinecraftProtocolVersion.JE_1_7,packet.getVariables(),language);
+        if(text.length() > 16) return text.substring(0,16);
+        return text;
     }
 }

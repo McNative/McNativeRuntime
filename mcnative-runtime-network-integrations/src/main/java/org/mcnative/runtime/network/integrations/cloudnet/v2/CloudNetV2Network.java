@@ -29,6 +29,7 @@ import net.pretronic.libraries.command.manager.CommandManager;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.event.EventBus;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.synchronisation.NetworkSynchronisationCallback;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
@@ -61,11 +62,15 @@ public class CloudNetV2Network implements Network {
         this.messenger = new CloudNetV2Messenger(executor);
         this.operations = new CloudNetV2NetworkOperations(this);
         this.localIdentifier = new NetworkIdentifier(CloudAPI.getInstance().getServerId(),CloudAPI.getInstance().getUniqueId());
-        this.networkIdentifier = new NetworkIdentifier(getName(),loadId());
+        this.networkIdentifier = new NetworkIdentifier(getName(),NetworkIdentifier.BROADCAST.getUniqueId());
         this.eventBus = new NetworkEventBus();
         this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
+
+        VariableDescriberRegistry.registerDescriber(CloudNetServer.class);
+        VariableDescriberRegistry.registerDescriber(CloudNetProxy.class);
     }
 
+    //@Todo currently unused
     private UUID loadId(){
         Database database = CloudAPI.getInstance().getDatabaseManager().getDatabase("mcnative");
         try{//Used because of performance reasons
@@ -141,8 +146,7 @@ public class CloudNetV2Network implements Network {
     @Override
     public ProxyServer getProxy(String name) {
         for (ProxyInfo server : CloudAPI.getInstance().getProxys()) {
-            String infoName = server.getServiceId().getGroup()+"-"+server.getServiceId().getId();
-            if(infoName.equalsIgnoreCase(name)){
+            if(server.getServiceId().getServerId().equalsIgnoreCase(name)){
                 return new CloudNetProxy(server);
             }
         }
@@ -169,8 +173,14 @@ public class CloudNetV2Network implements Network {
     }
 
     @Override
-    public Collection<MinecraftServer> getServers(String s) {
-        return null;
+    public Collection<MinecraftServer> getServers(String group) {
+        Collection<MinecraftServer> result = new ArrayList<>();
+        for (ServerInfo server : CloudAPI.getInstance().getServers()) {
+            if(server.getServiceId().getGroup().equalsIgnoreCase(group)){
+                result.add(new CloudNetServer(server));
+            }
+        }
+        return result;
     }
 
     @Override

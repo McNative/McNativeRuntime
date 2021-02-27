@@ -116,8 +116,9 @@ public class CloudNetV3Messenger extends AbstractMessenger {
     public void handleMessageEvent(String channel0,String message, JsonDocument document){
         if(channel0.equals(CHANNEL_NAME)){
             if(message.equals(MESSAGE_NAME_REQUEST)){
-                String channel = document.getString("channel");
                 UUID sender = UUID.fromString(document.getString("sender"));
+                if(sender.equals(Wrapper.getInstance().getServiceId().getUniqueId())) return;
+                String channel = document.getString("channel");
                 UUID identifier = UUID.fromString(document.getString("identifier"));
                 Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
 

@@ -46,11 +46,11 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
         for (Method method : listener.getClass().getDeclaredMethods()) {
             try {
                 NetworkListener info = method.getAnnotation(NetworkListener.class);
-                if (info != null && method.getParameterTypes().length == 1) {
+                if (info != null && (method.getParameterTypes().length == 1 || method.getParameterTypes().length == 2)) {
                     Class<?> eventClass = method.getParameterTypes()[0];
                     Class<?> mappedClass = getMappedClass(eventClass);
                     if (mappedClass == null) mappedClass = eventClass;
-                    addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(), listener, eventClass, method));
+                    addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(),info.execution(), listener, eventClass, method,info.onlyLocal(),info.onlyRemote()));
                 }
             } catch (Exception var11) {
                 throw new IllegalArgumentException("Could not register listener " + listener, var11);
@@ -59,55 +59,56 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
     }
 
     @Override
-    public <T> void callEvents(Class<T> executionClass, Object... events) {
+    public <T> void callEvents(EventOrigin origin,Class<T> executionClass, Object... events) {
         if(events.length > 1) throw new IllegalArgumentException("Network eventbus can not execute multiple events for the same execution class");
-        if(checkNetworkEvent(executionClass)){
+        NetworkEvent event = getNetworkEvent(executionClass);
+        if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        super.callEvents(executionClass, events);
+        super.callEvents(origin,executionClass, events);
     }
 
     @Override
-    public <T> void callEventsAsync(Class<T> executionClass, Runnable callback, Object... events) {
+    public <T> void callEventsAsync(EventOrigin origin,Class<T> executionClass, Runnable callback, Object... events) {
         if(events.length > 1) throw new IllegalArgumentException("Network eventbus can not execute multiple events for the same execution class");
-        checkNetworkEvent(executionClass);
-        if(checkNetworkEvent(executionClass)){
+        NetworkEvent event = getNetworkEvent(executionClass);
+        if(event.type() != NetworkEventType.SELF_MANAGED){
             callNetworkEvents(executionClass,events);
         }
-        super.callEventsAsync(executionClass,callback, events);
+        super.callEventsAsync(origin,executionClass,callback, events);
     }
 
-    private <T> boolean checkNetworkEvent(Class<T> executionClass){
+    private <T> NetworkEvent getNetworkEvent(Class<T> executionClass){
         NetworkEvent event = executionClass.getAnnotation(NetworkEvent.class);
         if(event == null) throw new IllegalArgumentException(executionClass.getName()+" is not a @NetworkEvent");
-        return event.type() != NetworkEventType.SELF_MANAGED;
+        return event;
     }
 
     private <T> void callNetworkEvents(Class<T> executionClass,Object[] events){
-        Object event = events[0];
-        if(events.length != 1) throw new IllegalArgumentException("Network event bus does not support multiple event objects");
-        McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM)
-                .async()
-                .execute(() -> {
-                    Document eventData;
-                    if(event instanceof NetworkEventAdapter) eventData = ((NetworkEventAdapter) event).write();
-                    else eventData = Document.newDocument(event);
-                    eventData.set("MCNATIVE_EVENT_ACTION","call");
-                    eventData.set("eventClass",event.getClass());
+        McNative.getInstance().getExecutorService().execute(() -> {
+            Object event = events[0];
 
-                    if(executionClass != event.getClass()){
-                        eventData.set("executionClass",executionClass);
-                    }
+            Document eventData;
+            if(event instanceof NetworkEventAdapter) {
+                eventData = Document.newDocument();
+                ((NetworkEventAdapter) event).write(eventData);
+            }else eventData = Document.newDocument(event);
 
-                    McNative.getInstance().getNetwork().sendBroadcastMessage("mcnative_event",eventData);
-                });
+            eventData.set("EVENT_CLASS",event.getClass());
+
+            if(executionClass != event.getClass()){
+                eventData.set("EXECUTION_CLASS",executionClass);
+            }
+
+            McNative.getInstance().getNetwork().sendBroadcastMessage("mcnative_event",eventData);
+        });
     }
 
     @Internal
     public void executeNetworkEvent(EventOrigin origin,Document data){
         try{
-            Class<?> executionClass = data.getObject("executionClass",Class.class);
-            Class<?> eventClass = data.getObject("eventClass",Class.class);
+            Class<?> executionClass = data.getObject("EXECUTION_CLASS",Class.class);
+            Class<?> eventClass = data.getObject("EVENT_CLASS",Class.class);
             if(executionClass == null) executionClass = eventClass;
 
             Object event;
@@ -117,16 +118,15 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
             }else{
                 event = data.getAsObject(eventClass);
             }
-            super.callEventsAsync(origin,executionClass,event);
-        }catch (ReflectException ignored){}
+            super.callEventsAsync(origin,executionClass,null,event);
+        }catch (ReflectException exception){
+            exception.printStackTrace();
+        }
     }
 
     @Override
     public Document onMessageReceive(MessageReceiver sender, UUID requestId, Document request) {
-        String action = request.getString("MCNATIVE_EVENT_ACTION");
-        if(action.equalsIgnoreCase("call")){
-            executeNetworkEvent(sender,request);
-        }
+        executeNetworkEvent(sender,request);
         return null;
     }
 }

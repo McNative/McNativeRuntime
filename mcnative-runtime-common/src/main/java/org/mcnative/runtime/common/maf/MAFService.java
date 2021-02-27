@@ -18,22 +18,16 @@ public class MAFService {
         MAFClient client = MAFClient.build()
                 .serviceDiscovery(new DnsServiceDiscovery("_maf._tcp.mcnative.org"))
                 .authentication(new KeyAuthentication(UUID.fromString(credentials.getNetworkId()),credentials.getSecret()))
-                .logger(McNative.getInstance().getLogger())
-                .autoReconnect(1000)
+                .logger(McNative.getInstance().getLogger())//@Todo add and implement prefixed logger
+                .autoReconnect(2500)
                 .statusListener(statusListener)
                 .uniqueId(McNative.getInstance().getLocal().getUniqueId())
                 .name(McNative.getInstance().getLocal().getName())
                 .type(ClientType.GENERIC)
                 .create();
 
-        try{
-            client.connect();
-            statusListener.setClient(client);
-            McNative.getInstance().getLocal().getEventBus().subscribe(ObjectOwner.SYSTEM,new MAFListener(client));
-        }catch (Exception exception){
-            McNative.getInstance().getLogger().info("[MAF] Could not connect to McNative action framework");
-            exception.printStackTrace();
-        }
+        statusListener.setClient(client);
+        client.connectAsync();
     }
 
 }

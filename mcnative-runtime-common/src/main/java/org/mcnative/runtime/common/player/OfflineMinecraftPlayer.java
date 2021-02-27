@@ -114,6 +114,8 @@ public class OfflineMinecraftPlayer implements MinecraftPlayer {
             if(design != null){
                 variables.addDescribed("design",design);
                 design.appendAdditionalVariables(variables);
+            }else{
+                variables.addDescribed("design",EmptyPlayerDesign.DEFAULT);
             }
             result = variables.replace(result);
         }
