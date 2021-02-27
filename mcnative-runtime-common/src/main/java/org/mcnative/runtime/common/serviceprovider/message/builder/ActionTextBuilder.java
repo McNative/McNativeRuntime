@@ -94,6 +94,7 @@ public class ActionTextBuilder implements MessageBuilder {
             click.set("value",value);
             result.add("clickEvent",click);
         }
+
         result.add("extra",new Object[]{parameters[0]});
         if(next != null) return new Object[]{result,next};
         else return new Object[]{result};

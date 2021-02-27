@@ -146,8 +146,7 @@ public class CloudNetV2Network implements Network {
     @Override
     public ProxyServer getProxy(String name) {
         for (ProxyInfo server : CloudAPI.getInstance().getProxys()) {
-            String infoName = server.getServiceId().getGroup()+"-"+server.getServiceId().getId();
-            if(infoName.equalsIgnoreCase(name)){
+            if(server.getServiceId().getServerId().equalsIgnoreCase(name)){
                 return new CloudNetProxy(server);
             }
         }
@@ -174,8 +173,14 @@ public class CloudNetV2Network implements Network {
     }
 
     @Override
-    public Collection<MinecraftServer> getServers(String s) {
-        return null;
+    public Collection<MinecraftServer> getServers(String group) {
+        Collection<MinecraftServer> result = new ArrayList<>();
+        for (ServerInfo server : CloudAPI.getInstance().getServers()) {
+            if(server.getServiceId().getGroup().equalsIgnoreCase(group)){
+                result.add(new CloudNetServer(server));
+            }
+        }
+        return result;
     }
 
     @Override
