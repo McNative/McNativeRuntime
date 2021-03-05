@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MAFListener {
 
+    protected static boolean STARTUP = false;
     private final MAFClient client;
 
     public MAFListener(MAFClient client) {
@@ -40,80 +41,22 @@ public class MAFListener {
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onStartup(LocalServiceStartupEvent event){
-        MinecraftPlatform platform =  event.getRuntime().getPlatform();
-
-        String networkTechnology = "none";
-        if(event.getRuntime().isNetworkAvailable()) {
-            networkTechnology = event.getRuntime().getNetwork().getTechnology();
-        }
-
-        Collection<MinecraftProtocolVersion> protocolVersions = platform.getJoinableProtocolVersions();
-        int[] protocols = new int[protocolVersions.size()];
-        int index = 0;
-        for (MinecraftProtocolVersion version : protocolVersions) {
-            protocols[index] = version.getNumber();
-            index++;
-        }
-
-        client.sendAction(new ServerStartupAction(
-                event.getRuntime().getLocal().getName()
-                ,event.getRuntime().getLocal().getAddress()
-                ,event.getRuntime().getLocal().getGroup()
-                ,platform.getName()
-                ,platform.getVersion()
-                ,platform.isProxy()
-                ,networkTechnology
-                ,platform.getProtocolVersion().getNumber()
-                ,protocols
-                ,event.getRuntime().getApiVersion().getBuild()
-                ,SystemInfo.getOsName()
-                ,SystemInfo.getOsArch()
-                ,SystemUtil.getJavaVersion()
-                ,SystemInfo.getDeviceId()
-                ,(int) Math.round(((double)SystemInfo.getMaxMemory()/(double) (1024 * 1024)))
-                ,Runtime.getRuntime().availableProcessors()));
-
-        event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM).delay(20, TimeUnit.SECONDS)
-                .execute(this::sendInfoAction);
-        event.getRuntime().getScheduler().createTask(ObjectOwner.SYSTEM)
-                .delay(10, TimeUnit.SECONDS)
-                .interval(30, TimeUnit.SECONDS)
-                .execute(this::sendStatusAction);
+        STARTUP = true;
+        MAFUtil.sendStartupAction(client);
+        McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
+                .delay(15, TimeUnit.SECONDS)
+                .execute(() -> MAFUtil.sendInfoAction(client));
     }
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onStartup(LocalServiceReloadEvent event){
-        sendInfoAction();
-        sendStatusAction();
-    }
-
-    private void sendInfoAction(){
-        Collection<Plugin<?>> plugins = McNative.getInstance().getPluginManager().getPlugins();
-        ServerInfoAction.Plugin[] pluginInfo = new ServerInfoAction.Plugin[plugins.size()];
-        int index = 0;
-        for (Plugin<?> plugin : plugins) {
-            pluginInfo[index] = new ServerInfoAction.Plugin(plugin.getDescription().getId()
-                    ,plugin.getDescription().getName()
-                    ,plugin.getDescription().getVersion().getName());
-            index++;
-        }
-
-        Collection<String> drivers = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class).getDatabaseTypes();
-        client.sendAction(new ServerInfoAction(pluginInfo,drivers.toArray(new String[]{})));
-    }
-
-    private void sendStatusAction() {
-        ServerPerformance performance = McNative.getInstance().getLocal().getServerPerformance();
-
-        ServerStatusAction action = new ServerStatusAction(McNative.getInstance().getLocal().getMaxPlayerCount(),
-                performance.getRecentTps(),
-                performance.getUsedMemory(),
-                performance.getCpuUsage());
-        this.client.sendAction(action);
+        MAFUtil.sendInfoAction(client);
+        MAFUtil.sendStatusAction(client);
     }
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onShutdown(LocalServiceShutdownEvent event){
+        if(!client.getConnection().isConnected()) return;
         client.sendAction(new ServerShutdownAction());
     }
 
@@ -121,12 +64,14 @@ public class MAFListener {
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onLogin(MinecraftPlayerLoginConfirmEvent event){
+        if(!client.getConnection().isConnected()) return;
         client.sendAction(new PlayerJoinAction(event.getPlayer().getUniqueId()
                 ,event.getPlayer().getAsConnectedPlayer().getProtocolVersion().getNumber()));
     }
 
     @Listener(priority = EventPriority.HIGHEST)
     public void onLeave(MinecraftPlayerLogoutEvent event){
+        if(!client.getConnection().isConnected()) return;
         client.sendAction(new PlayerLeaveAction(event.getPlayer().getUniqueId()));
     }
 

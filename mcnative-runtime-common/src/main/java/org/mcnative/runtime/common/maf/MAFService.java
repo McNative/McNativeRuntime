@@ -9,6 +9,7 @@ import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.McNativeConsoleCredentials;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class MAFService {
 
@@ -26,8 +27,13 @@ public class MAFService {
                 .type(ClientType.GENERIC)
                 .create();
 
+        McNative.getInstance().getLocal().getEventBus().subscribe(ObjectOwner.SYSTEM,new MAFListener(client));
         statusListener.setClient(client);
         client.connectAsync();
+
+        McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
+                .delay(5, TimeUnit.SECONDS).interval(30, TimeUnit.SECONDS)
+                .execute(() -> MAFUtil.sendStatusAction(client));
     }
 
 }
