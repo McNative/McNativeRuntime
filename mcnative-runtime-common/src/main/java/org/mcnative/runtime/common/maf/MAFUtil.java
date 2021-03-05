@@ -18,7 +18,6 @@ import java.util.Collection;
 public class MAFUtil {
 
     protected static void sendStartupAction(MAFClient client){
-        System.out.println("preparing: "+client.getConnection().isConnected());
         if(!client.getConnection().isConnected()) return;
         McNative runtime = McNative.getInstance();
         MinecraftPlatform platform =  runtime.getPlatform();
