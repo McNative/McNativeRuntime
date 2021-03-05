@@ -29,8 +29,7 @@ public class MAFStatusListener implements StatusListener {
             this.client.sendAction(recoveryAction);
             this.recovery = false;
         }
-        System.out.println("CONNECTED: "+MAFListener.STARTUP);
-        if(!MAFListener.STARTUP){
+        if(MAFListener.STARTUP){
             MAFUtil.sendStartupAction(client);
             McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
                     .delay(10, TimeUnit.SECONDS)
