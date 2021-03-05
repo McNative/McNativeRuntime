@@ -42,6 +42,7 @@ public class MAFListener {
     @Listener(priority = EventPriority.HIGHEST)
     public void onStartup(LocalServiceStartupEvent event){
         STARTUP = true;
+        if(!client.getConnection().isConnected()) return;
         MAFUtil.sendStartupAction(client);
         McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
                 .delay(15, TimeUnit.SECONDS)
