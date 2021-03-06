@@ -1,12 +1,15 @@
 package org.mcnative.runtime.common.player;
 
+import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberRegistry;
 import org.mcnative.runtime.api.player.PlayerDesign;
 
 public class EmptyPlayerDesign implements PlayerDesign {
 
     public static final EmptyPlayerDesign DEFAULT = new EmptyPlayerDesign();
 
-    private EmptyPlayerDesign () {}
+    private EmptyPlayerDesign () {
+        VariableDescriberRegistry.registerDescriber(EmptyPlayerDesign.class);
+    }
 
     @Override
     public String getColor() {

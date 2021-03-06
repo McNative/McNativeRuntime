@@ -10,6 +10,7 @@ import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class MAFStatusListener implements StatusListener {
 
@@ -27,6 +28,14 @@ public class MAFStatusListener implements StatusListener {
             ServerRecoveryAction recoveryAction = new ServerRecoveryAction(getOnlinePlayers());
             this.client.sendAction(recoveryAction);
             this.recovery = false;
+        }
+        if(MAFListener.STARTUP){
+            McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
+                    .delay(2, TimeUnit.SECONDS)
+                    .execute(() -> MAFUtil.sendStartupAction(client));
+            McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
+                    .delay(10, TimeUnit.SECONDS)
+                    .execute(() -> MAFUtil.sendInfoAction(client));
         }
     }
 
