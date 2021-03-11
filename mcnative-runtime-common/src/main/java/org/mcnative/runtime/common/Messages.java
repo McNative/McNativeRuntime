@@ -66,4 +66,5 @@ public final class Messages {
     public static MessageKeyComponent COMMAND_MCNATIVE_PLUGIN_UNLOAD_STARTING = Text.ofMessageKey("mcnative.command.manage.plugin.unload.starting");
     public static MessageKeyComponent COMMAND_MCNATIVE_PLUGIN_UNLOAD_SUCCESSFULLY = Text.ofMessageKey("mcnative.command.manage.plugin.unload.successfully");
     public static MessageKeyComponent COMMAND_MCNATIVE_PLUGIN_UNLOAD_FAILED = Text.ofMessageKey("mcnative.command.manage.plugin.unload.failed");
+
 }
