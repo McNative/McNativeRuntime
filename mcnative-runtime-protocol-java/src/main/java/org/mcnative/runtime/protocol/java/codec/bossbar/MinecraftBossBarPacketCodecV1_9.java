@@ -47,7 +47,7 @@ public class MinecraftBossBarPacketCodecV1_9 implements MinecraftPacketCodec<Min
             buffer.writeFloat(packet.getHealth());
             MinecraftProtocolUtil.writeVarInt(buffer,packet.getColor().ordinal());
             MinecraftProtocolUtil.writeVarInt(buffer,packet.getDivider().ordinal());
-            MinecraftProtocolUtil.writeUnsignedInt(buffer,packet.getFlag().ordinal());
+            buffer.writeByte((byte)packet.getFlag().ordinal());
         }else if(packet.getAction() == MinecraftBossBarPacket.Action.UPDATE_HEALTH){
             buffer.writeFloat(packet.getHealth());
         }else if(packet.getAction() == MinecraftBossBarPacket.Action.UPDATE_TITLE){
@@ -56,7 +56,7 @@ public class MinecraftBossBarPacketCodecV1_9 implements MinecraftPacketCodec<Min
             MinecraftProtocolUtil.writeVarInt(buffer,packet.getColor().ordinal());
             MinecraftProtocolUtil.writeVarInt(buffer,packet.getDivider().ordinal());
         }else if(packet.getAction() == MinecraftBossBarPacket.Action.UPDATE_FLAGS){
-            MinecraftProtocolUtil.writeUnsignedInt(buffer,packet.getFlag().ordinal());
+            buffer.writeByte((byte)packet.getFlag().ordinal());
         }
     }
 }
