@@ -29,6 +29,7 @@ import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.PlayerDesign;
+import org.mcnative.runtime.api.player.receiver.LocalReceiverChannel;
 import org.mcnative.runtime.api.player.tablist.Tablist;
 import org.mcnative.runtime.api.player.tablist.TablistEntry;
 import org.mcnative.runtime.api.player.tablist.TablistFormatter;
@@ -45,7 +46,6 @@ import java.util.List;
 public abstract class AbstractTablist implements Tablist {
 
     private final Collection<ConnectedMinecraftPlayer> receivers;
-
     private final List<TablistEntry> entries;
 
     private TablistFormatter formatter;
@@ -84,7 +84,7 @@ public abstract class AbstractTablist implements Tablist {
     @Override
     public void addEntry(ConnectedMinecraftPlayer player, PlayerDesign design) {
         Validate.notNull(player,design);
-        addEntry(new SimpleTablistEntry(player.getName(),design));
+        addEntry(new SimpleTablistEntry(player.getName(),design,player));
     }
 
     @Override
@@ -240,6 +240,11 @@ public abstract class AbstractTablist implements Tablist {
             stringPriority.insert(0, "0");
         }
         return stringPriority.toString();
+    }
+
+    @Override
+    public void execute(LocalReceiverChannel channel) {
+        for (ConnectedMinecraftPlayer player : channel) player.setTablist(this);
     }
 
     public abstract String getPlayerTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry);

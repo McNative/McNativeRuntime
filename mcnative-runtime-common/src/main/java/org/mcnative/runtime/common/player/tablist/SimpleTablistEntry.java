@@ -28,10 +28,26 @@ public class SimpleTablistEntry implements TablistEntry {
 
     private final String name;
     private final PlayerDesign design;
+    private Object holder;
 
     public SimpleTablistEntry(String name, PlayerDesign design) {
+        this(name,design,null);
+    }
+
+    public SimpleTablistEntry(String name, PlayerDesign design, Object holder) {
         this.name = name;
         this.design = design;
+        this.holder = holder;
+    }
+
+    @Override
+    public Object getHolder() {
+        return holder;
+    }
+
+    @Override
+    public void setHolder(Object holder) {
+        this.holder = holder;
     }
 
     @Override
