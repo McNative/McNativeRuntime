@@ -251,7 +251,7 @@ public abstract class AbstractTablist implements Tablist {
 
     public abstract int getTablistTeamIndexAndIncrement(ConnectedMinecraftPlayer receiver);
 
-    public abstract String putTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry, String teamName);
+    public abstract void putTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry, String teamName);
 
-    public abstract String removeTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
+    public abstract void removeTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
 }
