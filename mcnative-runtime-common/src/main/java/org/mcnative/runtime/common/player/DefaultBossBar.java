@@ -130,6 +130,7 @@ public class DefaultBossBar implements BossBar {
     @Override
     public void update(ConnectedMinecraftPlayer player) {
         MinecraftBossBarPacket packet = new MinecraftBossBarPacket();
+        packet.setBarId(id);
         packet.setAction(MinecraftBossBarPacket.Action.ADD);
         packet.setTitleVariables(variables);
         packet.setHealth((float) progress / (float)maximum);
