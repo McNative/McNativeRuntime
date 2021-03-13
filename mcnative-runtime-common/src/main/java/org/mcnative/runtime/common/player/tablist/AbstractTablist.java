@@ -247,11 +247,11 @@ public abstract class AbstractTablist implements Tablist {
         for (ConnectedMinecraftPlayer player : channel) player.setTablist(this);
     }
 
-    public abstract String getPlayerTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry);
+    public abstract String getPlayerTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
 
-    public abstract int getTablistTeamIndexAndIncrement(OnlineMinecraftPlayer receiver);
+    public abstract int getTablistTeamIndexAndIncrement(ConnectedMinecraftPlayer receiver);
 
-    public abstract String putTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry, String teamName);
+    public abstract String putTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry, String teamName);
 
-    public abstract String removeTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry);
+    public abstract String removeTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
 }
