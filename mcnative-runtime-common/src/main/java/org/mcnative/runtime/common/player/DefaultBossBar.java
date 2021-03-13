@@ -132,6 +132,7 @@ public class DefaultBossBar implements BossBar {
         MinecraftBossBarPacket packet = new MinecraftBossBarPacket();
         packet.setBarId(id);
         packet.setAction(MinecraftBossBarPacket.Action.ADD);
+        packet.setTitle(title);
         packet.setTitleVariables(variables);
         packet.setHealth((float) progress / (float)maximum);
         packet.setColor(color);
