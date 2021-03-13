@@ -102,7 +102,7 @@ public class DefaultChatChannel implements ChatChannel {
     }
 
     @Override
-    public void addRemoveListener(Consumer<ConnectedMinecraftPlayer> consumer) {
+    public void addLeaveListener(Consumer<ConnectedMinecraftPlayer> consumer) {
         throw new UnsupportedOperationException("Currently not supported");
     }
 
