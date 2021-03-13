@@ -20,16 +20,13 @@
 package org.mcnative.runtime.protocol.java.codec.scoreboard.team;
 
 import io.netty.buffer.ByteBuf;
-import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.message.language.Language;
 import net.pretronic.libraries.message.language.LanguageAble;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
-import org.mcnative.runtime.api.protocol.packet.type.MinecraftChatPacket;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
-import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 

@@ -34,9 +34,6 @@ import org.mcnative.runtime.api.player.DeviceInfo;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.Title;
 import org.mcnative.runtime.api.player.chat.ChatPosition;
-import org.mcnative.runtime.api.player.sound.Instrument;
-import org.mcnative.runtime.api.player.sound.Note;
-import org.mcnative.runtime.api.player.sound.Sound;
 import org.mcnative.runtime.api.player.sound.SoundCategory;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
@@ -173,17 +170,22 @@ public class CloudNetOnlinePlayer extends OfflineMinecraftPlayer implements Onli
     }
 
     @Override
-    public void playNote(Instrument instrument, Note note) {
+    public void playSound(String s, SoundCategory soundCategory, float v, float v1) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
+    public void stopSound() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void stopSound(Sound sound) {
+    public void stopSound(String s) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void stopSound(SoundCategory soundCategory) {
         throw new UnsupportedOperationException();
     }
 
