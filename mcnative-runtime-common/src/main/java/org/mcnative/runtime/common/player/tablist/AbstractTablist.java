@@ -27,7 +27,6 @@ import net.pretronic.libraries.utility.annonations.Internal;
 import org.mcnative.runtime.api.event.player.design.MinecraftPlayerDesignUpdateEvent;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
-import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.PlayerDesign;
 import org.mcnative.runtime.api.player.receiver.LocalReceiverChannel;
 import org.mcnative.runtime.api.player.tablist.Tablist;
