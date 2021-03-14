@@ -38,9 +38,11 @@ import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 public class MinecraftBossBarPacketCodecV1_7 implements MinecraftPacketCodec<MinecraftBossBarPacket> {
 
@@ -82,7 +84,13 @@ public class MinecraftBossBarPacketCodecV1_7 implements MinecraftPacketCodec<Min
     private void startScheduler(){
         if(runningTask != null) return;
         runningTask = McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).interval(700, TimeUnit.MILLISECONDS).execute(() -> {
-            for (LivingBar bar : bars) sendMoveInformation(bar);
+            Iterator<LivingBar> iterator = this.bars.iterator();
+            while (iterator.hasNext()){
+                LivingBar bar = iterator.next();
+                if(bar.owner.isConnected()) sendMoveInformation(bar);
+                else iterator.remove();
+            }
+            stopScheduler();
         });
     }
 
