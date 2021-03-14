@@ -53,7 +53,9 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf in, List<Object> output) {
         ByteBuf out = in.copy();
+
         int packetId = MinecraftProtocolUtil.readVarInt(in);
+        this.handleInternalPacketManipulation(packetId,in);
 
         PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,connection.getProtocolVersion(),packetId);
         if(registration != null){
@@ -81,5 +83,9 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
             }
         }
         output.add(out);
+    }
+
+    public void handleInternalPacketManipulation(int packetId,ByteBuf buffer){
+        //Unused, but can optionally be implemented
     }
 }
