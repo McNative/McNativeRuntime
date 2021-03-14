@@ -60,6 +60,8 @@ public class MinecraftProtocolRewriteEncoder extends MessageToByteEncoder<ByteBu
         PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,version,packetId);
         MinecraftProtocolUtil.writeVarInt(out,packetId);
 
+        this.handleInternalPacketManipulation(packetId,in);
+
         if(registration != null){
             Pair<Integer,MinecraftPacketCodec> data = registration.getCodecData(direction,connection.getState(),version);
 
@@ -82,5 +84,9 @@ public class MinecraftProtocolRewriteEncoder extends MessageToByteEncoder<ByteBu
             }
         }
         out.writeBytes(in);
+    }
+
+    public void handleInternalPacketManipulation(int packetId,ByteBuf buffer){
+        //Unused, but can optionally be implemented
     }
 }
