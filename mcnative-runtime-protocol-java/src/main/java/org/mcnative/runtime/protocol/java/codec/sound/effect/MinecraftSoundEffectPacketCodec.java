@@ -22,4 +22,10 @@ public class MinecraftSoundEffectPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_16_2,0x18))));
     }
 
+    public static float getVolume(float input) {
+        if (input < 0.0F) return 0.0F;
+        else if (input > 255F) return 255F;
+        return input;
+    }
+
 }

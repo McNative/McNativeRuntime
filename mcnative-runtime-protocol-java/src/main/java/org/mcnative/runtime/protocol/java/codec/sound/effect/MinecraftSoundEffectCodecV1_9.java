@@ -44,10 +44,10 @@ public class MinecraftSoundEffectCodecV1_9 implements MinecraftPacketCodec<Minec
     public void write(MinecraftSoundEffectPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         MinecraftProtocolUtil.writeString(buffer,packet.getSoundName());
         MinecraftProtocolUtil.writeVarInt(buffer,packet.getCategory().ordinal());
-        buffer.writeInt(packet.getPositionX());
-        buffer.writeInt(packet.getPositionY());
-        buffer.writeInt(packet.getPositionZ());
-        buffer.writeFloat(packet.getVolume());
+        buffer.writeInt(packet.getPositionX()*8);
+        buffer.writeInt(packet.getPositionY()*8);
+        buffer.writeInt(packet.getPositionZ()*8);
+        buffer.writeFloat(MinecraftSoundEffectPacketCodec.getVolume(packet.getVolume()));
         MinecraftProtocolUtil.writeUnsignedInt(buffer,(int)packet.getPitch());
     }
 }
