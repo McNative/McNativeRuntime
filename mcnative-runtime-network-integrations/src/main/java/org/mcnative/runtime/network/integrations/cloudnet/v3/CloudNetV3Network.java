@@ -70,7 +70,7 @@ public class CloudNetV3Network implements Network {
                 ,Wrapper.getInstance().getServiceId().getUniqueId());
         this.networkIdentifier = new NetworkIdentifier(getName(),new UUID(0,0));
         this.eventBus = new NetworkEventBus();
-        this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSReTEM,eventBus);
+        this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
 
         VariableDescriberRegistry.registerDescriber(CloudNetServer.class);
         VariableDescriberRegistry.registerDescriber(CloudNetProxy.class);
