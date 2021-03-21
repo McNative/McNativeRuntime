@@ -27,6 +27,8 @@ import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.message.language.Language;
+import net.pretronic.libraries.utility.GeneralUtil;
+import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.player.PlayerSetting;
@@ -114,6 +116,7 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
 
     @Override
     public MinecraftPlayerData createPlayerData(String name, UUID uniqueId, long xBoxId, long firstPlayed, long lastPlayed, GameProfile gameProfile) {
+        checkSameName(this,name);
         this.playerDataStorage.insert()
                 .set("UniqueId", uniqueId)
                 .set("XBoxId", xBoxId)
@@ -179,5 +182,11 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
         }
         if(result.length() > 1024) throw new IllegalArgumentException("Setting value is to big");
         return result;
+    }
+
+    protected static void checkSameName(DefaultPlayerDataProvider provider,String name){
+        provider.getPlayerDataStorage().update()
+                .set("Name",StringUtil.getRandomString(16))
+                .where("Name",name).execute();
     }
 }
