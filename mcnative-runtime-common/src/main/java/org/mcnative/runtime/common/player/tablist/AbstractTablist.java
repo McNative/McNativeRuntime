@@ -27,8 +27,8 @@ import net.pretronic.libraries.utility.annonations.Internal;
 import org.mcnative.runtime.api.event.player.design.MinecraftPlayerDesignUpdateEvent;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
-import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.PlayerDesign;
+import org.mcnative.runtime.api.player.receiver.LocalReceiverChannel;
 import org.mcnative.runtime.api.player.tablist.Tablist;
 import org.mcnative.runtime.api.player.tablist.TablistEntry;
 import org.mcnative.runtime.api.player.tablist.TablistFormatter;
@@ -45,7 +45,6 @@ import java.util.List;
 public abstract class AbstractTablist implements Tablist {
 
     private final Collection<ConnectedMinecraftPlayer> receivers;
-
     private final List<TablistEntry> entries;
 
     private TablistFormatter formatter;
@@ -84,7 +83,7 @@ public abstract class AbstractTablist implements Tablist {
     @Override
     public void addEntry(ConnectedMinecraftPlayer player, PlayerDesign design) {
         Validate.notNull(player,design);
-        addEntry(new SimpleTablistEntry(player.getName(),design));
+        addEntry(new SimpleTablistEntry(player.getName(),design,player));
     }
 
     @Override
@@ -242,11 +241,16 @@ public abstract class AbstractTablist implements Tablist {
         return stringPriority.toString();
     }
 
-    public abstract String getPlayerTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry);
+    @Override
+    public void execute(LocalReceiverChannel channel) {
+        for (ConnectedMinecraftPlayer player : channel) player.setTablist(this);
+    }
 
-    public abstract int getTablistTeamIndexAndIncrement(OnlineMinecraftPlayer receiver);
+    public abstract String getPlayerTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
 
-    public abstract String putTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry, String teamName);
+    public abstract int getTablistTeamIndexAndIncrement(ConnectedMinecraftPlayer receiver);
 
-    public abstract String removeTablistNames(OnlineMinecraftPlayer receiver, TablistEntry entry);
+    public abstract void putTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry, String teamName);
+
+    public abstract void removeTablistNames(ConnectedMinecraftPlayer receiver, TablistEntry entry);
 }

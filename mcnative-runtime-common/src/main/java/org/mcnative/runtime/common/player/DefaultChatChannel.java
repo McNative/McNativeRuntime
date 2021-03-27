@@ -23,6 +23,7 @@ package org.mcnative.runtime.common.player;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.chat.ChatChannel;
 import org.mcnative.runtime.api.player.chat.ChatFormatter;
@@ -39,7 +40,7 @@ import java.util.function.Consumer;
 public class DefaultChatChannel implements ChatChannel {
 
     private String name;
-    private Collection<OnlineMinecraftPlayer> players;
+    private Collection<ConnectedMinecraftPlayer> players;
     private ChatFormatter messageFormatter;
 
     public DefaultChatChannel() {
@@ -50,7 +51,7 @@ public class DefaultChatChannel implements ChatChannel {
         this(name,new ArrayList<>());
     }
 
-    public DefaultChatChannel(String name, Collection<OnlineMinecraftPlayer> players) {
+    public DefaultChatChannel(String name, Collection<ConnectedMinecraftPlayer> players) {
         this.name = name;
         this.players = players;
     }
@@ -67,32 +68,42 @@ public class DefaultChatChannel implements ChatChannel {
     }
 
     @Override
-    public Collection<OnlineMinecraftPlayer> getPlayers() {
+    public Collection<ConnectedMinecraftPlayer> getPlayers() {
         return players;
     }
 
     @Override
-    public void setPlayers(Collection<OnlineMinecraftPlayer> players) {
+    public void setPlayers(Collection<ConnectedMinecraftPlayer> players) {
         Validate.notNull(players);
         this.players = players;
     }
 
     @Override
-    public boolean containsPlayer(OnlineMinecraftPlayer player) {
+    public boolean containsPlayer(ConnectedMinecraftPlayer player) {
         Validate.notNull(player);
         return players.contains(player);
     }
 
     @Override
-    public void addPlayer(OnlineMinecraftPlayer player) {
+    public void addPlayer(ConnectedMinecraftPlayer player) {
         Validate.notNull(player);
         this.players.add(player);
     }
 
     @Override
-    public void removePlayer(OnlineMinecraftPlayer player) {
+    public void removePlayer(ConnectedMinecraftPlayer player) {
         Validate.notNull(player);
         this.players.remove(player);
+    }
+
+    @Override
+    public void addJoinListener(Consumer<ConnectedMinecraftPlayer> consumer) {
+        throw new UnsupportedOperationException("Currently not supported");
+    }
+
+    @Override
+    public void addLeaveListener(Consumer<ConnectedMinecraftPlayer> consumer) {
+        throw new UnsupportedOperationException("Currently not supported");
     }
 
     @Override
@@ -110,17 +121,7 @@ public class DefaultChatChannel implements ChatChannel {
     }
 
     @Override
-    public void addRemovalListener(Consumer<OnlineMinecraftPlayer> listener) {
-        throw new UnsupportedOperationException("Currently not supported");
-    }
-
-    @Override
-    public void addAdditionListener(Consumer<OnlineMinecraftPlayer> listener) {
-        throw new UnsupportedOperationException("Currently not supported");
-    }
-
-    @Override
-    public Iterator<OnlineMinecraftPlayer> iterator() {
+    public Iterator<ConnectedMinecraftPlayer> iterator() {
         return players.iterator();
     }
 
@@ -156,7 +157,7 @@ public class DefaultChatChannel implements ChatChannel {
             MessageComponent<?> output = messageFormatter.format(null,sender,variables,message);
             sendMessage(output,variables);
         }else{
-            for (OnlineMinecraftPlayer player : this.players) {
+            for (ConnectedMinecraftPlayer player : this.players) {
                 MessageComponent<?> output = messageFormatter.format(player,sender,variables,message);
                 player.sendMessage(output,variables);
             }

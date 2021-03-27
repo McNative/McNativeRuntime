@@ -106,6 +106,7 @@ public class DefaultMinecraftPlayerData implements MinecraftPlayerData {
 
     @Override
     public void updateName(String name) {
+        if(!this.name.equalsIgnoreCase(name)) DefaultPlayerDataProvider.checkSameName(provider,name);
         this.provider.getPlayerDataStorage().update()
                 .set("Name", name)
                 .where("UniqueId", uniqueId)
@@ -150,6 +151,7 @@ public class DefaultMinecraftPlayerData implements MinecraftPlayerData {
 
     @Override
     public void updateLoginInformation(String name, GameProfile profile, long timeStamp) {
+        if(!this.name.equalsIgnoreCase(name)) DefaultPlayerDataProvider.checkSameName(provider,name);
         UpdateQuery query = this.provider.getPlayerDataStorage().update()
                 .set("Name", name)
                 .set("GameProfile", profile.toJsonPart())

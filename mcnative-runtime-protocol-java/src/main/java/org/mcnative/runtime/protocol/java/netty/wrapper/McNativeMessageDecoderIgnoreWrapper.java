@@ -52,9 +52,8 @@ public class McNativeMessageDecoderIgnoreWrapper extends ChannelInboundHandlerAd
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            List<Object> out = new ArrayList<>();
-
             if(msg instanceof ByteBuf){
+                List<Object> out = new ArrayList<>();
                 DECODE_METHOD.invoke(original,ctx, msg,out);
                 for (Object o : out) {
                     ctx.fireChannelRead(o);

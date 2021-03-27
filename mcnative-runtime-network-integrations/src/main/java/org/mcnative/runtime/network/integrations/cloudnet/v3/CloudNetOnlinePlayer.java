@@ -22,6 +22,8 @@ package org.mcnative.runtime.network.integrations.cloudnet.v3;
 
 import de.dytanic.cloudnet.driver.network.HostAndPort;
 import de.dytanic.cloudnet.ext.bridge.player.ICloudPlayer;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.common.player.OfflineMinecraftPlayer;
 import org.mcnative.runtime.network.integrations.McNativePlayerExecutor;
@@ -34,9 +36,6 @@ import org.mcnative.runtime.api.player.DeviceInfo;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.player.Title;
 import org.mcnative.runtime.api.player.chat.ChatPosition;
-import org.mcnative.runtime.api.player.sound.Instrument;
-import org.mcnative.runtime.api.player.sound.Note;
-import org.mcnative.runtime.api.player.sound.Sound;
 import org.mcnative.runtime.api.player.sound.SoundCategory;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
@@ -169,26 +168,31 @@ public class CloudNetOnlinePlayer extends OfflineMinecraftPlayer implements Onli
 
     @Override
     public void sendPacket(MinecraftPacket packet) {
-        throw new UnsupportedOperationException();
+        McNativePlayerExecutor.sendPacket(player.getUniqueId(),packet);
     }
 
     @Override
-    public void playNote(Instrument instrument, Note note) {
-        throw new UnsupportedOperationException();
+    public void playSound(String sound, SoundCategory category, float volume, float pitch) {
+        McNativePlayerExecutor.playSound(player.getUniqueId(),sound,category,volume,pitch);
     }
 
     @Override
-    public void playSound(Sound sound, SoundCategory category, float volume, float pitch) {
-        throw new UnsupportedOperationException();
+    public void stopSound() {
+        McNativePlayerExecutor.stopSound(player.getUniqueId(),null,null);
     }
 
     @Override
-    public void stopSound(Sound sound) {
-        throw new UnsupportedOperationException();
+    public void stopSound(String sound) {
+        McNativePlayerExecutor.stopSound(player.getUniqueId(),sound,null);
+    }
+
+    @Override
+    public void stopSound(SoundCategory category) {
+        McNativePlayerExecutor.stopSound(player.getUniqueId(),null,category);
     }
 
     @Override
     public void stopSound(String sound, SoundCategory category) {
-        throw new UnsupportedOperationException();
+        McNativePlayerExecutor.stopSound(player.getUniqueId(),sound,category);
     }
 }

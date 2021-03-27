@@ -42,8 +42,8 @@ public abstract class AbstractPlayerManager implements PlayerManager {
     private final static CacheQuery<MinecraftPlayer> OFFLINE_PLAYER_BY_XBOX_ID = new OfflinePlayerByXBoxId();
     private final static CacheQuery<MinecraftPlayer> OFFLINE_PLAYER_BY_NAME = new OfflinePlayerByName();
 
-    private final Map<Class<?>,Function<MinecraftPlayer,?>> adapters;
-    private final Cache<MinecraftPlayer> offlineMinecraftPlayers;
+    protected final Map<Class<?>,Function<MinecraftPlayer,?>> adapters;
+    protected final Cache<MinecraftPlayer> offlineMinecraftPlayers;
 
     public AbstractPlayerManager() {
         this.adapters = new LinkedHashMap<>();

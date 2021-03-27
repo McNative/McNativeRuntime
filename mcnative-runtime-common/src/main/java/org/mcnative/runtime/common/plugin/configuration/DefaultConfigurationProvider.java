@@ -134,7 +134,8 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
     public Collection<String> getDatabaseTypes(Plugin<?> plugin) {
         Collection<String> types = Iterators.map(storageConfig.getDatabaseEntries(plugin), entry -> {
             String dialect = "";
-            DatabaseDriverConfig<?> config = storageConfig.getDriverConfig(entry.name);
+
+            DatabaseDriverConfig<?> config = storageConfig.getDriverConfig(entry.driverName);
 
             if(config instanceof SQLDatabaseDriverConfig) {
                 dialect = "-"+((SQLDatabaseDriverConfig<?>)config).getDialect().getName();

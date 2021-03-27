@@ -26,15 +26,15 @@ import net.pretronic.libraries.message.language.LanguageAble;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
-import org.mcnative.runtime.api.protocol.packet.type.CustomPayloadPacket;
+import org.mcnative.runtime.api.protocol.packet.type.MinecraftCustomPayloadPacket;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftDisconnectPacket;
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
-public class CustomPayloadPacketCodecV1_7 implements MinecraftPacketCodec<CustomPayloadPacket> {
+public class MinecraftCustomPayloadPacketCodecV1_7 implements MinecraftPacketCodec<MinecraftCustomPayloadPacket> {
 
     @Override
-    public void read(CustomPayloadPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
+    public void read(MinecraftCustomPayloadPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         packet.setChannel(MinecraftProtocolUtil.readString(buffer));
 
         byte[] bytes = new byte[buffer.readableBytes()];
@@ -43,7 +43,7 @@ public class CustomPayloadPacketCodecV1_7 implements MinecraftPacketCodec<Custom
     }
 
     @Override
-    public void write(CustomPayloadPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
+    public void write(MinecraftCustomPayloadPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         MinecraftProtocolUtil.writeString(buffer,packet.getChannel());
         buffer.writeBytes(packet.getContent());
     }

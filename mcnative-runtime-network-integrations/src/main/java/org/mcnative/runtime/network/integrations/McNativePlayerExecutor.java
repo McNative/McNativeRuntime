@@ -30,8 +30,10 @@ import org.mcnative.runtime.api.network.component.server.ServerConnectReason;
 import org.mcnative.runtime.api.network.component.server.ServerConnectResult;
 import org.mcnative.runtime.api.player.Title;
 import org.mcnative.runtime.api.player.chat.ChatPosition;
+import org.mcnative.runtime.api.player.sound.SoundCategory;
 import org.mcnative.runtime.api.protocol.MinecraftEdition;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
+import org.mcnative.runtime.api.protocol.packet.MinecraftPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 
 import java.util.UUID;
@@ -117,6 +119,29 @@ public class McNativePlayerExecutor {
 
     public static void resetTitle(UUID uniqueId) {
         executePlayerBased(uniqueId,Document.newDocument().set("action","resetTitle"));
+    }
+
+    public static void playSound(UUID uniqueId, String sound, SoundCategory category, float volume, float pitch) {
+        executePlayerBased(uniqueId,Document.newDocument()
+                .set("action","playSound")
+                .set("sound",sound)
+                .set("category",category)
+                .set("volume",volume)
+                .set("pitch",pitch));
+    }
+
+    public static void stopSound(UUID uniqueId, String sound, SoundCategory category) {
+        executePlayerBased(uniqueId,Document.newDocument()
+                .set("action","stopSound")
+                .set("sound",sound)
+                .set("category",category));
+    }
+
+    public static void sendPacket(UUID uniqueId, MinecraftPacket packet) {//@Todo optimize with byte serialization
+        executePlayerBased(uniqueId,Document.newDocument()
+                .set("action","sendPacket")
+                .set("packetClass",packet.getClass())
+                .set("packetData",Document.newDocument(packet)));
     }
 
     private static void executePlayerBased(UUID uniqueId, Document data){

@@ -20,7 +20,6 @@
 
 package org.mcnative.runtime.network.integrations.cloudnet.v3;
 
-import de.dytanic.cloudnet.common.document.gson.JsonDocument;
 import de.dytanic.cloudnet.driver.CloudNetDriver;
 import de.dytanic.cloudnet.driver.service.ServiceEnvironmentType;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
@@ -30,7 +29,6 @@ import de.dytanic.cloudnet.ext.bridge.player.IPlayerManager;
 import de.dytanic.cloudnet.ext.syncproxy.AbstractSyncProxyManagement;
 import de.dytanic.cloudnet.ext.syncproxy.configuration.SyncProxyMotd;
 import de.dytanic.cloudnet.wrapper.Wrapper;
-import de.dytanic.cloudnet.wrapper.database.IDatabase;
 import net.pretronic.libraries.command.manager.CommandManager;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.event.EventBus;
@@ -39,7 +37,6 @@ import net.pretronic.libraries.message.bml.variable.describer.VariableDescriberR
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.synchronisation.NetworkSynchronisationCallback;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
-import org.mcnative.runtime.common.network.event.NetworkEventBus;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.network.Network;
 import org.mcnative.runtime.api.network.NetworkIdentifier;
@@ -48,6 +45,7 @@ import org.mcnative.runtime.api.network.component.server.MinecraftServer;
 import org.mcnative.runtime.api.network.component.server.ProxyServer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.text.components.MessageComponent;
+import org.mcnative.runtime.common.network.event.NetworkEventBus;
 import org.mcnative.runtime.network.integrations.McNativeGlobalExecutor;
 
 import java.util.ArrayList;
@@ -70,26 +68,12 @@ public class CloudNetV3Network implements Network {
         this.localIdentifier = new NetworkIdentifier(
                 Wrapper.getInstance().getServiceId().getName()
                 ,Wrapper.getInstance().getServiceId().getUniqueId());
-        this.networkIdentifier = new NetworkIdentifier(getName(),loadId());
+        this.networkIdentifier = new NetworkIdentifier(getName(),new UUID(0,0));
         this.eventBus = new NetworkEventBus();
         this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
 
         VariableDescriberRegistry.registerDescriber(CloudNetServer.class);
         VariableDescriberRegistry.registerDescriber(CloudNetProxy.class);
-    }
-
-    private UUID loadId(){
-        IDatabase database = Wrapper.getInstance().getDatabaseProvider().getDatabase("mcnative");
-        JsonDocument document = database.get("network-identifier");
-        if(document != null){
-            UUID uniqueId = document.get("networkId",UUID.class);
-            if(uniqueId != null) return uniqueId;
-        }
-        UUID uuid = UUID.randomUUID();
-        document = JsonDocument.newDocument();
-        document.append("networkId",uuid);
-        database.insertAsync("network-identifier",document);
-        return uuid;
     }
 
     @Override
