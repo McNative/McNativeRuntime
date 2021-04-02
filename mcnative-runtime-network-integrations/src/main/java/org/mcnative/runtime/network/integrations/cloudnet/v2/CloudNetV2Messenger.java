@@ -121,7 +121,7 @@ public class CloudNetV2Messenger extends AbstractMessenger {
         if(channel0.equals(CHANNEL_NAME)){
             if(message.equals(MESSAGE_NAME_REQUEST)){
                 String sender = document.getString("sender");
-                if(sender.equals(CloudAPI.getInstance().getUniqueId().toString())) return;
+                if(sender.equals(CloudAPI.getInstance().getServiceId().getServerId())) return;
 
                 String channel = document.getString("channel");
                 boolean proxy = document.getBoolean("proxy");
@@ -158,7 +158,7 @@ public class CloudNetV2Messenger extends AbstractMessenger {
 
     private de.dytanic.cloudnet.lib.utility.document.Document createRequestData(String channel,Document request, UUID requestId){
         de.dytanic.cloudnet.lib.utility.document.Document result = new de.dytanic.cloudnet.lib.utility.document.Document();
-        result.append("sender",CloudAPI.getInstance().getServerId());
+        result.append("sender",CloudAPI.getInstance().getServiceId().getServerId());
         result.append("proxy", McNative.getInstance().getPlatform().isProxy());
         result.append("channel",channel);
         result.append("identifier",requestId.toString());
