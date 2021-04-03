@@ -197,8 +197,9 @@ public abstract class AbstractTablist implements Tablist {
     }
 
     private void sendRemoveEntry(ConnectedMinecraftPlayer receiver,TablistEntry entry){
+        String teamName = getPlayerTablistNames(receiver,entry);
         MinecraftScoreboardTeamsPacket packet = new MinecraftScoreboardTeamsPacket();
-        packet.setName("TL-"+entry.getName());
+        packet.setName(teamName);
         packet.setAction(MinecraftScoreboardTeamsPacket.Action.DELETE);
         receiver.sendPacket(packet);
         removeTablistNames(receiver,entry);
