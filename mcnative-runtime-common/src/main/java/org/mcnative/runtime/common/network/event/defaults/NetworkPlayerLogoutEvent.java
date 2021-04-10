@@ -20,10 +20,13 @@
 
 package org.mcnative.runtime.common.network.event.defaults;
 
+import net.pretronic.libraries.event.network.NetworkEvent;
+import net.pretronic.libraries.event.network.NetworkEventType;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerLogoutEvent;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+@NetworkEvent(ignoreNetworkException = true,type = NetworkEventType.SELF_MANAGED)
 public class NetworkPlayerLogoutEvent implements MinecraftPlayerLogoutEvent {
 
     private final OnlineMinecraftPlayer player;

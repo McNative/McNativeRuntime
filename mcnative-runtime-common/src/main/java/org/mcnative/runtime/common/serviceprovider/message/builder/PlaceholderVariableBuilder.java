@@ -30,6 +30,7 @@ import org.mcnative.runtime.api.text.context.TextBuildType;
 public class PlaceholderVariableBuilder implements BasicMessageBuilder {
 
     private final static String VARIABLE_NOT_FOUND = "{PLACEHOLDER NOT FOUND}";
+    private final static String PLAYER_NOT_AVAILABLE = "{PLAYER NOT AVAILABLE}";
 
     @Override
     public Object build(BuildContext context,boolean requiresString, Object[] parameters, Object next) {
@@ -42,7 +43,7 @@ public class PlaceholderVariableBuilder implements BasicMessageBuilder {
                 if(minecraftContext.getPlayer() != null){
                     String value = provider.translate(minecraftContext.getPlayer(),(String)parameters[0]);
                     if(value != null) result = value;
-                }
+                }else result = PLAYER_NOT_AVAILABLE;
             }
         }
 

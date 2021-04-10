@@ -20,11 +20,14 @@
 
 package org.mcnative.runtime.common.network.event.defaults;
 
+import net.pretronic.libraries.event.network.NetworkEvent;
+import net.pretronic.libraries.event.network.NetworkEventType;
 import org.mcnative.runtime.api.event.server.MinecraftPlayerServerSwitchEvent;
 import org.mcnative.runtime.api.network.component.server.MinecraftServer;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 
+@NetworkEvent(ignoreNetworkException = true,type = NetworkEventType.SELF_MANAGED)
 public class NetworkPlayerServerSwitchEvent implements MinecraftPlayerServerSwitchEvent {
 
     private final OnlineMinecraftPlayer player;

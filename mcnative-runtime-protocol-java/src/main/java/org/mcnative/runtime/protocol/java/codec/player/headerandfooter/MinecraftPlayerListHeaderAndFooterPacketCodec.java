@@ -12,7 +12,7 @@ public class MinecraftPlayerListHeaderAndFooterPacketCodec {
     public static void register(PacketManager manager){
         manager.registerPacket(create(MinecraftPlayerListHeaderAndFooterPacket.class
                 ,on(PacketDirection.OUTGOING
-                        ,map(MinecraftProtocolVersion.JE_1_8,0x47,new MinecraftPlayerListHeaderAndFooterPV1_8())
+                        ,map(MinecraftProtocolVersion.JE_1_8,0x47,new MinecraftPlayerListHeaderAndFooterPacketV1_8())
                         ,map(MinecraftProtocolVersion.JE_1_9,0x48)
                         ,map(MinecraftProtocolVersion.JE_1_12,0x49)
                         ,map(MinecraftProtocolVersion.JE_1_12_1,0x4A)
