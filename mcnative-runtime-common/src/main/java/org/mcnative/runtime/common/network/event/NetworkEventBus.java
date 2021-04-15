@@ -120,7 +120,9 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
             }
             super.callEventsAsync(origin,executionClass,null,event);
         }catch (ReflectException exception){
-            exception.printStackTrace();
+            if(!(exception.getCause() instanceof ClassNotFoundException)){
+                exception.printStackTrace();
+            }
         }
     }
 
