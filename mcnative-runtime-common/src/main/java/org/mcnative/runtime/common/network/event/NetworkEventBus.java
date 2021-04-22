@@ -50,7 +50,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
                     Class<?> eventClass = method.getParameterTypes()[0];
                     Class<?> mappedClass = getMappedClass(eventClass);
                     if (mappedClass == null) mappedClass = eventClass;
-                    addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(),info.execution(), listener, eventClass, method,info.onlyLocal(),info.onlyRemote()));
+                    addExecutor(mappedClass, new MethodEventExecutor(owner, info.priority(),info.execution(), listener, eventClass, method,info.onlyRemote(),info.onlyLocal()));
                 }
             } catch (Exception var11) {
                 throw new IllegalArgumentException("Could not register listener " + listener, var11);
