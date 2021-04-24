@@ -19,12 +19,14 @@
 
 package org.mcnative.runtime.common.plugin.configuration;
 
+import com.zaxxer.hikari.HikariConfig;
 import net.pretronic.databasequery.api.Database;
 import net.pretronic.databasequery.api.driver.DatabaseDriver;
 import net.pretronic.databasequery.api.driver.DatabaseDriverFactory;
 import net.pretronic.databasequery.api.driver.config.DatabaseDriverConfig;
 import net.pretronic.databasequery.sql.driver.SQLDatabaseDriver;
 import net.pretronic.databasequery.sql.driver.config.SQLDatabaseDriverConfig;
+import net.pretronic.libraries.logging.bridge.slf4j.SLF4JStaticBridge;
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.Iterators;
@@ -34,6 +36,7 @@ import net.pretronic.libraries.utility.interfaces.ObjectOwner;
 import net.pretronic.libraries.utility.interfaces.ShutdownAble;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveHashMap;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveMap;
+import net.pretronic.libraries.utility.reflect.ReflectionUtil;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.plugin.configuration.Configuration;
 import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
@@ -48,8 +51,25 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
 
     public DefaultConfigurationProvider() {
         this.databaseDrivers = new CaseIntensiveHashMap<>();
+
+        setFallbackSLF4JLogger();
+
         this.storageConfig = new StorageConfig(this,getConfiguration(McNative.getInstance(), "storage"));
         storageConfig.load();
+    }
+
+    private void setFallbackSLF4JLogger() {
+        boolean isSet = ReflectionUtil.getFieldValue(HikariConfig.class, "LOGGER") != null;
+
+        if(!isSet) {
+            McNative.getInstance().getLogger().info("No SLF4J Logger is set");
+            McNative.getInstance().getLogger().info("Trying to set fallback Pretronic SLF4J Logger");
+            try {
+                SLF4JStaticBridge.setLogger(McNative.getInstance().getLogger());
+            } catch (IllegalArgumentException ignored) {
+                McNative.getInstance().getLogger().error("Error while setting Pretronic SLF4J Logger");
+            }
+        }
     }
 
     @Override

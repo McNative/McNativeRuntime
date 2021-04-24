@@ -40,7 +40,7 @@ public class MinecraftScoreboardTeamPacketCodecV1_9 implements MinecraftPacketCo
     @Override
     public void write(MinecraftScoreboardTeamsPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){
-            MinecraftProtocolUtil.writeString(buffer,packet.getName());
+            MinecraftProtocolUtil.writeString(buffer,MinecraftScoreboardTeamPacketCodec.substringName(packet.getName()));
 
             buffer.writeByte(packet.getAction().ordinal());
 

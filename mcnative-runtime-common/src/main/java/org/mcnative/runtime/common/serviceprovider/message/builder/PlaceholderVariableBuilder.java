@@ -26,23 +26,25 @@ import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderProvider;
 import org.mcnative.runtime.api.text.context.MinecraftTextBuildContext;
 import org.mcnative.runtime.api.text.context.TextBuildType;
+import org.mcnative.runtime.api.text.format.ColoredString;
 
 public class PlaceholderVariableBuilder implements BasicMessageBuilder {
 
     private final static String VARIABLE_NOT_FOUND = "{PLACEHOLDER NOT FOUND}";
+    private final static String PLAYER_NOT_AVAILABLE = "{PLAYER NOT AVAILABLE}";
 
     @Override
     public Object build(BuildContext context,boolean requiresString, Object[] parameters, Object next) {
         PlaceholderProvider provider = McNative.getInstance().getRegistry().getServiceOrDefault(PlaceholderProvider.class);
-        String result = VARIABLE_NOT_FOUND;
+        Object result = VARIABLE_NOT_FOUND;
 
         if(provider != null && parameters.length == 1){
             if(context instanceof MinecraftTextBuildContext){
                 MinecraftTextBuildContext minecraftContext = (MinecraftTextBuildContext) context;
                 if(minecraftContext.getPlayer() != null){
                     String value = provider.translate(minecraftContext.getPlayer(),(String)parameters[0]);
-                    if(value != null) result = value;
-                }
+                    if(value != null) result = new ColoredString(value);
+                }else result = PLAYER_NOT_AVAILABLE;
             }
         }
 

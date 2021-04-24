@@ -27,4 +27,9 @@ public class MinecraftScoreboardTeamPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_15,0x4C))));
     }
 
+    protected static String substringName(String name){
+        if(name.length() > 16) return name.substring(0,16);
+        return name;
+    }
+
 }

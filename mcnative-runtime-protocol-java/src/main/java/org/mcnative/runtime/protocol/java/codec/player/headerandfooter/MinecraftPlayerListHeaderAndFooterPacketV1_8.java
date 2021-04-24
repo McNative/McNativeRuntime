@@ -31,7 +31,7 @@ import org.mcnative.runtime.api.protocol.packet.type.player.MinecraftPlayerListH
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
-public class MinecraftPlayerListHeaderAndFooterPV1_8 implements MinecraftPacketCodec<MinecraftPlayerListHeaderAndFooterPacket> {
+public class MinecraftPlayerListHeaderAndFooterPacketV1_8 implements MinecraftPacketCodec<MinecraftPlayerListHeaderAndFooterPacket> {
 
     private static final String REMOVE_CONTENT = "{\"translate\":\"\"}";
 
@@ -42,8 +42,10 @@ public class MinecraftPlayerListHeaderAndFooterPV1_8 implements MinecraftPacketC
 
     @Override
     public void write(MinecraftPlayerListHeaderAndFooterPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
-        String header = packet.getHeader() == null ? REMOVE_CONTENT : packet.getHeader().compileToString(connection.getProtocolVersion(),packet.getHeaderVariables());
-        String footer = packet.getFooter() == null ? REMOVE_CONTENT : packet.getFooter().compileToString(connection.getProtocolVersion(),packet.getFooterVariables());
+        Language language = connection instanceof LanguageAble ? ((LanguageAble) connection).getLanguage() : null;
+
+        String header = packet.getHeader() == null ? REMOVE_CONTENT : packet.getHeader().compileToString(connection,packet.getHeaderVariables(),language);
+        String footer = packet.getFooter() == null ? REMOVE_CONTENT : packet.getFooter().compileToString(connection,packet.getFooterVariables(),language);
 
         MinecraftProtocolUtil.writeString(buffer, header);
         MinecraftProtocolUtil.writeString(buffer, footer);
