@@ -5,7 +5,7 @@
     <parent>
         <artifactId>McNativeRuntime</artifactId>
         <groupId>org.mcnative.runtime</groupId>
-        <version>1.13.0.109-SNAPSHOT</version>
+        <version>1.13.2.111-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,13 +28,6 @@
             <groupId>org.mcnative.runtime.api</groupId>
             <artifactId>mcnative-runtime-api</artifactId>
             <version>${dependency.mcnative.api}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.pretronic.libraries</groupId>
-            <artifactId>pretroniclibraries-resourceloader</artifactId>
-            <version>${dependency.pretronic.libraries}</version>
             <scope>compile</scope>
         </dependency>
 
