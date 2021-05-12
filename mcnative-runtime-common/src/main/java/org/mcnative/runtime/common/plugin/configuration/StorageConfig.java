@@ -24,6 +24,7 @@ import net.pretronic.databasequery.api.driver.config.DatabaseDriverConfig;
 import net.pretronic.databasequery.driverloader.PretronicDependencyDriverLoader;
 import net.pretronic.databasequery.sql.dialect.Dialect;
 import net.pretronic.databasequery.sql.driver.config.SQLDatabaseDriverConfigBuilder;
+import net.pretronic.libraries.dependency.DependencyGroup;
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.utility.Iterators;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
@@ -50,7 +51,7 @@ public class StorageConfig {
         DatabaseDriverConfig.registerDocumentAdapter();
         DatabaseDriverFactory.setDriverLoader(new PretronicDependencyDriverLoader());
         PretronicDependencyDriverLoader.setDependencyManager(McNative.getInstance().getDependencyManager());
-        PretronicDependencyDriverLoader.setClassLoader(dependencyGroup -> dependencyGroup.loadReflected((URLClassLoader) StorageConfig.class.getClassLoader()));
+        PretronicDependencyDriverLoader.setClassLoader(DependencyGroup::load);
         PretronicDependencyDriverLoader.registerDefaults();
     }
 

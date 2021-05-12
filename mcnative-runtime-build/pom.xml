@@ -31,13 +31,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>net.pretronic.libraries</groupId>
-            <artifactId>pretroniclibraries-resourceloader</artifactId>
-            <version>${dependency.pretronic.libraries}</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- External project dependencies -->
         <dependency>
             <groupId>net.md-5</groupId>
