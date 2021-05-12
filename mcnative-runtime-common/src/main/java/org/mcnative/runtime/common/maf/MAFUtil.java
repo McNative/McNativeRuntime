@@ -60,12 +60,14 @@ public class MAFUtil {
         ServerInfoAction.Plugin[] pluginInfo = new ServerInfoAction.Plugin[plugins.size()];
         int index = 0;
         for (Plugin<?> plugin : plugins) {
-            System.out.println("PluginId for " + plugin.getName() + ":" + plugin.getDescription().getId().toString());
+            String id = plugin.getDescription().getId() == null ? "none" : plugin.getDescription().getId().toString();
+            System.out.println("PluginId for " + plugin.getName() + ":" + id);
             pluginInfo[index] = new ServerInfoAction.Plugin(plugin.getDescription().getId()
                     ,plugin.getDescription().getName()
                     ,plugin.getDescription().getVersion().getName());
             index++;
         }
+
 
         Collection<String> drivers = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class).getDatabaseTypes();
         client.sendAction(new ServerInfoAction(pluginInfo,drivers.toArray(new String[]{})));
