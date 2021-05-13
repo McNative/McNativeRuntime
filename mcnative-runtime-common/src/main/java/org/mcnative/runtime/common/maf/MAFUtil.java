@@ -60,7 +60,6 @@ public class MAFUtil {
         ServerInfoAction.Plugin[] pluginInfo = new ServerInfoAction.Plugin[plugins.size()];
         int index = 0;
         for (Plugin<?> plugin : plugins) {
-            System.out.println("PluginId for " + plugin.getName() + ":" + plugin.getDescription().getId().toString());
             pluginInfo[index] = new ServerInfoAction.Plugin(plugin.getDescription().getId()
                     ,plugin.getDescription().getName()
                     ,plugin.getDescription().getVersion().getName());
