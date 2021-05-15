@@ -223,7 +223,7 @@ public class OfflineMinecraftPlayer implements MinecraftPlayer {
     public PermissionHandler getPermissionHandler() {
         if(permissionHandler == null){
             permissionHandler = McNative.getInstance().getRegistry().getService(PermissionProvider.class).getPlayerHandler(this);
-            permissionHandler.onHandlerInitialized();
+            if(permissionHandler != null) permissionHandler.onHandlerInitialized();
         }else if(!permissionHandler.isCached()){
             permissionHandler = permissionHandler.reload();
         }
