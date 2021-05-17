@@ -74,7 +74,10 @@ public class FileConfiguration extends WrappedDocument implements Configuration 
 
     public void load(){
         if(!file.exists()) setOriginal(Document.newDocument());
-        else setOriginal(FILE_TYPE.getReader().read(file, StandardCharsets.UTF_8));
+        else {
+            Document document = FILE_TYPE.getReader().read(file, StandardCharsets.UTF_8);
+            setOriginal(document);
+        }
     }
 
     @Override
