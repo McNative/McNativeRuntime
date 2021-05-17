@@ -27,6 +27,7 @@ import net.pretronic.databasequery.api.datatype.DataType;
 import net.pretronic.databasequery.api.driver.DatabaseDriver;
 import net.pretronic.databasequery.api.driver.DatabaseDriverFactory;
 import net.pretronic.databasequery.api.driver.config.DatabaseDriverConfig;
+import net.pretronic.databasequery.api.exceptions.DatabaseQueryExecuteFailedException;
 import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.databasequery.sql.driver.SQLDatabaseDriver;
 import net.pretronic.databasequery.sql.driver.config.SQLDatabaseDriverConfig;
@@ -50,12 +51,14 @@ import org.mcnative.runtime.api.plugin.configuration.Configuration;
 import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
 
 import java.io.File;
+import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.*;
 
 public class DefaultConfigurationProvider implements ConfigurationProvider, ShutdownAble {
 
     private final CaseIntensiveMap<DatabaseDriver> databaseDrivers;
-    private StorageConfig storageConfig;
+    private final StorageConfig storageConfig;
     private final DatabaseCollection settings;
 
     public DefaultConfigurationProvider() {
@@ -66,10 +69,17 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
         this.storageConfig = new StorageConfig(this,getConfiguration(McNative.getInstance(), "storage"));
         storageConfig.load();
 
+        DatabaseCollection settings = createSettingsCollection();
 
+        if(migratePlayerSettings(settings)) {
+            settings = createSettingsCollection();
+        }
 
-        this.settings = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class)
-                .getDatabase(McNative.getInstance()).createCollection("mcnative_settings")
+        this.settings = settings;
+    }
+
+    private DatabaseCollection createSettingsCollection() {
+        return getDatabase(McNative.getInstance()).createCollection("mcnative_settings")
                 .field("Id", DataType.INTEGER, FieldOption.PRIMARY_KEY, FieldOption.INDEX,FieldOption.AUTO_INCREMENT)
                 .field("Owner", DataType.STRING,32, FieldOption.NOT_NULL)
                 .field("Key", DataType.STRING,64, FieldOption.NOT_NULL)
@@ -77,12 +87,21 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
                 .field("Created", DataType.LONG, FieldOption.NOT_NULL)
                 .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
                 .create();
-
-        migratePlayerSettings();
     }
 
-    private void migratePlayerSettings() {
-        this.settings.find().get("Player").execute();
+    private boolean migratePlayerSettings(DatabaseCollection settings) {
+        try {
+            settings.find().get("Player").execute();
+            McNative.getInstance().getLogger().info("Migrating old player settings");
+            settings.drop();
+            return true;
+        } catch (DatabaseQueryExecuteFailedException exception) {
+            if(!(exception.getCause() instanceof SQLSyntaxErrorException) && !exception.getCause().getMessage().contains("Player")) {
+                throw new RuntimeException(exception);
+            } else {
+                return false;
+            }
+        }
     }
 
     private void setFallbackSLF4JLogger() {
