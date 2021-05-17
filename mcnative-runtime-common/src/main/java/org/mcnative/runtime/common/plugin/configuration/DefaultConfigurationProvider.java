@@ -66,7 +66,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
         this.storageConfig = new StorageConfig(this,getConfiguration(McNative.getInstance(), "storage"));
         storageConfig.load();
 
-        migratePlayerSettings();
+
 
         this.settings = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class)
                 .getDatabase(McNative.getInstance()).createCollection("mcnative_settings")
@@ -77,6 +77,8 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
                 .field("Created", DataType.LONG, FieldOption.NOT_NULL)
                 .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
                 .create();
+
+        migratePlayerSettings();
     }
 
     private void migratePlayerSettings() {
