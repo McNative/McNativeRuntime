@@ -26,7 +26,7 @@
     <groupId>org.mcnative.runtime</groupId>
     <artifactId>McNativeRuntime</artifactId>
     <packaging>pom</packaging>
-    <version>1.13.7.117-SNAPSHOT</version>
+    <version>1.13.8.118-SNAPSHOT</version>
 
     <distributionManagement>
         <repository>
