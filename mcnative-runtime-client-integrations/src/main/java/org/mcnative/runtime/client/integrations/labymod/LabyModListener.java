@@ -19,6 +19,7 @@ public class LabyModListener implements CustomPluginMessageListener {
         Document document = DocumentFileType.JSON.getReader().read(json);
 
         if(key.equalsIgnoreCase("info")) {
+            if(player.getCustomClient() != null) return;
             String version = document.getString("version");
             player.setCustomClient(new DefaultLabyModClient(player,version));
         }else if(key.equalsIgnoreCase("discord_rpc")) {

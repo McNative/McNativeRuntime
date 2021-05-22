@@ -44,7 +44,7 @@ public class DefaultLabyModClient implements LabyModClient {
     @Override
     public void sendServerBanner(String url) {
         Document data = Document.newDocument();
-        data.set("server_banner",url);
+        data.set("url",url);
         sendLabyModData("server_banner",data);
     }
 
