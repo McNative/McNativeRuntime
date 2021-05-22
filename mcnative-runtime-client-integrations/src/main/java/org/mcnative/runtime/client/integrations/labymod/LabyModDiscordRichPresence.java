@@ -15,7 +15,7 @@ public class LabyModDiscordRichPresence implements DiscordRichPresence {
     }
 
     @Override
-    public void sendMatchSecrets(String secret, String domain) {
+    public void sendMatchSecrets(String domain, String secret) {
         Document data = Document.newDocument();
         data.set("hasMatchSecret",true);
         data.set("matchSecret",secret+":"+domain);
@@ -23,7 +23,7 @@ public class LabyModDiscordRichPresence implements DiscordRichPresence {
     }
 
     @Override
-    public void sendSpectateSecret(String secret, String domain) {
+    public void sendSpectateSecret(String domain, String secret) {
         Document data = Document.newDocument();
         data.set("hasSpectateSecret",true);
         data.set("spectateSecret",secret+":"+domain);
@@ -31,7 +31,7 @@ public class LabyModDiscordRichPresence implements DiscordRichPresence {
     }
 
     @Override
-    public void sendJoinSecret(String secret, String domain) {
+    public void sendJoinSecret(String domain, String secret) {
         Document data = Document.newDocument();
         data.set("hasJoinSecret",true);
         data.set("joinSecret",secret+":"+domain);
