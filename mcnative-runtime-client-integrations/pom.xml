@@ -9,12 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mcnative-runtime-protocol-java</artifactId>
+    <artifactId>mcnative-runtime-client-integrations</artifactId>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.compiler.version}</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -37,6 +39,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
 
 </project>
