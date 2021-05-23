@@ -104,11 +104,12 @@ public class DefaultLabyModClient implements LabyModClient {
         subtitle.set("size",size);
 
         if(player.getConnection().getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_16)){
-            data.set("raw_json_text",messageComponent.compileToString(player, VariableSet.createEmpty(),player.getLanguage()));
+            data.set("raw_json_text",messageComponent.compileToString(player,variableSet,player.getLanguage()));
         }else{
-            data.set("value",messageComponent.compileToString(player,MinecraftProtocolVersion.JE_1_7, VariableSet.createEmpty(),player.getLanguage()));
+            data.set("value",messageComponent.compileToString(player,MinecraftProtocolVersion.JE_1_7, variableSet,player.getLanguage()));
         }
 
+        data.addEntry(subtitle);
         sendLabyModData("account_subtitle",data);
     }
 
