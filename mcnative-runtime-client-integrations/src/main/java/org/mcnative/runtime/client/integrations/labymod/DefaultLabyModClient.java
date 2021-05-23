@@ -1,8 +1,10 @@
 package org.mcnative.runtime.client.integrations.labymod;
 
 import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
+import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.client.DiscordRichPresence;
 import org.mcnative.runtime.api.player.client.LabyModClient;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
@@ -96,17 +98,30 @@ public class DefaultLabyModClient implements LabyModClient {
     }
 
     @Override
-    public void sendSubtitle(UUID uuid, double size, MessageComponent<?> messageComponent, VariableSet variableSet) {
+    public void sendSubtitle(ConnectedMinecraftPlayer target, double size, String text) {
         Document data = Document.factory().newArrayEntry("root");
 
         Document subtitle = Document.newDocument();
-        subtitle.set("uuid",uuid.toString());
+        subtitle.set("uuid",target.getUniqueId().toString());
+        subtitle.set("size",size);
+        subtitle.set("value",text);
+
+        data.addEntry(subtitle);
+        sendLabyModData("account_subtitle",data);
+    }
+
+    @Override
+    public void sendSubtitle(ConnectedMinecraftPlayer target, double size, MessageComponent<?> component, VariableSet variables) {
+        Document data = Document.factory().newArrayEntry("root");
+
+        Document subtitle = Document.newDocument();
+        subtitle.set("uuid",target.getUniqueId().toString());
         subtitle.set("size",size);
 
         if(player.getConnection().getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_16)){
-            subtitle.set("raw_json_text",messageComponent.compileToString(player,variableSet,player.getLanguage()));
+            subtitle.set("raw_json_text",component.compileToString(target, variables, player.getLanguage()));
         }else{
-            subtitle.set("value",messageComponent.compileToString(player,MinecraftProtocolVersion.JE_1_7, variableSet,player.getLanguage()));
+            subtitle.set("value",component.compileToString(target, MinecraftProtocolVersion.JE_1_7, variables, player.getLanguage()));
         }
 
         data.addEntry(subtitle);
