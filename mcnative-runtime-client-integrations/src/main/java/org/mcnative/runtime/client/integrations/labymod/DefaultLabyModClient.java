@@ -83,7 +83,7 @@ public class DefaultLabyModClient implements LabyModClient {
     }
 
     @Override
-    public void sendSubtitle(UUID uuid, int size, String text) {
+    public void sendSubtitle(UUID uuid, double size, String text) {
         Document data = Document.factory().newArrayEntry("root");
 
         Document subtitle = Document.newDocument();
@@ -95,7 +95,7 @@ public class DefaultLabyModClient implements LabyModClient {
     }
 
     @Override
-    public void sendSubtitle(UUID uuid, int size, MessageComponent<?> messageComponent) {
+    public void sendSubtitle(UUID uuid, double size, MessageComponent<?> messageComponent, VariableSet variableSet) {
         Document data = Document.factory().newArrayEntry("root");
 
         Document subtitle = Document.newDocument();
