@@ -87,6 +87,7 @@ public class DefaultLabyModClient implements LabyModClient {
         Document data = Document.factory().newArrayEntry("root");
 
         Document subtitle = Document.newDocument();
+        subtitle.set("uuid",uuid.toString());
         subtitle.set("size",size);
         data.set("value",text);
 
@@ -99,9 +100,10 @@ public class DefaultLabyModClient implements LabyModClient {
         Document data = Document.factory().newArrayEntry("root");
 
         Document subtitle = Document.newDocument();
+        subtitle.set("uuid",uuid.toString());
         subtitle.set("size",size);
 
-        if(player.getConnection().getProtocolVersion().isNewer(MinecraftProtocolVersion.JE_1_16)){
+        if(player.getConnection().getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_16)){
             data.set("raw_json_text",messageComponent.compileToString(player, VariableSet.createEmpty(),player.getLanguage()));
         }else{
             data.set("value",messageComponent.compileToString(player,MinecraftProtocolVersion.JE_1_7, VariableSet.createEmpty(),player.getLanguage()));
