@@ -7,7 +7,9 @@ public class ClientIntegration {
 
     public static void register(){
         LabyModListener listener = new LabyModListener();
-        McNative.getInstance().getLocal().registerCustomPluginMessageListener(McNative.getInstance(),"LMC",listener);
         McNative.getInstance().getLocal().registerCustomPluginMessageListener(McNative.getInstance(),"labymod3:main",listener);
+        try {
+            McNative.getInstance().getLocal().registerCustomPluginMessageListener(McNative.getInstance(),"LMC",listener);
+        }catch (IllegalArgumentException ignored){}
     }
 }
