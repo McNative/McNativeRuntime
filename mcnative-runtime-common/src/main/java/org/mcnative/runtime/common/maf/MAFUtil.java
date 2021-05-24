@@ -13,6 +13,7 @@ import org.mcnative.runtime.api.ServerPerformance;
 import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class MAFUtil {
@@ -70,12 +71,16 @@ public class MAFUtil {
         client.sendAction(new ServerInfoAction(pluginInfo,drivers.toArray(new String[]{})));
     }
 
-    protected static  void sendStatusAction(MAFClient client) {
+    protected static void sendStatusAction(MAFClient client) {
         if(!client.getConnection().isConnected()) return;
         ServerPerformance performance = McNative.getInstance().getLocal().getServerPerformance();
+        float[] tps = performance.getRecentTps();
+        if(tps.length > 3) {
+            tps = Arrays.copyOfRange(tps, tps.length-3, tps.length);
+        }
 
         ServerStatusAction action = new ServerStatusAction(McNative.getInstance().getLocal().getMaxPlayerCount(),
-                performance.getRecentTps(),
+                tps,
                 performance.getUsedMemory(),
                 performance.getCpuUsage());
         client.sendAction(action);
