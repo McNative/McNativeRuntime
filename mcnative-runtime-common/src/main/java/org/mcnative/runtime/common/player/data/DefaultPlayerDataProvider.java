@@ -63,7 +63,7 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
                 .field("PlayerId", DataType.UUID, FieldOption.INDEX, FieldOption.INDEX, FieldOption.NOT_NULL)
                 .field("Owner", DataType.STRING,32, FieldOption.NOT_NULL)
                 .field("Key", DataType.STRING,64, FieldOption.NOT_NULL)
-                .field("Value", DataType.STRING, 1024, FieldOption.NOT_NULL)
+                .field("Value", DataType.LONG_TEXT, 1024, FieldOption.NOT_NULL)
                 .field("Created", DataType.LONG, FieldOption.NOT_NULL)
                 .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
                 .create();
@@ -188,7 +188,6 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
             if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
             else result = value.toString();
         }
-        if(result.length() > 1024) throw new IllegalArgumentException("Setting value is to big");
         return result;
     }
 
