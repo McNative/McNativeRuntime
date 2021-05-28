@@ -33,9 +33,7 @@ public class ActionTextBuilder implements MessageBuilder {
 
     @Override
     public Object build(BuildContext context, boolean requiresUnformatted, String name, Module leftOperator0, String operation, Module rightOperator0, Module[] parameters0, Module extension0, Module next0) {
-        if(requiresUnformatted){
-            throw new IllegalArgumentException("Action component can not be used in inner context");
-        }
+        if(requiresUnformatted) throw new IllegalArgumentException("Action component can not be used in inner context");
 
         Object[] parameters = new Object[parameters0.length];
         int index = 0;
@@ -51,10 +49,14 @@ public class ActionTextBuilder implements MessageBuilder {
         if(context instanceof MinecraftTextBuildContext){
             MinecraftTextBuildContext minecraftContext = (MinecraftTextBuildContext) context;
             if(minecraftContext.getType() == TextBuildType.COMPILE){
-                return buildCompileActionText(minecraftContext,parameters, next, extension);
+                return buildCompileActionText(parameters, next, extension);
             }
         }
 
+        return buildPlainActionText(parameters, next, extension);
+    }
+
+    private Object buildPlainActionText(Object[] parameters, Object next, Object extension) {
         StringBuilder builder = new StringBuilder();
         String text = parameters[0].toString();
         builder.append(TextBuildUtil.buildLegacyText(new ColoredString(text),null));
@@ -71,7 +73,7 @@ public class ActionTextBuilder implements MessageBuilder {
         return builder.toString();
     }
 
-    private Object buildCompileActionText(MinecraftTextBuildContext context, Object[] parameters, Object next, Object extension) {
+    private Object buildCompileActionText(Object[] parameters, Object next, Object extension) {
         Document result = Document.newDocument();
         result.add("text","");
 
