@@ -49,6 +49,7 @@ import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.plugin.configuration.Configuration;
 import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
+import org.mcnative.runtime.common.event.service.DefaultPluginSettingUpdateEvent;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -169,6 +170,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
                 .set("Updated", setting.getUpdated())
                 .where("Id",setting.getId())
                 .execute();
+        McNative.getInstance().getLocal().getEventBus().callEvent(new DefaultPluginSettingUpdateEvent(setting.getOwner(),setting.getValue(),setting));
     }
 
     @Override
