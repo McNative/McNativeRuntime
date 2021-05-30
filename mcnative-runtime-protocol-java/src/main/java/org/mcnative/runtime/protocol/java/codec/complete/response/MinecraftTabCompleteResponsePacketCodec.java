@@ -11,7 +11,7 @@ public class MinecraftTabCompleteResponsePacketCodec {
 
     public static void register(PacketManager manager){
         manager.registerPacket(create(MinecraftPlayerTabCompleteResponsePacket.class
-                ,on(PacketDirection.INCOMING
+                ,on(PacketDirection.OUTGOING
                         ,map(MinecraftProtocolVersion.JE_1_7,0x3A,new MinecraftTabCompleteResponsePacketCodecV1_7())
                         ,map(MinecraftProtocolVersion.JE_1_9,0x0E)
                         ,map(MinecraftProtocolVersion.JE_1_13,0x10,new MinecraftTabCompleteResponsePacketCodecV1_13())

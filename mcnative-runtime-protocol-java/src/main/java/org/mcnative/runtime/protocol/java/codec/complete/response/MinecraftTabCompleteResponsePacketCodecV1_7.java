@@ -23,12 +23,10 @@ import io.netty.buffer.ByteBuf;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
-import org.mcnative.runtime.api.protocol.packet.type.player.complete.MinecraftPlayerTabCompletePacket;
 import org.mcnative.runtime.api.protocol.packet.type.player.complete.MinecraftPlayerTabCompleteResponsePacket;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MinecraftTabCompleteResponsePacketCodecV1_7 implements MinecraftPacketCodec<MinecraftPlayerTabCompleteResponsePacket> {
 

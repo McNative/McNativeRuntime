@@ -20,6 +20,7 @@
 package org.mcnative.runtime.protocol.java.netty.rewrite;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.pretronic.libraries.utility.map.Pair;
@@ -72,7 +73,8 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
                     if(event.isCancelled()) return;
                     else if(event.isRewrite()){
                         packet = event.getPacket();
-                        out.clear();
+                        out.release();
+                        out = Unpooled.buffer();
                         MinecraftProtocolUtil.writeVarInt(out,packetId);
                         codec.write(packet,connection,direction,in);
                     }
