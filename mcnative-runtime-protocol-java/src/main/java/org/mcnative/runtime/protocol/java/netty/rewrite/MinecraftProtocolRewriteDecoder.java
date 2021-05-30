@@ -56,7 +56,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
         ByteBuf out = in.copy();
 
         int packetId = MinecraftProtocolUtil.readVarInt(in);
-        this.handleInternalPacketManipulation(packetId,in);
+        this.handleInternalPacketManipulation(connection,packetId,in);
 
         PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,connection.getProtocolVersion(),packetId);
         if(registration != null){
@@ -86,7 +86,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
         output.add(out);
     }
 
-    public void handleInternalPacketManipulation(int packetId,ByteBuf buffer){
+    public void handleInternalPacketManipulation(MinecraftConnection connection,int packetId,ByteBuf buffer){
         //Unused, but can optionally be implemented
     }
 }
