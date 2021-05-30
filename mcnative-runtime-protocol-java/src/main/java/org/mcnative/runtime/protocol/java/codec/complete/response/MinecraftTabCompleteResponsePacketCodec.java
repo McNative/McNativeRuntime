@@ -16,7 +16,8 @@ public class MinecraftTabCompleteResponsePacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_13,0x10,new MinecraftTabCompleteResponsePacketCodecV1_13())
                         ,map(MinecraftProtocolVersion.JE_1_15,0x11)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x10)
-                        ,map(MinecraftProtocolVersion.JE_1_16_2,0x0F))));
+                        ,map(MinecraftProtocolVersion.JE_1_16_2,0x0F)
+                        ,map(MinecraftProtocolVersion.JE_1_16_4,0x0F))));
     }
 
 }
