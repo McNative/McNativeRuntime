@@ -31,7 +31,7 @@ public class MinecraftTabCompleteRequestPacketCodecV1_13 implements MinecraftPac
     @Override
     public void read(MinecraftPlayerTabCompletePacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.INCOMING){
-            packet.setTransactionId(buffer.readInt());
+            packet.setTransactionId(MinecraftProtocolUtil.readVarInt(buffer));
             packet.setCursor(MinecraftProtocolUtil.readString(buffer));
         }
     }
@@ -39,7 +39,7 @@ public class MinecraftTabCompleteRequestPacketCodecV1_13 implements MinecraftPac
     @Override
     public void write(MinecraftPlayerTabCompletePacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.INCOMING){
-            buffer.writeInt(packet.getTransactionId());
+            MinecraftProtocolUtil.writeVarInt(buffer,packet.getTransactionId());
             MinecraftProtocolUtil.writeString(buffer,packet.getCursor());
         }
     }
