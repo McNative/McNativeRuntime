@@ -114,7 +114,7 @@ public class CloudNetV2Network implements Network {
 
     @Override
     public CommandManager getCommandManager() {
-        throw new UnsupportedOperationException("Network event bus is currently not integrated");
+        throw new UnsupportedOperationException("Network command manager is currently not integrated");
     }
 
     @Override
@@ -127,6 +127,21 @@ public class CloudNetV2Network implements Network {
         ServerInfo info = CloudAPI.getInstance().getServerInfo(name);
         if(info == null) return NetworkIdentifier.UNKNOWN;
         return new NetworkIdentifier(name,info.getServiceId().getUniqueId());
+    }
+
+    @Override
+    public NetworkIdentifier getIdentifier(UUID uniqueId) {
+        for (ProxyInfo server : CloudAPI.getInstance().getProxys()) {
+            if(server.getServiceId().getUniqueId().equals(uniqueId)){
+                return new NetworkIdentifier(server.getServiceId().getServerId(),server.getServiceId().getUniqueId());
+            }
+        }
+        for (ServerInfo server : CloudAPI.getInstance().getServers()) {
+            if(server.getServiceId().getUniqueId() == uniqueId){
+                return new NetworkIdentifier(server.getServiceId().getServerId(),server.getServiceId().getUniqueId());
+            }
+        }
+        return null;
     }
 
     @Override

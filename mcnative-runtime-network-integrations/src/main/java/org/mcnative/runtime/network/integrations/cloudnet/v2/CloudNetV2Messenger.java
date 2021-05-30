@@ -21,7 +21,6 @@
 package org.mcnative.runtime.network.integrations.cloudnet.v2;
 
 import de.dytanic.cloudnet.api.CloudAPI;
-import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
@@ -120,8 +119,8 @@ public class CloudNetV2Messenger extends AbstractMessenger {
     public void handleMessageEvent(String channel0,String message, de.dytanic.cloudnet.lib.utility.document.Document document){
         if(channel0.equals(CHANNEL_NAME)){
             if(message.equals(MESSAGE_NAME_REQUEST)){
-                String sender = document.getString("sender");
-                if(sender.equals(CloudAPI.getInstance().getServiceId().getServerId())) return;
+                String senderId = document.getString("sender");
+                if(senderId.equals(CloudAPI.getInstance().getServiceId().getServerId())) return;
 
                 String channel = document.getString("channel");
                 boolean proxy = document.getBoolean("proxy");
@@ -130,18 +129,18 @@ public class CloudNetV2Messenger extends AbstractMessenger {
 
                 MessagingChannelListener listener = getChannelListener(channel);
                 if(listener != null){
-                    Document result = listener.onMessageReceive(null,identifier,data);
+                    Document result = listener.onMessageReceive(new RemoteCloudService(senderId),identifier,data);
                     if(result != null){
                         if(proxy){
                             CloudAPI.getInstance().sendCustomSubProxyMessage(CHANNEL_NAME
                                     ,MESSAGE_NAME_RESPONSE
                                     ,createResponseData(identifier,result)
-                                    ,sender);
+                                    ,senderId);
                         }else{
                             CloudAPI.getInstance().sendCustomSubServerMessage(CHANNEL_NAME
                                     ,MESSAGE_NAME_RESPONSE
                                     ,createResponseData(identifier,result)
-                                    ,sender);
+                                    ,senderId);
                         }
                     }
                 }
