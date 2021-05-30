@@ -73,10 +73,9 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
                     if(event.isCancelled()) return;
                     else if(event.isRewrite()){
                         packet = event.getPacket();
-                        out.release();
-                        out = Unpooled.buffer();
+                        out.clear();
                         MinecraftProtocolUtil.writeVarInt(out,packetId);
-                        codec.write(packet,connection,direction,in);
+                        codec.write(packet,connection,direction,out);
                     }
                 }
             } catch (Exception e) {
