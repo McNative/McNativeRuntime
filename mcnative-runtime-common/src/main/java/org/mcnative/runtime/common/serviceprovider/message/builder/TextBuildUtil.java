@@ -101,6 +101,7 @@ public class TextBuildUtil {
 
                         if(color != null){
                             current = Document.newDocument();
+                            resetDocument(current);
                             current.set("color",color.compileColor(context.getVersion()));
                             continue;
                         }
@@ -120,10 +121,11 @@ public class TextBuildUtil {
                 root.addEntry(current);
             }else{
                 String content = input != null ? input.toString() : "null";
-                root.addEntry(Document.factory().newPrimitiveEntry(null,content));
+                current.set("text",content);
+                root.addEntry(current);
             }
-            System.out.println("OUTPUT: "+input);
             if(nextComp != null){
+                current = root.getLast().toDocument();
                 if(nextComp instanceof DocumentEntry){
                     if(((DocumentEntry) nextComp).isArray()){
                         if(!((DocumentEntry) nextComp).toDocument().isEmpty()){
