@@ -38,7 +38,6 @@ public class MinecraftTabCompleteResponsePacketCodecV1_13 implements MinecraftPa
             packet.setTransactionId(MinecraftProtocolUtil.readVarInt(buffer));
             packet.setStart(MinecraftProtocolUtil.readVarInt(buffer));
             packet.setLength(MinecraftProtocolUtil.readVarInt(buffer));
-            packet.setTransactionId(buffer.readInt());
 
             int count = MinecraftProtocolUtil.readVarInt(buffer);
             List<String> suggestions = new ArrayList<>();
@@ -59,6 +58,7 @@ public class MinecraftTabCompleteResponsePacketCodecV1_13 implements MinecraftPa
             MinecraftProtocolUtil.writeVarInt(buffer,packet.getSuggestions().size());
             for (String suggestion : packet.getSuggestions()) {
                 MinecraftProtocolUtil.writeString(buffer,suggestion);
+                buffer.writeBoolean(false);
             }
         }
     }
