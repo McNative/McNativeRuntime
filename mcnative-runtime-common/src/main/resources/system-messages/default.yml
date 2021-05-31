@@ -63,7 +63,7 @@ messages:
 
   mcnative.command.manage.plugin.disable.starting: '${mcnative.prefix} &7Disabling &7plugin &e{plugin.name} v{plugin.description.version}'
   mcnative.command.manage.plugin.disable.successfully: '${mcnative.prefix} &7Successfully disabled plugin &e{plugin.name}'
-  mcnative.command.manage.plugin.disable.failed: '${mcnative.prefix} &cFailed disabling plugin &ce{plugin.name} &8(&7{error}&8)'
+  mcnative.command.manage.plugin.disable.failed: '${mcnative.prefix} &cFailed disabling plugin &e{plugin.name} &8(&7{error}&8)'
 
   mcnative.command.manage.plugin.load.starting: '${mcnative.prefix} &7Unloading &7plugin &e{plugin.name} v{plugin.description.version}'
   mcnative.command.manage.plugin.load.successfully: '${mcnative.prefix} &7Successfully unloading plugin &e{plugin.name}'

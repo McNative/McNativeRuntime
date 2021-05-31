@@ -20,6 +20,7 @@
 package org.mcnative.runtime.protocol.java.netty.rewrite;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.pretronic.libraries.utility.map.Pair;
@@ -55,7 +56,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
         ByteBuf out = in.copy();
 
         int packetId = MinecraftProtocolUtil.readVarInt(in);
-        this.handleInternalPacketManipulation(packetId,in);
+        this.handleInternalPacketManipulation(connection,packetId,in);
 
         PacketRegistration registration = packetManager.getPacketRegistration(connection.getState(),direction,connection.getProtocolVersion(),packetId);
         if(registration != null){
@@ -74,7 +75,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
                         packet = event.getPacket();
                         out.clear();
                         MinecraftProtocolUtil.writeVarInt(out,packetId);
-                        codec.write(packet,connection,direction,in);
+                        codec.write(packet,connection,direction,out);
                     }
                 }
             } catch (Exception e) {
@@ -85,7 +86,7 @@ public class MinecraftProtocolRewriteDecoder extends MessageToMessageDecoder<Byt
         output.add(out);
     }
 
-    public void handleInternalPacketManipulation(int packetId,ByteBuf buffer){
+    public void handleInternalPacketManipulation(MinecraftConnection connection,int packetId,ByteBuf buffer){
         //Unused, but can optionally be implemented
     }
 }

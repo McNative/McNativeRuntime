@@ -103,7 +103,7 @@ public class CloudNetV3Network implements Network {
 
     @Override
     public CommandManager getCommandManager() {
-        throw new UnsupportedOperationException("Network event bus is currently not integrated");
+        throw new UnsupportedOperationException("Network command manager is currently not integrated");
     }
 
     @Override
@@ -116,6 +116,13 @@ public class CloudNetV3Network implements Network {
         ServiceInfoSnapshot service = Wrapper.getInstance().getCloudServiceProvider().getCloudServiceByName(name);
         if(service == null) return null;//throw new OperationFailedException("Server is not registered in cloud");
         return new NetworkIdentifier(name,service.getServiceId().getUniqueId());
+    }
+
+    @Override
+    public NetworkIdentifier getIdentifier(UUID uuid) {
+        ServiceInfoSnapshot service = Wrapper.getInstance().getCloudServiceProvider().getCloudService(uuid);
+        if(service == null) return null;//throw new OperationFailedException("Server is not registered in cloud");
+        return new NetworkIdentifier(service.getName(),service.getServiceId().getUniqueId());
     }
 
     @Override

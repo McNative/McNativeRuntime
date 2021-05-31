@@ -74,6 +74,8 @@ public class MinecraftBossBarPacketCodecV1_7 implements MinecraftPacketCodec<Min
                 writeUpdatePacket(buffer,packet,bar.entityId);
             }
         }else if(packet.getAction() == MinecraftBossBarPacket.Action.REMOVE){
+            buffer.resetWriterIndex();
+            buffer.resetReaderIndex();
             if(bar == null) return;
             this.bars.remove(bar);
             stopScheduler();

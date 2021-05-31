@@ -114,6 +114,7 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
             Object event;
             if(NetworkEventAdapter.class.isAssignableFrom(eventClass)){
                 event = UnsafeInstanceCreator.newInstance(eventClass);
+                McNative.getInstance().getInjector().inject(event);
                 ((NetworkEventAdapter)event).read(data);
             }else{
                 event = data.getAsObject(eventClass);

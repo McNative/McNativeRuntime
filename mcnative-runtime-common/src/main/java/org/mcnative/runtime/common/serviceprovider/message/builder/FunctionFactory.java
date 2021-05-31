@@ -51,19 +51,14 @@ public class FunctionFactory implements MessageBuilderFactory {
         }
 
         @Override
-        public Object build(BuildContext context, boolean requiresString, String name, Module leftOperator
-                , String operation, Module rightOperator, Module[] parameters, Module extension, Module next0) {
+        public Object build(BuildContext context, boolean requiresUnformatted, String name, Module leftOperator
+                ,String operation, Module rightOperator, Module[] parameters, Module extension, Module next0) {
 
             Object result = function.execute(context,leftOperator,operation,rightOperator,parameters);
+            Object next = Module.build(next0,context,requiresUnformatted);
 
-            Object next = Module.build(next0,context,requiresString);
-
-            if(requiresString){
-                if(next != null) return ""+result+next;
-                else return result;
-            }else{
-                return TextBuildUtil.buildTextData(result,next);
-            }
+            if(requiresUnformatted) return next != null ? ""+result+next : result;
+            else return TextBuildUtil.buildTextData(result,next);
         }
     }
 }

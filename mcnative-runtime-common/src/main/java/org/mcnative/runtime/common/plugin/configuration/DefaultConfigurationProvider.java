@@ -21,15 +21,23 @@ package org.mcnative.runtime.common.plugin.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import net.pretronic.databasequery.api.Database;
+import net.pretronic.databasequery.api.collection.DatabaseCollection;
+import net.pretronic.databasequery.api.collection.field.FieldOption;
+import net.pretronic.databasequery.api.datatype.DataType;
 import net.pretronic.databasequery.api.driver.DatabaseDriver;
 import net.pretronic.databasequery.api.driver.DatabaseDriverFactory;
 import net.pretronic.databasequery.api.driver.config.DatabaseDriverConfig;
+import net.pretronic.databasequery.api.exceptions.DatabaseQueryExecuteFailedException;
+import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.databasequery.sql.driver.SQLDatabaseDriver;
 import net.pretronic.databasequery.sql.driver.config.SQLDatabaseDriverConfig;
+import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.logging.bridge.slf4j.SLF4JStaticBridge;
 import net.pretronic.libraries.plugin.Plugin;
 import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.Iterators;
+import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
 import net.pretronic.libraries.utility.interfaces.ObjectOwner;
@@ -38,16 +46,21 @@ import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveHashMap;
 import net.pretronic.libraries.utility.map.caseintensive.CaseIntensiveMap;
 import net.pretronic.libraries.utility.reflect.ReflectionUtil;
 import org.mcnative.runtime.api.McNative;
+import org.mcnative.runtime.api.Setting;
 import org.mcnative.runtime.api.plugin.configuration.Configuration;
 import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
+import org.mcnative.runtime.common.event.service.DefaultPluginSettingUpdateEvent;
 
 import java.io.File;
+import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.*;
 
 public class DefaultConfigurationProvider implements ConfigurationProvider, ShutdownAble {
 
     private final CaseIntensiveMap<DatabaseDriver> databaseDrivers;
-    private StorageConfig storageConfig;
+    private final StorageConfig storageConfig;
+    private final DatabaseCollection settings;
 
     public DefaultConfigurationProvider() {
         this.databaseDrivers = new CaseIntensiveHashMap<>();
@@ -56,6 +69,40 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
 
         this.storageConfig = new StorageConfig(this,getConfiguration(McNative.getInstance(), "storage"));
         storageConfig.load();
+
+        DatabaseCollection settings = createSettingsCollection();
+
+        if(migratePlayerSettings(settings)) {
+            settings = createSettingsCollection();
+        }
+
+        this.settings = settings;
+    }
+
+    private DatabaseCollection createSettingsCollection() {
+        return getDatabase(McNative.getInstance()).createCollection("mcnative_settings")
+                .field("Id", DataType.INTEGER, FieldOption.PRIMARY_KEY, FieldOption.INDEX,FieldOption.AUTO_INCREMENT)
+                .field("Owner", DataType.STRING,32, FieldOption.NOT_NULL)
+                .field("Key", DataType.STRING,64, FieldOption.NOT_NULL)
+                .field("Value", DataType.LONG_TEXT, FieldOption.NOT_NULL)
+                .field("Created", DataType.LONG, FieldOption.NOT_NULL)
+                .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
+                .create();
+    }
+
+    private boolean migratePlayerSettings(DatabaseCollection settings) {
+        try {
+            settings.find().get("Player").execute();
+            McNative.getInstance().getLogger().info("Migrating old player settings");
+            settings.drop();
+            return true;
+        } catch (DatabaseQueryExecuteFailedException exception) {
+            if(!(exception.getCause() instanceof SQLSyntaxErrorException) && !exception.getCause().getMessage().contains("Player")) {
+                throw new RuntimeException(exception);
+            } else {
+                return false;
+            }
+        }
     }
 
     private void setFallbackSLF4JLogger() {
@@ -81,6 +128,84 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
     public Configuration getConfiguration(ObjectOwner owner, String name) {
         Objects.requireNonNull(owner,name);
         return new FileConfiguration(owner,name,new File("plugins/"+owner.getName()+"/"+name+"."+FileConfiguration.FILE_TYPE.getEnding()));
+    }
+
+    @Override
+    public Collection<Setting> getSettings(String owner) {
+        Collection<Setting> settings = new ArrayList<>();
+        this.settings.find().where("Owner", owner).execute().loadIn(settings, this::getSettingFromResultEntry);
+        return settings;
+    }
+
+    @Override
+    public Setting getSetting(String owner, String key) {
+        return getSettingFromResultEntry(this.settings.find()
+                .where("Owner", owner)
+                .where("Key", key)
+                .execute().firstOrNull());
+    }
+
+    @Override
+    public Setting createSetting(String owner, String key, Object value) {
+        Validate.notNull(owner);
+        Validate.notNull(key);
+        Validate.notNull(value);
+        long now = System.currentTimeMillis();
+        int id = this.settings.insert()
+                .set("Owner", owner)
+                .set("Key", key)
+                .set("Value", value)
+                .set("Created", now)
+                .set("Updated", now)
+                .executeAndGetGeneratedKeyAsInt("Id");
+        return new DefaultSetting(id, owner, key, value, now, now);
+    }
+
+    @Override
+    public void updateSetting(Setting setting) {
+        Validate.notNull(setting);
+        setting.setUpdated(setting.getUpdated());
+        this.settings.update()
+                .set("Value", serialize(setting.getValue()))
+                .set("Updated", setting.getUpdated())
+                .where("Id",setting.getId())
+                .execute();
+        McNative.getInstance().getLocal().getEventBus().callEvent(new DefaultPluginSettingUpdateEvent(setting.getOwner(),setting.getValue(),setting));
+    }
+
+    @Override
+    public void deleteSetting(Setting setting) {
+        Validate.notNull(setting);
+        this.settings.delete()
+                .where("Id", setting.getId())
+                .execute();
+    }
+
+    @Override
+    public void deleteSetting(String owner, String key) {
+        Setting setting = getSetting(owner, key);
+        if(setting == null) return;
+        deleteSetting(setting);
+    }
+
+    private Setting getSettingFromResultEntry(QueryResultEntry resultEntry) {
+        if(resultEntry == null) return null;
+        return new DefaultSetting(resultEntry.getInt("Id"),
+                resultEntry.getString("Owner"),
+                resultEntry.getString("Key"),
+                resultEntry.getObject("Value"),
+                resultEntry.getLong("Created"),
+                resultEntry.getLong("Updated"));
+    }
+
+    private String serialize(Object value){
+        String result;
+        if(value instanceof String) result = (String) value;
+        else{
+            if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
+            else result = value.toString();
+        }
+        return result;
     }
 
     @Override

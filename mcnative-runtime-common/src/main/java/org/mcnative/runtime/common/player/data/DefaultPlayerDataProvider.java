@@ -27,7 +27,6 @@ import net.pretronic.databasequery.api.query.result.QueryResultEntry;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.message.language.Language;
-import net.pretronic.libraries.utility.GeneralUtil;
 import net.pretronic.libraries.utility.StringUtil;
 import net.pretronic.libraries.utility.Validate;
 import org.mcnative.runtime.api.McNative;
@@ -43,7 +42,7 @@ import java.util.*;
 public class DefaultPlayerDataProvider implements PlayerDataProvider {
 
     private final DatabaseCollection playerDataStorage;
-    private final DatabaseCollection settingsStorage;
+    private final DatabaseCollection playerSettingsStorage;
 
     public DefaultPlayerDataProvider() {
         this.playerDataStorage = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class)
@@ -58,13 +57,15 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
                 .field("Language", DataType.STRING,10)
                 .field("Properties", DataType.LONG_TEXT)
                 .create();
-        this.settingsStorage = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class)
-                .getDatabase(McNative.getInstance()).createCollection("mcnative_settings")
+        this.playerSettingsStorage = McNative.getInstance().getRegistry().getService(ConfigurationProvider.class)
+                .getDatabase(McNative.getInstance()).createCollection("mcnative_player_settings")
                 .field("Id", DataType.INTEGER,FieldOption.PRIMARY_KEY, FieldOption.INDEX,FieldOption.AUTO_INCREMENT)
-                .field("Player", DataType.UUID, FieldOption.INDEX, FieldOption.INDEX, FieldOption.NOT_NULL)
+                .field("PlayerId", DataType.UUID, FieldOption.INDEX, FieldOption.INDEX, FieldOption.NOT_NULL)
                 .field("Owner", DataType.STRING,32, FieldOption.NOT_NULL)
                 .field("Key", DataType.STRING,64, FieldOption.NOT_NULL)
-                .field("Value", DataType.STRING, 1024, FieldOption.NOT_NULL)
+                .field("Value", DataType.LONG_TEXT, 1024, FieldOption.NOT_NULL)
+                .field("Created", DataType.LONG, FieldOption.NOT_NULL)
+                .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
                 .create();
     }
 
@@ -132,13 +133,15 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
 
     @Override
     public Collection<PlayerSetting> loadSettings(UUID uniqueId) {
-        QueryResult result = settingsStorage.find().where("Player",uniqueId).execute();
+        QueryResult result = playerSettingsStorage.find().where("PlayerId",uniqueId).execute();
         List<PlayerSetting> settings = new ArrayList<>();
         for (QueryResultEntry entry : result) {
             settings.add(new DefaultPlayerSetting(entry.getInt("Id")
                     ,entry.getString("Owner")
                     ,entry.getString("Key")
-                    ,entry.getString("Value")));
+                    ,entry.getString("Value")
+                    ,entry.getLong("Created")
+                    ,entry.getLong("Updated")));
         }
         return settings;
     }
@@ -146,29 +149,33 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
     @Override
     public PlayerSetting createSetting(UUID uniqueId, String owner, String key, Object value) {
         Validate.notNull(uniqueId,owner,key,value);
-        int id = settingsStorage.insert()
-                .set("Player",uniqueId)
+        long now = System.currentTimeMillis();
+        int id = playerSettingsStorage.insert()
+                .set("PlayerId",uniqueId)
                 .set("Owner",owner)
                 .set("Key",key)
                 .set("Value",serialize(value))
+                .set("Created", now)
+                .set("Updated", now)
                 .executeAndGetGeneratedKeyAsInt("Id");
-        return new DefaultPlayerSetting(id,owner,key,value);
+        return new DefaultPlayerSetting(id,owner,key,value,now,now);
     }
 
     @Override
     public void updateSetting(PlayerSetting setting) {
         Validate.notNull(setting);
-        settingsStorage.update()
+        setting.setUpdated(System.currentTimeMillis());
+        playerSettingsStorage.update()
                 .set("Value",serialize(setting.getValue()))
+                .set("Updated", setting.getUpdated())
                 .where("Id",setting.getId())
                 .execute();
-
     }
 
     @Override
     public void deleteSetting(PlayerSetting setting) {
         Validate.notNull(setting);
-        settingsStorage.delete()
+        playerSettingsStorage.delete()
                 .where("Id",setting.getId())
                 .execute();
     }
@@ -180,7 +187,6 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
             if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
             else result = value.toString();
         }
-        if(result.length() > 1024) throw new IllegalArgumentException("Setting value is to big");
         return result;
     }
 

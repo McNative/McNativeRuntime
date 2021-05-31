@@ -26,6 +26,7 @@ import net.pretronic.libraries.utility.interfaces.OwnerUnregisterAble;
 import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderHook;
 import org.mcnative.runtime.api.serviceprovider.placeholder.PlaceholderProvider;
+import org.mcnative.runtime.api.text.components.ExtraAbleComponent;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.api.text.components.TextComponent;
 
@@ -140,8 +141,10 @@ public class McNativePlaceholderProvider implements PlaceholderProvider, OwnerUn
             String newTest = replacePlaceholders(player,((TextComponent) rawComponent).getText());
             ((TextComponent) rawComponent).setText(newTest);
         }
-        for (MessageComponent<?> extra : rawComponent.getExtras()) {
-            replacePlaceholders(player,extra);
+        if(rawComponent instanceof ExtraAbleComponent<?>){
+            for (MessageComponent<?> extra : ((ExtraAbleComponent<?>) rawComponent).getExtras()) {
+                replacePlaceholders(player,extra);
+            }
         }
     }
 
