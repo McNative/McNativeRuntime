@@ -3,6 +3,8 @@ package org.mcnative.runtime.protocol.java;
 import org.mcnative.runtime.api.protocol.packet.PacketManager;
 import org.mcnative.runtime.protocol.java.codec.bossbar.MinecraftBossBarPacketCodec;
 import org.mcnative.runtime.protocol.java.codec.chat.MinecraftChatPacketCodec;
+import org.mcnative.runtime.protocol.java.codec.complete.request.MinecraftTabCompleteRequestPacketCodec;
+import org.mcnative.runtime.protocol.java.codec.complete.response.MinecraftTabCompleteResponsePacketCodec;
 import org.mcnative.runtime.protocol.java.codec.custompayload.MinecraftCustomPayloadPacketCodec;
 import org.mcnative.runtime.protocol.java.codec.disconnect.MinecraftDisconnectPacketCodec;
 import org.mcnative.runtime.protocol.java.codec.player.headerandfooter.MinecraftPlayerListHeaderAndFooterPacketCodec;
@@ -25,6 +27,8 @@ public class MinecraftJavaProtocol {
         MinecraftSoundEffectPacketCodec.register(manager);
         MinecraftStopSoundPacketCodec.register(manager);
         MinecraftBossBarPacketCodec.register(manager);
+        MinecraftTabCompleteRequestPacketCodec.register(manager);
+        MinecraftTabCompleteResponsePacketCodec.register(manager);
     }
 
 }

@@ -73,66 +73,67 @@ public class TextBuildUtil {
         }else if(input instanceof Document){
             return buildCompileText(context, (Document)input, nextComp);
         }else{
-            Document root = Document.newDocument();
-            Document current = root;
+            Document root = Document.factory().newArrayEntry(null);
+            Document current = Document.newDocument();
             if(input instanceof ColoredString){
-                String content = input.toString();
-                char[] chars = content.toCharArray();
-                current.set("text","");
+                char[] chars = input.toString().toCharArray();
+                StringBuilder builder = new StringBuilder();
+                for ( int i = 0; i < chars.length; i++ ) {
+                    char c = chars[i];
+                    if ((c == Text.FORMAT_CHAR || c == Text.DEFAULT_ALTERNATE_COLOR_CHAR)) {
+                        if ( ++i >= chars.length) break;
+                        c = chars[i];
+                        if (c >= 'A' && c <= 'Z' ) c += 32;
 
-                int textIndex = 0;
-                int lastColor = 0;
-                for (int i = 0; i < chars.length; i++) {
-                    char char0 = chars[i];
-                    if((char0 == Text.FORMAT_CHAR || char0 == Text.DEFAULT_ALTERNATE_COLOR_CHAR) && chars.length > ++i){
                         TextColor color;
-
-                        int skip = 1;
                         if(chars[i] == '#' && chars.length>(i+6)){
                             color = TextColor.make(new String(Arrays.copyOfRange(chars,i,i+7)));
-                            skip = 7;
+                            i += 7;
                         } else color = TextColor.of(chars[i]);
 
-                        if(color != null){
-                            Document next = Document.newDocument();
-                            current.set("extra",new Document[]{next});
-                            next.set("color",color.compileColor(context.getVersion()));
-                            next.set("text","");
-                            resetDocument(next);
-                            if(textIndex < i){
-                                current.set("text",new String(Arrays.copyOfRange(chars,textIndex,i-1)));
-                            }
-                            current = next;
-                            textIndex = i+skip;
-                            lastColor = i;
+                        if (builder.length() > 0 ){
+                            Document old = current ;
+                            current = old.copy();
+                            old.set("text",builder.toString());
+                            builder = new StringBuilder();
+                            root.addEntry(old);
                         }
 
-                        TextStyle style = TextStyle.of(chars[i]);
-                        if(style != null){
-                            if(i-lastColor != 2){
-                                Document next = Document.newDocument();
-                                current.set("extra",new Document[]{next});
-                                resetDocument(next);
-                                if(textIndex < i){
-                                    current.set("text",new String(Arrays.copyOfRange(chars,textIndex,i-1)));
-                                }
-                                current = next;
-                            }
-                            current.set(style.getName().toLowerCase(),true);
-                            textIndex = i+1;
+                        if(color != null){
+                            current = Document.newDocument();
+                            resetDocument(current);
+                            current.set("color",color.compileColor(context.getVersion()));
+                            continue;
                         }
+
+                        TextStyle style = TextStyle.of(c);
+                        if (style == TextStyle.RESET ) {
+                            current = Document.newDocument();
+                            current.set("color",TextColor.WHITE.compileColor(context.getVersion()));
+                        } else if(style != null){
+                            current.set(style.getName().toLowerCase(),true);
+                        }
+                        continue;
                     }
+                    builder.append( c );
                 }
-                if(textIndex < chars.length){
-                    current.set("text",new String(Arrays.copyOfRange(chars,textIndex,chars.length)));
-                }
+                current.set("text",builder.toString());
+                root.addEntry(current);
             }else{
                 String content = input != null ? input.toString() : "null";
-                root.set("text",content);
+                current.set("text",content);
+                root.addEntry(current);
             }
             if(nextComp != null){
+                current = root.getLast().toDocument();
                 if(nextComp instanceof DocumentEntry){
-                    current.set("extra",new Object[]{nextComp});
+                    if(((DocumentEntry) nextComp).isArray()){
+                        if(!((DocumentEntry) nextComp).toDocument().isEmpty()){
+                            current.set("extra",nextComp);
+                        }
+                    }else{
+                        current.set("extra",new Object[]{nextComp});
+                    }
                 }else if(nextComp.getClass().isArray()){
                     int length = Array.getLength(nextComp);
                     if(length >= 0){

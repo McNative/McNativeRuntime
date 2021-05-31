@@ -70,8 +70,11 @@ public class DefaultPacketManager implements PacketManager {
             if(condition != null){
                 for (int i = condition.getMappings().length - 1; i >= 0; i--) {
                     PacketRegistration.IdMapping mapping = condition.getMappings()[i];
-                    if(version.isNewerOrSame(mapping.getVersion()) && mapping.getId() == packetId){
-                        return registration;
+                    if(version.isNewerOrSame(mapping.getVersion())){
+                        if(mapping.getId() == packetId){
+                            return registration;
+                        }
+                        break;
                     }
                 }
             }
