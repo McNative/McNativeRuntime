@@ -20,12 +20,29 @@
 
 package org.mcnative.runtime.common.player.data;
 
+import net.pretronic.libraries.utility.Validate;
+import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.player.PlayerSetting;
+import org.mcnative.runtime.api.player.data.PlayerDataProvider;
+import org.mcnative.runtime.api.plugin.configuration.ConfigurationProvider;
 import org.mcnative.runtime.common.plugin.configuration.DefaultSetting;
 
 public class DefaultPlayerSetting extends DefaultSetting implements PlayerSetting {
 
     public DefaultPlayerSetting(int id, String owner, String key, Object value, long created, long updated) {
         super(id, owner, key, value, created, updated);
+    }
+
+    @Override
+    public void setValue(Object value) {
+        Validate.notNull(value);
+        this.value = value;
+        McNative.getInstance().getRegistry().getService(PlayerDataProvider.class).updateSetting(this);
+    }
+
+    @Override
+    public void setUpdated(long updated) {
+        this.updated = updated;
+        McNative.getInstance().getRegistry().getService(PlayerDataProvider.class).updateSetting(this);
     }
 }

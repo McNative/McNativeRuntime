@@ -15,9 +15,9 @@ public class DefaultSetting implements Setting {
     private final int id;
     private final String owner;
     private final String key;
-    private Object value;
+    protected Object value;
     private final long created;
-    private long updated;
+    protected long updated;
 
     public DefaultSetting(int id, String owner, String key, Object value, long created, long updated) {
         this.id = id;
@@ -109,6 +109,7 @@ public class DefaultSetting implements Setting {
     @Override
     public void setUpdated(long updated) {
         this.updated = updated;
+        McNative.getInstance().getRegistry().getService(ConfigurationProvider.class).updateSetting(this);
     }
 
     @Override

@@ -83,7 +83,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
                 .field("Id", DataType.INTEGER, FieldOption.PRIMARY_KEY, FieldOption.INDEX,FieldOption.AUTO_INCREMENT)
                 .field("Owner", DataType.STRING,32, FieldOption.NOT_NULL)
                 .field("Key", DataType.STRING,64, FieldOption.NOT_NULL)
-                .field("Value", DataType.LONG_TEXT, 1024, FieldOption.NOT_NULL)
+                .field("Value", DataType.LONG_TEXT, FieldOption.NOT_NULL)
                 .field("Created", DataType.LONG, FieldOption.NOT_NULL)
                 .field("Updated", DataType.LONG, FieldOption.NOT_NULL)
                 .create();
