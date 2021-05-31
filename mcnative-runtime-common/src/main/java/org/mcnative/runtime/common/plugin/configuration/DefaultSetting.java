@@ -109,7 +109,6 @@ public class DefaultSetting implements Setting {
     @Override
     public void setUpdated(long updated) {
         this.updated = updated;
-        McNative.getInstance().getRegistry().getService(ConfigurationProvider.class).updateSetting(this);
     }
 
     @Override
