@@ -26,7 +26,7 @@
     <groupId>org.mcnative.runtime</groupId>
     <artifactId>McNativeRuntime</artifactId>
     <packaging>pom</packaging>
-    <version>1.13.35.147-SNAPSHOT</version>
+    <version>1.14.0.153-SNAPSHOT</version>
 
     <distributionManagement>
         <repository>
@@ -44,7 +44,7 @@
         <!-- Project settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <dependency.mcnative.api>1.4.48.153-SNAPSHOT</dependency.mcnative.api>
+        <dependency.mcnative.api>1.4.49.154</dependency.mcnative.api>
         <dependency.mcnative.maf>1.0.17.27-SNAPSHOT</dependency.mcnative.maf>
 
         <dependency.cloudnet.v2>2.1.17</dependency.cloudnet.v2>

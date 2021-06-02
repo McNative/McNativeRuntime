@@ -170,7 +170,6 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
                 .set("Updated", setting.getUpdated())
                 .where("Id",setting.getId())
                 .execute();
-
     }
 
     @Override
