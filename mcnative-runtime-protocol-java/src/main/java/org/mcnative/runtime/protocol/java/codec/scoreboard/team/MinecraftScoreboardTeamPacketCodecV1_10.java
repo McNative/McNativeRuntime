@@ -50,9 +50,10 @@ public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketC
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getPrefix(),connection,packet));
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getSuffix(),connection,packet));
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
+                MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
                 MinecraftProtocolUtil.writeString(buffer,packet.getCollisionRule().getCollisionRuleName());
-
                 buffer.writeByte(packet.getColor().getClientCode());
+
                 if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE) {
                     MinecraftProtocolUtil.writeStringArray(buffer, packet.getEntities());
                 }
