@@ -41,7 +41,6 @@ public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketC
     public void write(MinecraftScoreboardTeamsPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){
             MinecraftProtocolUtil.writeString(buffer,MinecraftScoreboardTeamPacketCodec.substringName(packet.getName()));
-
             buffer.writeByte(packet.getAction().ordinal());
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
