@@ -21,6 +21,7 @@ public class MinecraftScoreboardTeamPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_10,0x41,new MinecraftScoreboardTeamPacketCodecV1_10())
                         ,map(MinecraftProtocolVersion.JE_1_12,0x43)
                         ,map(MinecraftProtocolVersion.JE_1_12_1,0x44)
+                        ,map(MinecraftProtocolVersion.JE_1_12_2,0x43)
                         ,map(MinecraftProtocolVersion.JE_1_13,0x47,new MinecraftScoreboardTeamPacketCodecV1_13())
                         ,map(MinecraftProtocolVersion.JE_1_14,0x4B)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x4C)
