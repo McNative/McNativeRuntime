@@ -127,12 +127,12 @@ public class MemoryGameProfileLoader implements GameProfileLoader {
 
         @Override
         public boolean check(GameProfile o, Object[] objects) {
-            return o.getName().equalsIgnoreCase((String) objects[0]);
+            return o.getName().equalsIgnoreCase(objects[0].toString());
         }
 
         @Override
         public GameProfile load(Object[] identifiers) {
-            return getGameProfileUncached(URI.create((String) identifiers[0]));
+            return getGameProfileUncached((URI) identifiers[0]);
         }
     }
 }
