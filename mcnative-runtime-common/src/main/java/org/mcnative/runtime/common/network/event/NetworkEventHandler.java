@@ -20,6 +20,7 @@
 
 package org.mcnative.runtime.common.network.event;
 
+import net.pretronic.libraries.event.Cancellable;
 import net.pretronic.libraries.event.DefaultEventBus;
 import net.pretronic.libraries.event.network.EventOrigin;
 import net.pretronic.libraries.event.network.NetworkEvent;
@@ -34,6 +35,8 @@ public class NetworkEventHandler extends DefaultEventBus.NetworkEventHandler {
 
     @Override
     public void handleNetworkEventsAsync(EventOrigin origin0, Class<?> executionClass, Object[] events) {
+        Object event = events[0];
+        if(event instanceof Cancellable && ((Cancellable) event).isCancelled()) return;
         if(!McNative.getInstance().isNetworkAvailable()){
             NetworkEvent info = executionClass.getAnnotation(NetworkEvent.class);
             if(info.ignoreNetworkException()) return;
