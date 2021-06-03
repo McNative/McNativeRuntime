@@ -30,6 +30,8 @@ import org.mcnative.runtime.api.player.profile.GameProfile;
 import org.mcnative.runtime.api.player.profile.GameProfileInfo;
 import org.mcnative.runtime.api.player.profile.GameProfileLoader;
 
+import java.net.URI;
+import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +47,7 @@ public class MemoryGameProfileLoader implements GameProfileLoader {
         this.cache.setMaxSize(1000);
         this.cache.setExpireAfterAccess(1,TimeUnit.HOURS);
         this.cache.registerQuery("byUniqueId",new UniqueIdLoader());
+        this.cache.registerQuery("byUri", new UriLoader());
     }
 
     @Override
@@ -83,10 +86,28 @@ public class MemoryGameProfileLoader implements GameProfileLoader {
         return profile;
     }
 
+    @Override
+    public GameProfile getGameProfile(URI uri) {
+        return this.cache.get("byUri", uri);
+    }
+
+    @Override
+    public GameProfile getGameProfileUncached(URI uri) {
+        return getGameProfileFromBase64(uri.toString(), getBase64FromUrl(uri));
+    }
 
     @Override
     public void clearCache() {
         cache.clear();
+    }
+
+    private String getBase64FromUrl(URI uri) {
+        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + uri.toString() + "\"}}}";
+        return Base64.getEncoder().encodeToString(toEncode.getBytes());
+    }
+
+    private GameProfile getGameProfileFromBase64(String uri, String base64) {
+        return new GameProfile(UUID.randomUUID(), uri, new GameProfile.Property[]{new GameProfile.Property("textures", base64, null)});
     }
 
     private class UniqueIdLoader implements CacheQuery<GameProfile> {
@@ -99,6 +120,19 @@ public class MemoryGameProfileLoader implements GameProfileLoader {
         @Override
         public GameProfile load(Object[] identifiers) {
             return getGameProfileUncached((UUID) identifiers[0]);
+        }
+    }
+
+    private class UriLoader implements CacheQuery<GameProfile> {
+
+        @Override
+        public boolean check(GameProfile o, Object[] objects) {
+            return o.getName().equalsIgnoreCase((String) objects[0]);
+        }
+
+        @Override
+        public GameProfile load(Object[] identifiers) {
+            return getGameProfileUncached(URI.create((String) identifiers[0]));
         }
     }
 }
