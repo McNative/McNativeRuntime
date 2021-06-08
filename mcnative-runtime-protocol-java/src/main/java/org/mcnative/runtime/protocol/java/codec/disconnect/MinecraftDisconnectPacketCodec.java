@@ -20,7 +20,8 @@ public class MinecraftDisconnectPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x1A)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x1B)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x1A)
-                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x19))
+                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x19)
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x1A))
                 ,on(PacketDirection.OUTGOING, ConnectionState.LOGIN
                         ,map(MinecraftProtocolVersion.JE_1_7,0x00,new MinecraftDisconnectPacketCodecV1_7()))));
     }
