@@ -72,3 +72,10 @@ messages:
   mcnative.command.manage.plugin.unload.starting: '${mcnative.prefix} &7Unloading &7plugin &e{plugin.name} v{plugin.description.version}'
   mcnative.command.manage.plugin.unload.successfully: '${mcnative.prefix} &7Successfully unloaded plugin &e{plugin.name}'
   mcnative.command.manage.plugin.unload.failed: '${mcnative.prefix} &cFailed unloading plugin &e{plugin.name} &8(&7{error}&8)'
+
+  mcnative.textinput.validator.error.text: '${mcnative.prefix} &e{value} &cis not a valid input'
+  mcnative.textinput.validator.error.boolean: '${mcnative.prefix} &e{value} &cis not a valid boolean'
+  mcnative.textinput.validator.error.number: '${mcnative.prefix} &e{value} &cis not a valid number'
+  mcnative.textinput.validator.error.decimal: '${mcnative.prefix} &e{value} &cis not a valid decimal number'
+  mcnative.textinput.validator.error.color: '${mcnative.prefix} &e{value} &cis not a valid color'
+  mcnative.textinput.validator.error.object: '${mcnative.prefix} &e{value} &cis not a valid object input'
