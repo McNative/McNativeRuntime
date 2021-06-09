@@ -1,19 +1,25 @@
 package org.mcnative.runtime.client.integrations.labymod;
 
 import net.pretronic.libraries.document.Document;
-import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
+import net.pretronic.libraries.utility.Validate;
+import net.pretronic.libraries.utility.annonations.Internal;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
-import org.mcnative.runtime.api.player.MinecraftPlayer;
 import org.mcnative.runtime.api.player.client.DiscordRichPresence;
 import org.mcnative.runtime.api.player.client.LabyModClient;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class DefaultLabyModClient implements LabyModClient {
+
+    private final AtomicInteger inputId = new AtomicInteger();
+    private final Map<Integer, Consumer<String>> inputCallbacks = new ConcurrentHashMap<>();
 
     private final ConnectedMinecraftPlayer player;
     private final String version;
@@ -183,4 +189,29 @@ public class DefaultLabyModClient implements LabyModClient {
         LabyModIntegration.sendLabyModMessage(player,channel,message,document);
     }
 
+    @Override
+    public void sendInput(String label, String placeholder, String defaultValue, int maxLength, Consumer<String> callback) {
+        Validate.notNull(label);
+        Validate.notNull(placeholder);
+        Validate.notNull(defaultValue);
+        Validate.isTrue(maxLength > 0);
+        Validate.notNull(callback);
+
+        int id = inputId.incrementAndGet();
+        sendLabyModData("input_prompt", Document.newDocument().add("id", id)
+                .add("message", label)
+                .add("value", defaultValue)
+                .add("placeholder", placeholder)
+                .add("max_length", maxLength));
+        inputCallbacks.put(id, callback);
+    }
+
+    @Internal
+    public boolean completeInput(int id, String value) {
+        if(inputCallbacks.containsKey(id)) {
+            inputCallbacks.get(id).accept(value);
+            return true;
+        }
+        return false;
+    }
 }
