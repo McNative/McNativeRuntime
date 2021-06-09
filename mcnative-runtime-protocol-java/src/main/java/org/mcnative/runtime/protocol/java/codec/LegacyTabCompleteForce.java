@@ -7,7 +7,8 @@ import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 public class LegacyTabCompleteForce {
 
     public static boolean isDeclarePacket(MinecraftProtocolVersion version, int packetId){
-        if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_16_2)) return 0x10 == packetId;
+        if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_17)) return 0x12 == packetId;
+        else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_16_2)) return 0x10 == packetId;
         else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_16)) return 0x11 == packetId;
         else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_15)) return 0x12 == packetId;
         else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_13)) return 0x11 == packetId;
