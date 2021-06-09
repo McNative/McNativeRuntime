@@ -80,5 +80,5 @@ messages:
   mcnative.textinput.validator.error.color: '${mcnative.prefix} &e{value} &cis not a valid color'
   mcnative.textinput.validator.error.object: '${mcnative.prefix} &e{value} &cis not a valid object input'
   mcnative.textinput.validator.error.stringLength.max: '${mcnative.prefix} &cYou have reached the max length of &e{maxLength}'
-  mcnative.textinput.validator.error.stringLength.min: '${mcnative.prefix} &cYou have to type in a minimum length of &e{maxLength}'
+  mcnative.textinput.validator.error.stringLength.min: '${mcnative.prefix} &cYou have to type in a minimum length of &e{minLength}'
   mcnative.textinput.validator.error.stringLength.notEmpty: '${mcnative.prefix} &cAn empty input is not allowed'
