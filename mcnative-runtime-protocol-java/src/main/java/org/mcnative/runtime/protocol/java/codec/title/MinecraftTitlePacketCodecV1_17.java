@@ -38,7 +38,8 @@ public class MinecraftTitlePacketCodecV1_17 implements MinecraftPacketCodec<Mine
 
     @Override
     public void write(MinecraftTitlePacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
-        buffer.clear();
+        buffer.resetWriterIndex();
+        buffer.resetReaderIndex();
         if(packet.getAction() == MinecraftTitlePacket.Action.SET_TITLE){
             MinecraftProtocolUtil.writeVarInt(buffer,0x58);
             MinecraftProtocolUtil.writeString(buffer,((MessageComponent<?>)packet.getRawData())
@@ -47,7 +48,7 @@ public class MinecraftTitlePacketCodecV1_17 implements MinecraftPacketCodec<Mine
             MinecraftProtocolUtil.writeVarInt(buffer,0x56);
             MinecraftProtocolUtil.writeString(buffer,((MessageComponent<?>)packet.getRawData())
                     .compileToString(connection.getProtocolVersion(),packet.getVariables()!=null?packet.getVariables(): VariableSet.createEmpty()));
-        }else if(packet.getAction() == MinecraftTitlePacket.Action.SET_TITLE){
+        }else if(packet.getAction() == MinecraftTitlePacket.Action.SET_TIME){
             MinecraftProtocolUtil.writeVarInt(buffer,0x59);
             int[] array = (int[]) packet.getRawData();
             buffer.writeInt(array[0]);
