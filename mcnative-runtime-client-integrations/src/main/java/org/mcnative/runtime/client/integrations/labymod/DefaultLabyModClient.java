@@ -208,10 +208,9 @@ public class DefaultLabyModClient implements LabyModClient {
 
     @Internal
     public boolean completeInput(int id, String value) {
-        if(inputCallbacks.containsKey(id)) {
-            inputCallbacks.get(id).accept(value);
-            return true;
-        }
-        return false;
+        Consumer<String> callback = inputCallbacks.remove(id);
+        if(callback == null) return false;
+        callback.accept(value);
+        return true;
     }
 }
