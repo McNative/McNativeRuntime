@@ -79,3 +79,4 @@ messages:
   mcnative.textinput.validator.error.decimal: '${mcnative.prefix} &e{value} &cis not a valid decimal number'
   mcnative.textinput.validator.error.color: '${mcnative.prefix} &e{value} &cis not a valid color'
   mcnative.textinput.validator.error.object: '${mcnative.prefix} &e{value} &cis not a valid object input'
+  mcnative.textinput.validator.error.stringLength: '${mcnative.prefix} &cYou have reached the max length of &e{maxLength}'
