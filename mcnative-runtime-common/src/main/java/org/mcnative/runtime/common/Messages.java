@@ -67,4 +67,11 @@ public final class Messages {
     public static MessageKeyComponent COMMAND_MCNATIVE_PLUGIN_UNLOAD_SUCCESSFULLY = Text.ofMessageKey("mcnative.command.manage.plugin.unload.successfully");
     public static MessageKeyComponent COMMAND_MCNATIVE_PLUGIN_UNLOAD_FAILED = Text.ofMessageKey("mcnative.command.manage.plugin.unload.failed");
 
+
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_TEXT = Text.ofMessageKey("mcnative.textinput.validator.error.text");
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_BOOLEAN = Text.ofMessageKey("mcnative.textinput.validator.error.boolean");
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_NUMBER = Text.ofMessageKey("mcnative.textinput.validator.error.number");
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_DECIMAL = Text.ofMessageKey("mcnative.textinput.validator.error.decimal");
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_COLOR = Text.ofMessageKey("mcnative.textinput.validator.error.color");
+    public static final MessageKeyComponent TEXT_INPUT_VALIDATOR_ERROR_OBJECT = Text.ofMessageKey("mcnative.textinput.validator.error.object");
 }

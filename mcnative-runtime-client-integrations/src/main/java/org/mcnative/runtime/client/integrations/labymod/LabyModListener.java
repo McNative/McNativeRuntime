@@ -7,7 +7,9 @@ import net.pretronic.libraries.document.type.DocumentFileType;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerDiscordRichPresenceReceiveEvent;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
+import org.mcnative.runtime.api.player.client.CustomClient;
 import org.mcnative.runtime.api.player.client.CustomPluginMessageListener;
+import org.mcnative.runtime.api.player.client.LabyModClient;
 
 public class LabyModListener implements CustomPluginMessageListener {
 
@@ -27,6 +29,15 @@ public class LabyModListener implements CustomPluginMessageListener {
             String joinSecret = document.getString("joinSecret");
             McNative.getInstance().getLocal().getEventBus().callEvent(MinecraftPlayerDiscordRichPresenceReceiveEvent.class
                     ,new LabyModMinecraftPlayerDiscordRichPresenceReceiveEvent(player,spectateSecret,joinSecret));
+        } else if(key.equalsIgnoreCase("input_prompt")) {
+            int id = document.getInt("id");
+            String value = document.getString("value");
+            if(player.isCustomClient(CustomClient.LABYMOD)) {
+                LabyModClient labyModClient = player.getCustomClient(CustomClient.LABYMOD);
+                if(labyModClient instanceof DefaultLabyModClient) {
+                    ((DefaultLabyModClient)labyModClient).completeInput(id, value);
+                }
+            }
         }
     }
 }
