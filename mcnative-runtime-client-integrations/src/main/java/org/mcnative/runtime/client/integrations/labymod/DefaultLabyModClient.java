@@ -194,15 +194,15 @@ public class DefaultLabyModClient implements LabyModClient {
         Validate.notNull(label);
         Validate.notNull(placeholder);
         Validate.notNull(defaultValue);
-        Validate.isTrue(maxLength > 0);
         Validate.notNull(callback);
 
         int id = inputId.incrementAndGet();
-        sendLabyModData("input_prompt", Document.newDocument().add("id", id)
+        Document data = Document.newDocument().add("id", id)
                 .add("message", label)
                 .add("value", defaultValue)
-                .add("placeholder", placeholder)
-                .add("max_length", maxLength));
+                .add("placeholder", placeholder);
+        if(maxLength > 0) data.add("max_length", maxLength);
+        sendLabyModData("input_prompt", data);
         inputCallbacks.put(id, callback);
     }
 
