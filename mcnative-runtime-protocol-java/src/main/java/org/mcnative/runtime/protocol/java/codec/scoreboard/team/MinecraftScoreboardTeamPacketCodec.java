@@ -25,7 +25,7 @@ public class MinecraftScoreboardTeamPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x4B)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x4C)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x4C)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x54))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x55U))));
     }
 
     protected static String substringName(String name){
