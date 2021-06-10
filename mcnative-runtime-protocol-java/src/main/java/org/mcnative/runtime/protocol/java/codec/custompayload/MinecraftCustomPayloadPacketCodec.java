@@ -19,7 +19,8 @@ public class MinecraftCustomPayloadPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x18)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x19)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x17))
+                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x17)
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x18))
                 ,on(PacketDirection.OUTGOING, ConnectionState.LOGIN
                         ,map(MinecraftProtocolVersion.JE_1_7,0x3F,new MinecraftCustomPayloadPacketCodecV1_7())
                         ,map(MinecraftProtocolVersion.JE_1_9,0x18)

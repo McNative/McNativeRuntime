@@ -20,7 +20,7 @@ public class MinecraftResourcePackSendPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_15,0x3A)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x39)
                         ,map(MinecraftProtocolVersion.JE_1_16_3,0x38)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x3B))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x3C))));
     }
 
 }
