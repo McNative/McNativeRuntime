@@ -28,6 +28,7 @@ import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
+import org.mcnative.runtime.api.text.format.TextColor;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketCodec<MinecraftScoreboardTeamsPacket> {
@@ -51,7 +52,9 @@ public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketC
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
                 MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
                 MinecraftProtocolUtil.writeString(buffer,packet.getCollisionRule().getCollisionRuleName());
-                buffer.writeByte(packet.getColor().getClientCode());
+
+                TextColor color = packet.getColor() != null ? packet.getColor() : TextColor.WHITE;
+                buffer.writeByte(color.getClientCode());
 
                 if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE) {
                     MinecraftProtocolUtil.writeStringArray(buffer, packet.getEntities());
