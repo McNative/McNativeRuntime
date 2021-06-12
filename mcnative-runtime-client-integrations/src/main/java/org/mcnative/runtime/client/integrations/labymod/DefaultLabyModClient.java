@@ -7,6 +7,7 @@ import net.pretronic.libraries.utility.annonations.Internal;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.client.DiscordRichPresence;
 import org.mcnative.runtime.api.player.client.LabyModClient;
+import org.mcnative.runtime.api.player.client.labymod.LabyModWidgetScreen;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 
@@ -204,6 +205,11 @@ public class DefaultLabyModClient implements LabyModClient {
         if(maxLength > 0) data.add("max_length", maxLength);
         sendLabyModData("input_prompt", data);
         inputCallbacks.put(id, callback);
+    }
+
+    @Override
+    public void sendWidgetScreen(Consumer<LabyModWidgetScreen> consumer) {
+
     }
 
     @Internal
