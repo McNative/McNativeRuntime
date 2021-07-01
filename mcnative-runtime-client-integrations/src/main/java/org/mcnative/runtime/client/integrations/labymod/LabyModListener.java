@@ -19,7 +19,7 @@ public class LabyModListener implements CustomPluginMessageListener {
         String key = LabyModIntegration.readString(buf, Short.MAX_VALUE);
         String json = LabyModIntegration.readString(buf, Short.MAX_VALUE);
         Document document = DocumentFileType.JSON.getReader().read(json);
-
+        System.out.println(DocumentFileType.JSON.getWriter().write(document, true));
         if(key.equalsIgnoreCase("info")) {
             if(player.getCustomClient() != null) return;
             String version = document.getString("version");
@@ -38,6 +38,8 @@ public class LabyModListener implements CustomPluginMessageListener {
                     ((DefaultLabyModClient)labyModClient).completeInput(id, value);
                 }
             }
+        } else if(key.equalsIgnoreCase("screen")) {
+
         }
     }
 }

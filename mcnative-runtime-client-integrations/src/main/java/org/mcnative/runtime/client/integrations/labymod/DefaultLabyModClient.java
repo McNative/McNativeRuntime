@@ -1,6 +1,9 @@
 package org.mcnative.runtime.client.integrations.labymod;
 
 import net.pretronic.libraries.document.Document;
+import net.pretronic.libraries.document.DocumentContext;
+import net.pretronic.libraries.document.DocumentRegistry;
+import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import net.pretronic.libraries.utility.Validate;
 import net.pretronic.libraries.utility.annonations.Internal;
@@ -18,6 +21,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class DefaultLabyModClient implements LabyModClient {
+
+    static {
+        DocumentRegistry.getDefaultContext().registerAdapter(DefaultLabyModWidgetScreen.class, new DefaultLabyModWidgetScreen.Adapter());
+    }
 
     private final AtomicInteger inputId = new AtomicInteger();
     private final Map<Integer, Consumer<String>> inputCallbacks = new ConcurrentHashMap<>();
@@ -197,19 +204,22 @@ public class DefaultLabyModClient implements LabyModClient {
         Validate.notNull(defaultValue);
         Validate.notNull(callback);
 
+        if(maxLength <= 0) maxLength = 255;//Default max length
+
         int id = inputId.incrementAndGet();
         Document data = Document.newDocument().add("id", id)
                 .add("message", label)
                 .add("value", defaultValue)
-                .add("placeholder", placeholder);
-        if(maxLength > 0) data.add("max_length", maxLength);
+                .add("placeholder", placeholder)
+                .add("max_length", maxLength);
         sendLabyModData("input_prompt", data);
         inputCallbacks.put(id, callback);
     }
 
     @Override
-    public void sendWidgetScreen(Consumer<LabyModWidgetScreen> consumer) {
-
+    public LabyModWidgetScreen newWidgetScreen() {
+        LabyModWidgetScreen widgetScreen = new DefaultLabyModWidgetScreen(this, this.player);
+        return widgetScreen;
     }
 
     @Internal
