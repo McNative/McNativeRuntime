@@ -245,6 +245,23 @@ public class DefaultMessageProvider implements MessageProvider {
 
     @Override
     public Message getMessage(String key, Language language) {
+        Message message = getMessageOrNull(key, language);
+        if(message == null) return Message.ofStaticText(MESSAGE_NOT_FOUND.replace("%key%",key));
+        return message;
+    }
+
+    @Override
+    public Message getMessage(String key, LanguageAble obj) {
+        return getMessage(key,obj != null ? obj.getLanguage() : null);
+    }
+
+    @Override
+    public Message getMessageOrNull(String key) {
+        return getMessageOrNull(key, (Language) null);
+    }
+
+    @Override
+    public Message getMessageOrNull(String key, Language language) {
         if(language == null) language = defaultLanguage;
         Map<Language,Message> node = this.messages.get(key);
         if(node != null && !node.isEmpty()){
@@ -254,12 +271,12 @@ public class DefaultMessageProvider implements MessageProvider {
             if(result != null) return result;
             return node.entrySet().iterator().next().getValue();
         }
-        return Message.ofStaticText(MESSAGE_NOT_FOUND.replace("%key%",key));
+        return null;
     }
 
     @Override
-    public Message getMessage(String key, LanguageAble obj) {
-        return getMessage(key,obj != null ? obj.getLanguage() : null);
+    public Message getMessageOrNull(String key, LanguageAble obj) {
+        return getMessageOrNull(key,obj != null ? obj.getLanguage() : null);
     }
 
     @Override
