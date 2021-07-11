@@ -47,11 +47,13 @@ import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.common.network.event.NetworkEventBus;
 import org.mcnative.runtime.network.integrations.McNativeGlobalExecutor;
+import org.mcnative.runtime.network.integrations.SmartLeaderElector;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class CloudNetV3Network implements Network {
@@ -61,6 +63,7 @@ public class CloudNetV3Network implements Network {
     private final NetworkIdentifier localIdentifier;
     private final NetworkIdentifier networkIdentifier;
     private final NetworkEventBus eventBus;
+    private final SmartLeaderElector leaderElector;
 
     public CloudNetV3Network(Executor executor) {
         this.messenger = new CloudNetV3Messenger(executor);
@@ -70,10 +73,15 @@ public class CloudNetV3Network implements Network {
                 ,Wrapper.getInstance().getServiceId().getUniqueId());
         this.networkIdentifier = new NetworkIdentifier(getName(),new UUID(0,0));
         this.eventBus = new NetworkEventBus();
+        this.leaderElector = new SmartLeaderElector(this);
+
         this.messenger.registerChannel("mcnative_event", ObjectOwner.SYSTEM,eventBus);
+        this.messenger.registerChannel(SmartLeaderElector.CHANNEL, ObjectOwner.SYSTEM,this.leaderElector);
 
         VariableDescriberRegistry.registerDescriber(CloudNetServer.class);
         VariableDescriberRegistry.registerDescriber(CloudNetProxy.class);
+
+        this.leaderElector.detectCurrentLeader();
     }
 
     @Override
@@ -166,6 +174,16 @@ public class CloudNetV3Network implements Network {
             return new CloudNetProxy(snapshot);
         }
         return null;
+    }
+
+    @Override
+    public ProxyServer getLeaderProxy() {
+        return getProxy(leaderElector.getLeader());
+    }
+
+    @Override
+    public boolean isLeaderProxy(ProxyServer proxyServer) {
+        return proxyServer.getUniqueId().equals(leaderElector.getLeader());
     }
 
     @Override
@@ -328,4 +346,10 @@ public class CloudNetV3Network implements Network {
     public NetworkIdentifier getIdentifier() {
         return networkIdentifier;
     }
+
+    @Override
+    public CompletableFuture<Document> sendQueryMessageAsync(String channel, Document document) {
+        return messenger.sendQueryMessageAsync(NetworkIdentifier.BROADCAST,channel,document);
+    }
+
 }

@@ -21,7 +21,7 @@ public class MinecraftPlayerListHeaderAndFooterPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x53)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x54)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x53)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x5D))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x5E))));
     }
 
 }

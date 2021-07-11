@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class CloudNetV2Network implements Network {
@@ -176,6 +177,16 @@ public class CloudNetV2Network implements Network {
             }
         }
         return null;
+    }
+
+    @Override
+    public ProxyServer getLeaderProxy() {
+        return null;
+    }
+
+    @Override
+    public boolean isLeaderProxy(ProxyServer proxyServer) {
+        return false;
     }
 
     @Override
@@ -325,5 +336,10 @@ public class CloudNetV2Network implements Network {
     @Override
     public NetworkIdentifier getIdentifier() {
         return networkIdentifier;
+    }
+
+    @Override
+    public CompletableFuture<Document> sendQueryMessageAsync(String channel, Document document) {
+        return messenger.sendQueryMessageAsync(NetworkIdentifier.BROADCAST,channel,document);
     }
 }
