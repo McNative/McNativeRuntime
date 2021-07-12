@@ -43,6 +43,7 @@ import org.mcnative.runtime.api.network.NetworkIdentifier;
 import org.mcnative.runtime.api.network.NetworkOperations;
 import org.mcnative.runtime.api.network.component.server.MinecraftServer;
 import org.mcnative.runtime.api.network.component.server.ProxyServer;
+import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
 import org.mcnative.runtime.api.player.OnlineMinecraftPlayer;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.common.network.event.NetworkEventBus;
@@ -296,7 +297,9 @@ public class CloudNetV3Network implements Network {
     public Collection<OnlineMinecraftPlayer> getOnlinePlayers() {
         Collection<OnlineMinecraftPlayer> result = new ArrayList<>();
         for (ICloudPlayer onlinePlayer : BridgePlayerManager.getInstance().getOnlinePlayers()) {
-            result.add(new CloudNetOnlinePlayer(onlinePlayer));
+            ConnectedMinecraftPlayer connected = McNative.getInstance().getLocal().getConnectedPlayer(onlinePlayer.getUniqueId());
+            if(connected == null) result.add(new CloudNetOnlinePlayer(onlinePlayer));
+            else result.add(connected);
         }
         return result;
     }
