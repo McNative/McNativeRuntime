@@ -13,6 +13,7 @@ messages:
   &7/mcnative version
   &7/mcnative info
   &7/mcnative paste
+  &7/mcnative gui [name]
   &7/mcnative plugin list
   &7/mcnative plugin enable <plugin>
   &7/mcnative plugin disable <plugin>
@@ -79,7 +80,7 @@ messages:
 
   mcnative.command.gui.notFound: '${mcnative.prefix} &cThe gui &e{gui} &cwas not found'
   mcnative.command.gui.list: '${mcnative.prefix} &7Available guis&8: @for("gui" in {guis},${mcnative.command.gui.list.loop},"\n","\n")'
-  mcnative.command.gui.list.loop: ' &8- &e{gui.name}'
+  mcnative.command.gui.list.loop: '![" &8- &e{gui.name}"]("run:///mcns gui {gui.name}")'
 
   mcnative.textinput.validator.error.text: '${mcnative.prefix} &e{value} &cis not a valid input'
   mcnative.textinput.validator.error.boolean: '${mcnative.prefix} &e{value} &cis not a valid boolean'
