@@ -49,6 +49,7 @@ public class McNativeCommand extends MainCommand implements NotFindable, NoPermi
         registerCommand(new McNativePasteLogCommand(owner));
         registerCommand(new McNativeVersionCommand(owner));
         registerCommand(new McNativeUtilityCommand(owner));
+       // registerCommand(new LanguageCommand(owner));
     }
 
     @Override

@@ -73,6 +73,14 @@ messages:
   mcnative.command.manage.plugin.unload.successfully: '${mcnative.prefix} &7Successfully unloaded plugin &e{plugin.name}'
   mcnative.command.manage.plugin.unload.failed: '${mcnative.prefix} &cFailed unloading plugin &e{plugin.name} &8(&7{error}&8)'
 
+  mcnative.command.language.select: '${mcnative.prefix} &7You have selected the language &e{language.name}'
+  mcnative.command.language.list: '${mcnative.prefix} &7Available languages&8: @for("language" in {languages},${mcnative.command.language.list.loop},"\n","\n")'
+  mcnative.command.language.list.loop: ' &8- &e{language.name}'
+
+  mcnative.command.gui.notFound: '${mcnative.prefix} &cThe gui &e{gui} &cwas not found'
+  mcnative.command.gui.list: '${mcnative.prefix} &7Available guis&8: @for("gui" in {guis},${mcnative.command.gui.list.loop},"\n","\n")'
+  mcnative.command.gui.list.loop: ' &8- &e{gui.name}'
+
   mcnative.textinput.validator.error.text: '${mcnative.prefix} &e{value} &cis not a valid input'
   mcnative.textinput.validator.error.boolean: '${mcnative.prefix} &e{value} &cis not a valid boolean'
   mcnative.textinput.validator.error.number: '${mcnative.prefix} &e{value} &cis not a valid number'
