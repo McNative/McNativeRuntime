@@ -87,7 +87,6 @@ public class DefaultLabyModWidgetScreen implements LabyModWidgetScreen {
     @Override
     public void open() {
         Document data = Document.newDocument(this);
-        System.out.println(DocumentFileType.JSON.getWriter().write(data, true));
         this.client.sendLabyModData("screen", data);
     }
 
