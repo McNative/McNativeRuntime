@@ -166,7 +166,7 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
         Validate.notNull(setting);
         setting.setUpdated(System.currentTimeMillis());
         playerSettingsStorage.update()
-                .set("Value",serialize(setting.getValue()))
+                .set("Value",serialize(setting.getObjectValue()))
                 .set("Updated", setting.getUpdated())
                 .where("Id",setting.getId())
                 .execute();
@@ -183,10 +183,8 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
     private String serialize(Object value){
         String result;
         if(value instanceof String) result = (String) value;
-        else{
-            if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
-            else result = value.toString();
-        }
+        else if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
+        else result = value.toString();
         return result;
     }
 
