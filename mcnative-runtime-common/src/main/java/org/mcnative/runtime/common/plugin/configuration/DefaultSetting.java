@@ -85,7 +85,7 @@ public class DefaultSetting implements Setting {
 
     @Override
     public Document getDocumentValue() {
-        if(value instanceof  Document) return (Document) value;
+        if(value instanceof Document) return (Document) value;
         return DocumentFileType.JSON.getReader().read(value.toString());
     }
 
