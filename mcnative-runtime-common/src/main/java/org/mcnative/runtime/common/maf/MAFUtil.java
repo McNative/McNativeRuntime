@@ -72,7 +72,7 @@ public class MAFUtil {
     }
 
     protected static void sendStatusAction(MAFClient client) {
-        if(!client.getConnection().isConnected()) return;
+        if(!MAFListener.STARTUP || !client.getConnection().isConnected()) return;
         ServerPerformance performance = McNative.getInstance().getLocal().getServerPerformance();
         float[] tps = performance.getRecentTps();
         if(tps.length > 3) {

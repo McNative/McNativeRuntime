@@ -87,12 +87,15 @@ public class ActionTextBuilder implements MessageBuilder {
         if(extension != null){
             Document click = Document.newDocument();
             String value = extension.toString();
-            boolean command = false;
             if(value.startsWith("run://")){
-                command = true;
+                click.set("action","run_command");
                 value = value.substring(6);
+            }else if(value.startsWith("suggest://")){
+                click.set("action","suggest_command");
+                value = value.substring(10);
+            }else{
+                click.set("action","open_url");
             }
-            click.set("action",command ? "run_command" : "open_url");
             click.set("value",value);
             result.add("clickEvent",click);
         }

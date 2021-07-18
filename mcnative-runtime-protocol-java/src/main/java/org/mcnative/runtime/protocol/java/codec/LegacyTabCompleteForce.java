@@ -7,10 +7,11 @@ import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 public class LegacyTabCompleteForce {
 
     public static boolean isDeclarePacket(MinecraftProtocolVersion version, int packetId){
-        if(MinecraftProtocolVersion.JE_1_16_2.isNewerOrSame(version)) return 0x10 == packetId;
-        else if(MinecraftProtocolVersion.JE_1_16.isNewerOrSame(version)) return 0x11 == packetId;
-        else if(MinecraftProtocolVersion.JE_1_15.isNewerOrSame(version)) return 0x12 == packetId;
-        else if(MinecraftProtocolVersion.JE_1_13.isNewerOrSame(version)) return 0x11 == packetId;
+        if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_17)) return 0x12 == packetId;
+        else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_16_2)) return 0x10 == packetId;
+        else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_16)) return 0x11 == packetId;
+        else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_15)) return 0x12 == packetId;
+        else if(version.isNewerOrSame(MinecraftProtocolVersion.JE_1_13)) return 0x11 == packetId;
         else return false;
     }
 
@@ -38,5 +39,4 @@ public class LegacyTabCompleteForce {
 
         MinecraftProtocolUtil.writeVarInt(buffer,0);
     }
-
 }

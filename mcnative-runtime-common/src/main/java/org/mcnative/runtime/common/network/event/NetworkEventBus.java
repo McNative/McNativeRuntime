@@ -107,8 +107,9 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
     @Internal
     public void executeNetworkEvent(EventOrigin origin,Document data){
         try{
-            Class<?> executionClass = data.getObject("EXECUTION_CLASS",Class.class);
-            Class<?> eventClass = data.getObject("EVENT_CLASS",Class.class);
+            Class<?> executionClass = getClassOrNull(data.getString("EXECUTION_CLASS"));
+            Class<?> eventClass = getClassOrNull(data.getString("EVENT_CLASS"));
+            if(eventClass == null) return;//Not available
             if(executionClass == null) executionClass = eventClass;
 
             Object event;
@@ -121,10 +122,16 @@ public class NetworkEventBus extends DefaultEventBus implements MessagingChannel
             }
             super.callEventsAsync(origin,executionClass,null,event);
         }catch (ReflectException exception){
-            if(!(exception.getCause() instanceof ClassNotFoundException)){
-                exception.printStackTrace();
-            }
+            exception.printStackTrace();
         }
+    }
+
+    private Class<?> getClassOrNull(String name){
+        if(name == null) return null;
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException ignored) {}
+        return null;
     }
 
     @Override

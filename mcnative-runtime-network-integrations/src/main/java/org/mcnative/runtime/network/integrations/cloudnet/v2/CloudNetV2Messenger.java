@@ -148,8 +148,10 @@ public class CloudNetV2Messenger extends AbstractMessenger {
                 UUID identifier = UUID.fromString(document.getString("identifier"));
                 CompletableFuture<Document> listener = resultListeners.remove(identifier);
                 if(listener != null){
-                    Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
-                    listener.complete(data);
+                    if(!listener.isDone() && !listener.isCompletedExceptionally() && !listener.isCancelled()){
+                        Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
+                        listener.complete(data);
+                    }
                 }
             }
         }

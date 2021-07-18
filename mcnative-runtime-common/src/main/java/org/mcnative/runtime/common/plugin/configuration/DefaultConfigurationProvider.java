@@ -165,12 +165,15 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
     public void updateSetting(Setting setting) {
         Validate.notNull(setting);
         setting.setUpdated(setting.getUpdated());
+
+        String serialized = serialize(setting.getObjectValue());
+
         this.settings.update()
-                .set("Value", serialize(setting.getValue()))
+                .set("Value",serialized)
                 .set("Updated", setting.getUpdated())
                 .where("Id",setting.getId())
                 .execute();
-        McNative.getInstance().getLocal().getEventBus().callEvent(new DefaultPluginSettingUpdateEvent(setting.getOwner(),setting.getValue(),setting));
+        McNative.getInstance().getLocal().getEventBus().callEvent(new DefaultPluginSettingUpdateEvent(setting.getOwner(),serialized,setting));
     }
 
     @Override
@@ -201,10 +204,8 @@ public class DefaultConfigurationProvider implements ConfigurationProvider, Shut
     private String serialize(Object value){
         String result;
         if(value instanceof String) result = (String) value;
-        else{
-            if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
-            else result = value.toString();
-        }
+        else if(value instanceof Document) result = DocumentFileType.JSON.getWriter().write((Document) value,false);
+        else result = value.toString();
         return result;
     }
 

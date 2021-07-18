@@ -26,6 +26,8 @@ import de.dytanic.cloudnet.wrapper.Wrapper;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.type.DocumentFileType;
 import net.pretronic.libraries.utility.exception.OperationFailedException;
+import net.pretronic.libraries.utility.interfaces.ObjectOwner;
+import net.pretronic.libraries.utility.map.Pair;
 import org.mcnative.runtime.common.network.messaging.AbstractMessenger;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.network.NetworkIdentifier;
@@ -44,11 +46,19 @@ public class CloudNetV3Messenger extends AbstractMessenger {
     private final String MESSAGE_NAME_RESPONSE = "response";
 
     private final Executor executor;
-    private final Map<UUID, CompletableFuture<Document>> resultListeners;
+    private final Map<UUID, Pair<CompletableFuture<Document>,Long>> resultListeners;
 
     public CloudNetV3Messenger(Executor executor) {
         this.executor = executor;
         this.resultListeners = new ConcurrentHashMap<>();
+        McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM)
+                .interval(1,TimeUnit.SECONDS).async().execute(() -> {
+                    for (Map.Entry<UUID,Pair<CompletableFuture<Document>, Long>> entry : resultListeners.entrySet()) {
+                        if(entry.getValue().getValue() < System.currentTimeMillis()){
+                            resultListeners.remove(entry.getKey());
+                        }
+                    }
+                });
     }
 
     @Override
@@ -99,7 +109,7 @@ public class CloudNetV3Messenger extends AbstractMessenger {
     public CompletableFuture<Document> sendQueryMessageAsync(MessageReceiver receiver, String channel, Document request) {
         CompletableFuture<Document> result = new CompletableFuture<>();
         UUID id = UUID.randomUUID();
-        this.resultListeners.put(id,result);
+        this.resultListeners.put(id,new Pair<>(result,System.currentTimeMillis()+2000));
         executor.execute(()-> sendMessage(receiver, channel, request,id));
         return result;
     }
@@ -108,7 +118,7 @@ public class CloudNetV3Messenger extends AbstractMessenger {
     public CompletableFuture<Document> sendQueryMessageAsync(NetworkIdentifier receiver, String channel, Document request) {
         CompletableFuture<Document> result = new CompletableFuture<>();
         UUID id = UUID.randomUUID();
-        this.resultListeners.put(id,result);
+        this.resultListeners.put(id,new Pair<>(result,System.currentTimeMillis()+2000));
         executor.execute(()-> sendMessage(receiver, channel, request,id));
         return result;
     }
@@ -139,10 +149,10 @@ public class CloudNetV3Messenger extends AbstractMessenger {
                 }
             }else if(message.equals(MESSAGE_NAME_RESPONSE)){
                 UUID identifier = UUID.fromString(document.getString("identifier"));
-                CompletableFuture<Document> listener = resultListeners.remove(identifier);
+                Pair<CompletableFuture<Document>,Long> listener = resultListeners.remove(identifier);
                 if(listener != null){
                     Document data = DocumentFileType.JSON.getReader().read(document.getString("data"));
-                    listener.complete(data);
+                    listener.getKey().complete(data);
                 }
             }
         }

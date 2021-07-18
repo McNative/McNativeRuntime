@@ -7,7 +7,9 @@ import net.pretronic.libraries.document.type.DocumentFileType;
 import org.mcnative.runtime.api.McNative;
 import org.mcnative.runtime.api.event.player.MinecraftPlayerDiscordRichPresenceReceiveEvent;
 import org.mcnative.runtime.api.player.ConnectedMinecraftPlayer;
+import org.mcnative.runtime.api.player.client.CustomClient;
 import org.mcnative.runtime.api.player.client.CustomPluginMessageListener;
+import org.mcnative.runtime.api.player.client.LabyModClient;
 
 public class LabyModListener implements CustomPluginMessageListener {
 
@@ -17,7 +19,7 @@ public class LabyModListener implements CustomPluginMessageListener {
         String key = LabyModIntegration.readString(buf, Short.MAX_VALUE);
         String json = LabyModIntegration.readString(buf, Short.MAX_VALUE);
         Document document = DocumentFileType.JSON.getReader().read(json);
-
+        System.out.println(DocumentFileType.JSON.getWriter().write(document, true));
         if(key.equalsIgnoreCase("info")) {
             if(player.getCustomClient() != null) return;
             String version = document.getString("version");
@@ -27,6 +29,17 @@ public class LabyModListener implements CustomPluginMessageListener {
             String joinSecret = document.getString("joinSecret");
             McNative.getInstance().getLocal().getEventBus().callEvent(MinecraftPlayerDiscordRichPresenceReceiveEvent.class
                     ,new LabyModMinecraftPlayerDiscordRichPresenceReceiveEvent(player,spectateSecret,joinSecret));
+        } else if(key.equalsIgnoreCase("input_prompt")) {
+            int id = document.getInt("id");
+            String value = document.getString("value");
+            if(player.isCustomClient(CustomClient.LABYMOD)) {
+                LabyModClient labyModClient = player.getCustomClient(CustomClient.LABYMOD);
+                if(labyModClient instanceof DefaultLabyModClient) {
+                    ((DefaultLabyModClient)labyModClient).completeInput(id, value);
+                }
+            }
+        } else if(key.equalsIgnoreCase("screen")) {
+
         }
     }
 }

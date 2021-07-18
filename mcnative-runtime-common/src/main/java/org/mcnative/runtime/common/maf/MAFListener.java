@@ -44,8 +44,9 @@ public class MAFListener {
         STARTUP = true;
         if(!client.getConnection().isConnected()) return;
         MAFUtil.sendStartupAction(client);
+        MAFUtil.sendStatusAction(client);
         McNative.getInstance().getScheduler().createTask(ObjectOwner.SYSTEM).async()
-                .delay(15, TimeUnit.SECONDS)
+                .delay(20, TimeUnit.SECONDS)
                 .execute(() -> MAFUtil.sendInfoAction(client));
     }
 

@@ -28,6 +28,7 @@ import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
+import org.mcnative.runtime.api.text.format.TextColor;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftScoreboardTeamPacketCodecV1_13 implements MinecraftPacketCodec<MinecraftScoreboardTeamsPacket> {
@@ -45,10 +46,13 @@ public class MinecraftScoreboardTeamPacketCodecV1_13 implements MinecraftPacketC
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getDisplayName(),connection,packet));
-                buffer.writeByte(packet.getFriendlyFlag().getCode());
+                buffer.writeByte(packet.getFriendlyFlag().ordinal());
                 MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
                 MinecraftProtocolUtil.writeString(buffer,packet.getCollisionRule().getCollisionRuleName());
-                MinecraftProtocolUtil.writeVarInt(buffer,packet.getColor().getClientCode());
+
+                TextColor color = packet.getColor() != null ? packet.getColor() : TextColor.WHITE;
+                MinecraftProtocolUtil.writeVarInt(buffer,color.getClientCode());
+
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getPrefix(),connection,packet));
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getSuffix(),connection,packet));
 

@@ -28,6 +28,7 @@ import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.scoreboard.MinecraftScoreboardTeamsPacket;
 import org.mcnative.runtime.api.text.components.MessageComponent;
+import org.mcnative.runtime.api.text.format.TextColor;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
 public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketCodec<MinecraftScoreboardTeamsPacket> {
@@ -41,7 +42,6 @@ public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketC
     public void write(MinecraftScoreboardTeamsPacket packet, MinecraftConnection connection, PacketDirection direction, ByteBuf buffer) {
         if(direction == PacketDirection.OUTGOING){
             MinecraftProtocolUtil.writeString(buffer,MinecraftScoreboardTeamPacketCodec.substringName(packet.getName()));
-
             buffer.writeByte(packet.getAction().ordinal());
 
             if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE || packet.getAction() == MinecraftScoreboardTeamsPacket.Action.UPDATE){
@@ -50,10 +50,12 @@ public class MinecraftScoreboardTeamPacketCodecV1_10 implements MinecraftPacketC
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getPrefix(),connection,packet));
                 MinecraftProtocolUtil.writeString(buffer, compileText(packet.getSuffix(),connection,packet));
                 buffer.writeByte(packet.getFriendlyFlag().ordinal());
-                buffer.writeByte(packet.getFriendlyFlag().getCode());
+                MinecraftProtocolUtil.writeString(buffer,packet.getNameTagVisibility().getNameTagVisibilityName());
                 MinecraftProtocolUtil.writeString(buffer,packet.getCollisionRule().getCollisionRuleName());
 
-                buffer.writeByte(packet.getColor().getClientCode());
+                TextColor color = packet.getColor() != null ? packet.getColor() : TextColor.WHITE;
+                buffer.writeByte(color.getClientCode());
+
                 if(packet.getAction() == MinecraftScoreboardTeamsPacket.Action.CREATE) {
                     MinecraftProtocolUtil.writeStringArray(buffer, packet.getEntities());
                 }

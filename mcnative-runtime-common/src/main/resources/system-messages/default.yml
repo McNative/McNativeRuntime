@@ -13,6 +13,7 @@ messages:
   &7/mcnative version
   &7/mcnative info
   &7/mcnative paste
+  &7/mcnative gui [name]
   &7/mcnative plugin list
   &7/mcnative plugin enable <plugin>
   &7/mcnative plugin disable <plugin>
@@ -72,3 +73,21 @@ messages:
   mcnative.command.manage.plugin.unload.starting: '${mcnative.prefix} &7Unloading &7plugin &e{plugin.name} v{plugin.description.version}'
   mcnative.command.manage.plugin.unload.successfully: '${mcnative.prefix} &7Successfully unloaded plugin &e{plugin.name}'
   mcnative.command.manage.plugin.unload.failed: '${mcnative.prefix} &cFailed unloading plugin &e{plugin.name} &8(&7{error}&8)'
+
+  mcnative.command.language.select: '${mcnative.prefix} &7You have selected the language &e{language.name}'
+  mcnative.command.language.list: '${mcnative.prefix} &7Available languages&8: @for("language" in {languages},${mcnative.command.language.list.loop},"\n","\n")'
+  mcnative.command.language.list.loop: ' &8- &e{language.name}'
+
+  mcnative.command.gui.notFound: '${mcnative.prefix} &cThe gui &e{gui} &cwas not found'
+  mcnative.command.gui.list: '${mcnative.prefix} &7Available guis&8: @for("gui" in {guis},${mcnative.command.gui.list.loop},"\n","\n")'
+  mcnative.command.gui.list.loop: '![" &8- &e{gui.name}"]("run:///mcns gui {gui.name}")'
+
+  mcnative.textinput.validator.error.text: '${mcnative.prefix} &e{value} &cis not a valid input'
+  mcnative.textinput.validator.error.boolean: '${mcnative.prefix} &e{value} &cis not a valid boolean'
+  mcnative.textinput.validator.error.number: '${mcnative.prefix} &e{value} &cis not a valid number'
+  mcnative.textinput.validator.error.decimal: '${mcnative.prefix} &e{value} &cis not a valid decimal number'
+  mcnative.textinput.validator.error.color: '${mcnative.prefix} &e{value} &cis not a valid color'
+  mcnative.textinput.validator.error.object: '${mcnative.prefix} &e{value} &cis not a valid object input'
+  mcnative.textinput.validator.error.stringLength.max: '${mcnative.prefix} &cYou have reached the max length of &e{maxLength}'
+  mcnative.textinput.validator.error.stringLength.min: '${mcnative.prefix} &cYou have to type in a minimum length of &e{minLength}'
+  mcnative.textinput.validator.error.stringLength.notEmpty: '${mcnative.prefix} &cAn empty input is not allowed'
