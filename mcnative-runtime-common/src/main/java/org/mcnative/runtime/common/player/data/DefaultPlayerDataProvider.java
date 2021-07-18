@@ -174,7 +174,7 @@ public class DefaultPlayerDataProvider implements PlayerDataProvider {
 
     @Override
     public void deleteSetting(PlayerSetting setting) {
-        Validate.notNull(setting);
+        if(setting == null) return;
         playerSettingsStorage.delete()
                 .where("Id",setting.getId())
                 .execute();
