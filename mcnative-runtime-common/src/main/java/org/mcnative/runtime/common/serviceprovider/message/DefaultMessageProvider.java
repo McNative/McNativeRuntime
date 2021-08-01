@@ -49,6 +49,8 @@ import org.mcnative.runtime.api.plugin.MinecraftPlugin;
 import org.mcnative.runtime.api.text.context.MinecraftTextBuildContext;
 import org.mcnative.runtime.api.text.context.TextBuildType;
 import org.mcnative.runtime.common.serviceprovider.message.builder.*;
+import org.mcnative.runtime.common.serviceprovider.message.functions.HasPermissionFunction;
+import org.mcnative.runtime.common.serviceprovider.message.functions.IFHasPermissionFunction;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -373,5 +375,8 @@ public class DefaultMessageProvider implements MessageProvider {
         processor.registerFunction(ObjectOwner.SYSTEM,"random",new RandomNumberFunction());
         processor.registerFunction(ObjectOwner.SYSTEM,"randomText",new RandomTextFunction());
         processor.registerFunction(ObjectOwner.SYSTEM,"sum",new SumFunction());
+
+        processor.registerFunction(ObjectOwner.SYSTEM,"hasPermission",new HasPermissionFunction());
+        processor.registerFunction(ObjectOwner.SYSTEM,"IFHasPermission",new IFHasPermissionFunction());
     }
 }
