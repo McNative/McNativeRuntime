@@ -121,6 +121,11 @@ public class CloudNetOnlinePlayer extends OfflineMinecraftPlayer implements Onli
     }
 
     @Override
+    public void kickLocal(MessageComponent<?> message, VariableSet variables) {
+        McNativePlayerExecutor.kickLocal(player.getUniqueId(),message,variables);
+    }
+
+    @Override
     public void performCommand(String command) {
         McNativePlayerExecutor.performCommand(player.getUniqueId(),command);
     }

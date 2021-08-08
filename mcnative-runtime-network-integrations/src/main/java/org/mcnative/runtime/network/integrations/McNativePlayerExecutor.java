@@ -83,6 +83,12 @@ public class McNativePlayerExecutor {
                 .set("message",message.compile(MinecraftProtocolVersion.getLatest(MinecraftEdition.JAVA),variables)));
     }
 
+    public static void kickLocal(UUID uniqueId, MessageComponent<?> message, VariableSet variables) {
+        executePlayerBased(uniqueId,Document.newDocument()
+                .set("action","kickLocal")
+                .set("message",message.compile(MinecraftProtocolVersion.getLatest(MinecraftEdition.JAVA),variables)));
+    }
+
     public static void performCommand(UUID uniqueId,String command) {
         executePlayerBased(uniqueId,Document.newDocument()
                 .set("action","performCommand")
