@@ -289,8 +289,8 @@ public class CloudNetV3Network implements Network {
 
     @Override
     public int getOnlineCount() {
-        IPlayerManager playerManager = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(IPlayerManager.class);
-        return playerManager.getOnlineCount();
+        AbstractSyncProxyManagement service = CloudNetDriver.getInstance().getServicesRegistry().getFirstService(AbstractSyncProxyManagement.class);
+        return service.getSyncProxyOnlineCount();
     }
 
     @Override
