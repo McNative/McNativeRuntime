@@ -88,7 +88,7 @@ public class TextBuildUtil {
                         TextColor color;
                         if(chars[i] == '#' && chars.length>(i+6)){
                             color = TextColor.make(new String(Arrays.copyOfRange(chars,i,i+7)));
-                            i += 7;
+                            i += 6;
                         } else color = TextColor.of(chars[i]);
 
                         if (builder.length() > 0 ){

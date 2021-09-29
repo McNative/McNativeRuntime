@@ -68,7 +68,6 @@ public class McNativePlaceholderProvider implements PlaceholderProvider, OwnerUn
         return Iterators.findOne(this.entries, entry -> entry.identifier.equalsIgnoreCase(identifier)) != null;
     }
 
-
     @Override
     public void registerPlaceHolders(ObjectOwner owner, String identifier, PlaceholderHook hook) {
         Validate.notNull(owner,identifier,hook);
