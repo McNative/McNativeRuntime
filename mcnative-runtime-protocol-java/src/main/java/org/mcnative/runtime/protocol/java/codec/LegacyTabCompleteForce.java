@@ -31,7 +31,7 @@ public class LegacyTabCompleteForce {
         flags2 |= 0x10;
         buffer.writeByte(flags2);
         MinecraftProtocolUtil.writeVarInt(buffer,0);
-        MinecraftProtocolUtil.writeString(buffer,"ban");
+        MinecraftProtocolUtil.writeString(buffer,"");
         MinecraftProtocolUtil.writeString(buffer,"brigadier:string");
         MinecraftProtocolUtil.writeVarInt(buffer,2);
         MinecraftProtocolUtil.writeString(buffer,"minecraft:ask_server");
