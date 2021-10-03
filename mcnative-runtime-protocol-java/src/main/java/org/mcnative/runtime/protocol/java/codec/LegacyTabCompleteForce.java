@@ -16,6 +16,7 @@ public class LegacyTabCompleteForce {
     }
 
     public static void rewrite(ByteBuf buffer){
+        System.out.println("REWRITE TAB");
         MinecraftProtocolUtil.writeVarInt(buffer,2);
 
 
@@ -31,7 +32,7 @@ public class LegacyTabCompleteForce {
         flags2 |= 0x10;
         buffer.writeByte(flags2);
         MinecraftProtocolUtil.writeVarInt(buffer,0);
-        MinecraftProtocolUtil.writeString(buffer,"");
+        MinecraftProtocolUtil.writeString(buffer,"/");
         MinecraftProtocolUtil.writeString(buffer,"brigadier:string");
         MinecraftProtocolUtil.writeVarInt(buffer,2);
         MinecraftProtocolUtil.writeString(buffer,"minecraft:ask_server");
