@@ -37,6 +37,7 @@ import org.mcnative.runtime.api.protocol.packet.type.player.complete.MinecraftPl
 import org.mcnative.runtime.common.event.player.complete.DefaultMinecraftPlayerTabCompleteEvent;
 import org.mcnative.runtime.common.event.player.complete.DefaultMinecraftPlayerTabCompleteResponseEvent;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,6 +69,15 @@ public class McNativeTabCompleteEventHandler implements MinecraftPacketListener 
 
             if(mcnativeEvent.isCancelled()) event.setCancelled(true);
             else event.setRewrite(true);
+
+
+            MinecraftPlayerTabCompleteResponsePacket packet1 = new MinecraftPlayerTabCompleteResponsePacket();
+            packet1.setSuggestions(Arrays.asList("test1","test2","test3","test4"));
+            packet1.setTransactionId(packet.getTransactionId());
+            packet1.setLength(1);
+            packet1.setStart(1);
+            event.getConnection().sendPacket(packet1);
+
         }else if(event.getPacket().getClass().equals(MinecraftPlayerTabCompleteResponsePacket.class)){
             MinecraftPlayerTabCompleteResponsePacket packet = event.getPacket(MinecraftPlayerTabCompleteResponsePacket.class);
 
