@@ -46,7 +46,7 @@ public class VariableBuilder implements BasicMessageBuilder {
             MinecraftTextBuildContext minecraftContext = context.getAs(MinecraftTextBuildContext.class);
             if(minecraftContext.getType() == TextBuildType.COMPILE){
                 return TextBuildUtil.buildCompileText(minecraftContext,value,next);
-            }else if(minecraftContext.getType() == TextBuildType.COMPILE){
+            }else if(minecraftContext.getType() == TextBuildType.COMPILE_RAW){
                 return TextBuildUtil.buildCompileTextRaw(minecraftContext,value,next);
             }else if(minecraftContext.getType() == TextBuildType.LEGACY){
                 return TextBuildUtil.buildLegacyText(value,next);
