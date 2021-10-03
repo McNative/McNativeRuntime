@@ -88,7 +88,7 @@ public class McNativeTabCompleteEventHandler implements MinecraftPacketListener 
                 responsePacket.setSuggestions(suggestions);
                 responsePacket.setTransactionId(packet.getTransactionId());
                 responsePacket.setLength(packet.getCursor().length());
-                responsePacket.setStart(0);
+                responsePacket.setStart(1);
                 event.getConnection().sendPacket(responsePacket);
             }
 
