@@ -39,13 +39,15 @@ public class VariableBuilder implements BasicMessageBuilder {
         }
 
         if(value instanceof Message){
-            return IncludeMessageBuilder.BuildMessage(context, (Message) value,requiresUnformatted,next);
+            return IncludeMessageBuilder.buildMessage(context, (Message) value,requiresUnformatted,next);
         }
 
         if(context instanceof MinecraftTextBuildContext){
             MinecraftTextBuildContext minecraftContext = context.getAs(MinecraftTextBuildContext.class);
             if(minecraftContext.getType() == TextBuildType.COMPILE){
                 return TextBuildUtil.buildCompileText(minecraftContext,value,next);
+            }else if(minecraftContext.getType() == TextBuildType.COMPILE){
+                return TextBuildUtil.buildCompileTextRaw(minecraftContext,value,next);
             }else if(minecraftContext.getType() == TextBuildType.LEGACY){
                 return TextBuildUtil.buildLegacyText(value,next);
             }

@@ -45,6 +45,8 @@ public class TextBuilder implements BasicMessageBuilder {
                 MinecraftTextBuildContext minecraftContext = context.getAs(MinecraftTextBuildContext.class);
                 if(minecraftContext.getType() == TextBuildType.COMPILE){
                     return TextBuildUtil.buildCompileText(minecraftContext,input,next);
+                }else if(minecraftContext.getType() == TextBuildType.COMPILE){
+                    return TextBuildUtil.buildCompileTextRaw(minecraftContext,input,next);
                 }else if(minecraftContext.getType() == TextBuildType.LEGACY){
                     return TextBuildUtil.buildLegacyText(input,next);
                 }

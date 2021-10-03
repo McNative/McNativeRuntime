@@ -42,10 +42,10 @@ public class IncludeMessageBuilder implements BasicMessageBuilder {
             message = provider.getMessage((String)parameters[0],context.getLanguage());
             if(message == null) message = Message.ofStaticText("{MESSAGE NOT FOUND}");
         }
-        return BuildMessage(context,message,requiresUnformatted,next);
+        return buildMessage(context,message,requiresUnformatted,next);
     }
 
-    public static Object BuildMessage(BuildContext context,Message message, boolean requiresUnformatted, Object next){
+    public static Object buildMessage(BuildContext context,Message message, boolean requiresUnformatted, Object next){
         Object result = message.build(context);
         if(requiresUnformatted){
             return TextBuildUtil.buildUnformattedText(result,next);
@@ -55,6 +55,8 @@ public class IncludeMessageBuilder implements BasicMessageBuilder {
                 if(minecraftContext.getType() == TextBuildType.COMPILE){
                     if (next != null) return new Object[]{result, next};
                     else return new Object[]{result};
+                }else if(minecraftContext.getType() == TextBuildType.COMPILE_RAW){
+                    return TextBuildUtil.buildCompileTextRaw((MinecraftTextBuildContext) context,result, next);
                 }else if(minecraftContext.getType() == TextBuildType.LEGACY){
                     return TextBuildUtil.buildLegacyText(result, next);
                 }

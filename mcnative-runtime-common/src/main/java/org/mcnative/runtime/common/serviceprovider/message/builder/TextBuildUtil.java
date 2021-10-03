@@ -3,10 +3,12 @@ package org.mcnative.runtime.common.serviceprovider.message.builder;
 import net.pretronic.libraries.document.Document;
 import net.pretronic.libraries.document.entry.DocumentEntry;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
+import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.api.text.components.MessageKeyComponent;
 import org.mcnative.runtime.api.text.context.MinecraftTextBuildContext;
+import org.mcnative.runtime.api.text.context.TextBuildType;
 import org.mcnative.runtime.api.text.format.ColoredString;
 import org.mcnative.runtime.api.text.format.TextColor;
 import org.mcnative.runtime.api.text.format.TextStyle;
@@ -157,7 +159,7 @@ public class TextBuildUtil {
     private static void buildLegacyText(StringBuilder builder,Object input,Object nextComp){
         if(input instanceof ColoredString){
             int start = builder.length();
-            builder.append(input.toString());
+            builder.append(input);
             for(int i = start; i < builder.length()-1; i++) {
                 if(builder.charAt(i) == '&' && Text.ALL_CODES.indexOf(builder.charAt(i+1)) > -1){
                     builder.setCharAt(i,Text.FORMAT_CHAR);
@@ -168,6 +170,37 @@ public class TextBuildUtil {
         }
         if(nextComp != null){
             buildLegacyText(builder, nextComp, null);
+        }
+    }
+
+    protected static String buildCompileTextRaw(MinecraftTextBuildContext context,Object input,Object nextComp){
+        StringBuilder builder = new StringBuilder();
+        buildCompileTextRaw(context,builder,input,nextComp);
+        return builder.toString();
+    }
+
+    private static void buildCompileTextRaw(MinecraftTextBuildContext context,StringBuilder builder,Object input,Object nextComp){
+        if(input instanceof ColoredString){
+            int start = builder.length();
+            builder.append(input);
+            for(int i = start; i < builder.length()-1; i++) {
+
+                if (builder.charAt(i) == Text.FORMAT_CHAR || builder.charAt(i) == Text.DEFAULT_ALTERNATE_COLOR_CHAR) {
+                    if ( ++i >= builder.length()) break;
+                    if(builder.charAt(i) == '#' && builder.length()>(i+6)){
+                        TextColor color = TextColor.make(builder.substring(i,i+7));
+                        builder.replace(i-1,i+7,color.toFormatCode(context.getVersion()));
+                        i += 6;
+                    }else if(TextColor.of(builder.charAt(i)) != null || TextStyle.of(builder.charAt(i)) != null ){
+                        builder.setCharAt(i-1,Text.FORMAT_CHAR);
+                    }
+                }
+            }
+        }else{
+            builder.append(input.toString());
+        }
+        if(nextComp != null){
+            buildCompileTextRaw(context,builder, nextComp, null);
         }
     }
 
@@ -227,4 +260,5 @@ public class TextBuildUtil {
                     ,input2 instanceof DocumentEntry ? input2 : input2.toString()};
         }
     }
+
 }

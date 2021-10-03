@@ -52,6 +52,8 @@ public class PlaceholderVariableBuilder implements BasicMessageBuilder {
             MinecraftTextBuildContext minecraftContext = context.getAs(MinecraftTextBuildContext.class);
             if(minecraftContext.getType() == TextBuildType.COMPILE){
                 return TextBuildUtil.buildCompileText(minecraftContext,result,next);
+            }else if(minecraftContext.getType() == TextBuildType.COMPILE_RAW){
+                return TextBuildUtil.buildCompileTextRaw(minecraftContext,result,next);
             }else if(minecraftContext.getType() == TextBuildType.LEGACY){
                 return TextBuildUtil.buildLegacyText(result,next);
             }
