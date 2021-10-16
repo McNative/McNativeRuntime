@@ -79,7 +79,7 @@ public class McNativeTabCompleteEventHandler implements MinecraftPacketListener 
 
                 String rawCursor = packet.getCursor().substring(1).trim().toLowerCase();
                 List<String> suggestions = Iterators.map(McNative.getInstance().getLocal().getCommandManager().getCommands()
-                        ,command -> "/"+command.getConfiguration().getName().toLowerCase()
+                        ,command -> command.getConfiguration().getName().toLowerCase()
                         ,command -> (command.getConfiguration().getPermission() == null
                                 || ((PendingConnection)event.getConnection()).getPlayer().hasPermission(command.getConfiguration().getPermission()))
                                 && command.getConfiguration().getName().toLowerCase().startsWith(rawCursor));
@@ -88,7 +88,10 @@ public class McNativeTabCompleteEventHandler implements MinecraftPacketListener 
                 responsePacket.setSuggestions(suggestions);
                 responsePacket.setTransactionId(packet.getTransactionId());
                 responsePacket.setLength(packet.getCursor().length());
+
+                int index = packet.getCursor().length() > 1 && packet.getCursor().charAt(1) == '/' ? 2 : 1;
                 responsePacket.setStart(1);
+
                 event.getConnection().sendPacket(responsePacket);
             }
 
