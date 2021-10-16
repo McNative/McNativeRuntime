@@ -90,7 +90,7 @@ public class McNativeTabCompleteEventHandler implements MinecraftPacketListener 
                 responsePacket.setLength(packet.getCursor().length());
 
                 int index = packet.getCursor().length() > 1 && packet.getCursor().charAt(1) == '/' ? 2 : 1;
-                responsePacket.setStart(1);
+                responsePacket.setStart(index);
 
                 event.getConnection().sendPacket(responsePacket);
             }
