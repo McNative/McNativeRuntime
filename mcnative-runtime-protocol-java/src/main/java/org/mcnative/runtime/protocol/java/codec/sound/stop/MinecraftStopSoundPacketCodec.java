@@ -18,7 +18,8 @@ public class MinecraftStopSoundPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x52)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x53)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x52)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x5D))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x5D)
+                        ,map(MinecraftProtocolVersion.JE_1_18_1,0x5E))));
     }
 
 }

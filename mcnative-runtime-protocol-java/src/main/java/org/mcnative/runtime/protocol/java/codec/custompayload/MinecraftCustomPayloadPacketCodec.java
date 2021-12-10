@@ -29,7 +29,8 @@ public class MinecraftCustomPayloadPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_15,0x19)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x18)
                         ,map(MinecraftProtocolVersion.JE_1_16_3,0x17)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x18))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x18)
+                        ,map(MinecraftProtocolVersion.JE_1_18_1,0x0A))));
     }
 
 }
