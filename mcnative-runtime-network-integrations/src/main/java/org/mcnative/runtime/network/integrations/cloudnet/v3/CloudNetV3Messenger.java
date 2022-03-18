@@ -143,8 +143,15 @@ public class CloudNetV3Messenger extends AbstractMessenger {
                     Document result = listener.onMessageReceive(new RemoteCloudService(senderId),identifier,data);
                     if(result != null){
                         ServiceInfoSnapshot service = Wrapper.getInstance().getCloudServiceProvider().getCloudService(senderId);
-                        Wrapper.getInstance().getMessenger().sendChannelMessage(service,CHANNEL_NAME, MESSAGE_NAME_RESPONSE
-                                ,createResponseData(identifier,result));
+                        if(service != null){
+                            Wrapper.getInstance().getMessenger().sendChannelMessage(service,CHANNEL_NAME, MESSAGE_NAME_RESPONSE
+                                    ,createResponseData(identifier,result));
+                        }else{
+                            McNative.getInstance().getLogger().warn("[Messenger] Received a channel message from an invalid service");
+                            McNative.getInstance().getLogger().warn("[Messenger] SenderId: "+senderId);
+                            McNative.getInstance().getLogger().warn("[Messenger] Channel: "+channel);
+                            McNative.getInstance().getLogger().warn("[Messenger] Message: "+message);
+                        }
                     }
                 }
             }else if(message.equals(MESSAGE_NAME_RESPONSE)){
