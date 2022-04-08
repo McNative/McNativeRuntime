@@ -27,6 +27,7 @@ import org.mcnative.runtime.api.protocol.packet.PacketDirection;
 import org.mcnative.runtime.api.protocol.packet.type.sound.MinecraftSoundEffectPacket;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
+
 public class MinecraftSoundEffectCodecV1_10 implements MinecraftPacketCodec<MinecraftSoundEffectPacket> {
 
     @Override

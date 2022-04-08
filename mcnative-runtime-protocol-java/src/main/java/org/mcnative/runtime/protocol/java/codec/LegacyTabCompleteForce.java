@@ -4,6 +4,9 @@ import io.netty.buffer.ByteBuf;
 import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
 
+/**
+ * LegacyTabCompleteForcePacket is on wiki.vg `Declare Commands`
+ */
 public class LegacyTabCompleteForce {
 
     public static boolean isDeclarePacket(MinecraftProtocolVersion version, int packetId){

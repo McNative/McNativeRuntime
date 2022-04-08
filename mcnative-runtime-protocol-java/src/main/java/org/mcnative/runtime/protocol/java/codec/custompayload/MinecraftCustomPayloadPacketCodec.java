@@ -8,6 +8,9 @@ import org.mcnative.runtime.api.protocol.packet.type.MinecraftCustomPayloadPacke
 
 import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
 
+/**
+ * MinecraftCustomPayloadPacket is on wiki.vg `Plugin Message`
+ */
 public class MinecraftCustomPayloadPacketCodec {
 
     public static void register(PacketManager manager){

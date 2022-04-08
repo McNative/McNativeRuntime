@@ -22,12 +22,17 @@ package org.mcnative.runtime.protocol.java.codec.title;
 import io.netty.buffer.ByteBuf;
 import net.pretronic.libraries.message.bml.variable.VariableSet;
 import org.mcnative.runtime.api.connection.MinecraftConnection;
+import org.mcnative.runtime.api.protocol.MinecraftProtocolVersion;
 import org.mcnative.runtime.api.protocol.packet.MinecraftPacketCodec;
 import org.mcnative.runtime.api.protocol.packet.PacketDirection;
+import org.mcnative.runtime.api.protocol.packet.PacketManager;
 import org.mcnative.runtime.api.protocol.packet.type.MinecraftTitlePacket;
 import org.mcnative.runtime.api.text.Text;
 import org.mcnative.runtime.api.text.components.MessageComponent;
 import org.mcnative.runtime.protocol.java.MinecraftProtocolUtil;
+
+import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
+import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.map;
 
 public class MinecraftTitlePacketCodecV1_17 implements MinecraftPacketCodec<MinecraftTitlePacket> {
 
@@ -41,15 +46,24 @@ public class MinecraftTitlePacketCodecV1_17 implements MinecraftPacketCodec<Mine
         buffer.resetWriterIndex();
         buffer.resetReaderIndex();
         if(packet.getAction() == MinecraftTitlePacket.Action.SET_TITLE){
-            MinecraftProtocolUtil.writeVarInt(buffer,0x59);
+            int protocolNumber;
+            if(connection.getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_18_2)) protocolNumber = 0x5A;
+            else protocolNumber = 0x59;
+            MinecraftProtocolUtil.writeVarInt(buffer,protocolNumber);
             MinecraftProtocolUtil.writeString(buffer,((MessageComponent<?>)packet.getRawData())
                     .compileToString(connection.getProtocolVersion(),packet.getVariables()!=null?packet.getVariables(): VariableSet.createEmpty()));
         }else if(packet.getAction() == MinecraftTitlePacket.Action.SET_SUBTITLE){
-            MinecraftProtocolUtil.writeVarInt(buffer,0x57);
+            int protocolNumber;
+            if(connection.getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_18_2)) protocolNumber = 0x58;
+            else protocolNumber = 0x57;
+            MinecraftProtocolUtil.writeVarInt(buffer,protocolNumber);
             MinecraftProtocolUtil.writeString(buffer,((MessageComponent<?>)packet.getRawData())
                     .compileToString(connection.getProtocolVersion(),packet.getVariables()!=null?packet.getVariables(): VariableSet.createEmpty()));
         }else if(packet.getAction() == MinecraftTitlePacket.Action.SET_TIME){
-            MinecraftProtocolUtil.writeVarInt(buffer,0x5A);
+            int protocolNumber;
+            if(connection.getProtocolVersion().isNewerOrSame(MinecraftProtocolVersion.JE_1_18_2)) protocolNumber = 0x5B;
+            else protocolNumber = 0x5A;
+            MinecraftProtocolUtil.writeVarInt(buffer,protocolNumber);
             int[] array = (int[]) packet.getRawData();
             buffer.writeInt(array[0]);
             buffer.writeInt(array[1]);

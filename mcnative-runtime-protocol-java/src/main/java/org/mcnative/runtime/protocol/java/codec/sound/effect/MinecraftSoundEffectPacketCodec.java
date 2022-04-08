@@ -7,6 +7,9 @@ import org.mcnative.runtime.api.protocol.packet.type.sound.MinecraftSoundEffectP
 
 import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
 
+/**
+ * MinecraftSoundEffectPacket is on wiki.vg `Named Sound Effect`
+ */
 public class MinecraftSoundEffectPacketCodec {
 
     public static void register(PacketManager manager){
