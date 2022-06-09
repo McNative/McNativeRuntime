@@ -20,7 +20,8 @@ public class MinecraftTabCompleteRequestPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_7,0x14,new MinecraftTabCompleteRequestPacketCodecV1_7())
                         ,map(MinecraftProtocolVersion.JE_1_9,0x01,new MinecraftTabCompleteRequestPacketCodecV1_9())
                         ,map(MinecraftProtocolVersion.JE_1_13,0x05,new MinecraftTabCompleteRequestPacketCodecV1_13())
-                        ,map(MinecraftProtocolVersion.JE_1_14,0x06))));
+                        ,map(MinecraftProtocolVersion.JE_1_14,0x06)
+                        ,map(MinecraftProtocolVersion.JE_1_19, 0x08))));
     }
 
 }

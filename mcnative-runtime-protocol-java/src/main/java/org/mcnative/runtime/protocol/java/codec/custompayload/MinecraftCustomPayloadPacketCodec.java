@@ -13,27 +13,27 @@ import static org.mcnative.runtime.api.protocol.packet.PacketRegistration.*;
  */
 public class MinecraftCustomPayloadPacketCodec {
 
-    public static void register(PacketManager manager){
+    public static void register(PacketManager manager) {
         manager.registerPacket(create(MinecraftCustomPayloadPacket.class
-                ,on(PacketDirection.OUTGOING
-                        ,map(MinecraftProtocolVersion.JE_1_7,0x3F,new MinecraftCustomPayloadPacketCodecV1_7())
-                        ,map(MinecraftProtocolVersion.JE_1_9,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_13,0x19)
-                        ,map(MinecraftProtocolVersion.JE_1_14,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_15,0x19)
-                        ,map(MinecraftProtocolVersion.JE_1_16,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x17)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x18))
-                ,on(PacketDirection.OUTGOING, ConnectionState.LOGIN
-                        ,map(MinecraftProtocolVersion.JE_1_7,0x3F,new MinecraftCustomPayloadPacketCodecV1_7())
-                        ,map(MinecraftProtocolVersion.JE_1_9,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_13,0x19)
-                        ,map(MinecraftProtocolVersion.JE_1_14,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_15,0x19)
-                        ,map(MinecraftProtocolVersion.JE_1_16,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_16_3,0x17)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_18_1,0x0A))));
+                , on(PacketDirection.OUTGOING
+                        , map(MinecraftProtocolVersion.JE_1_7, 0x3F, new MinecraftCustomPayloadPacketCodecV1_7())
+                        , map(MinecraftProtocolVersion.JE_1_9, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_13, 0x19)
+                        , map(MinecraftProtocolVersion.JE_1_14, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_15, 0x19)
+                        , map(MinecraftProtocolVersion.JE_1_16, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_16_3, 0x17)
+                        , map(MinecraftProtocolVersion.JE_1_17, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_19, 0x15))
+                , on(PacketDirection.OUTGOING, ConnectionState.LOGIN
+                        , map(MinecraftProtocolVersion.JE_1_7, 0x3F, new MinecraftCustomPayloadPacketCodecV1_7())
+                        , map(MinecraftProtocolVersion.JE_1_9, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_13, 0x19)
+                        , map(MinecraftProtocolVersion.JE_1_14, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_15, 0x19)
+                        , map(MinecraftProtocolVersion.JE_1_16, 0x18)
+                        , map(MinecraftProtocolVersion.JE_1_16_3, 0x17)
+                        , map(MinecraftProtocolVersion.JE_1_17, 0x18))));
     }
 
 }

@@ -23,7 +23,8 @@ public class MinecraftSoundEffectPacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_15,0x1A)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x19)
                         ,map(MinecraftProtocolVersion.JE_1_16_2,0x18)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x19))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x19)
+                        ,map(MinecraftProtocolVersion.JE_1_19, 0x5D))));
     }
 
     public static float getVolume(float input) {

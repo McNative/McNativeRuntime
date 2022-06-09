@@ -19,7 +19,8 @@ public class MinecraftTitlePacketCodec {
                         ,map(MinecraftProtocolVersion.JE_1_14,0x4F)
                         ,map(MinecraftProtocolVersion.JE_1_15,0x50)
                         ,map(MinecraftProtocolVersion.JE_1_16,0x4F)
-                        ,map(MinecraftProtocolVersion.JE_1_17,0x59,new MinecraftTitlePacketCodecV1_17()))));
+                        ,map(MinecraftProtocolVersion.JE_1_17,0x59,new MinecraftTitlePacketCodecV1_17())
+                        ,map(MinecraftProtocolVersion.JE_1_19, 0x5A))));
     }
 
 }
