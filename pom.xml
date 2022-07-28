@@ -62,7 +62,6 @@
         <plugin.source.version>3.2.1</plugin.source.version>
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.jar.version>3.2.0</plugin.jar.version>
-
     </properties>
 
     <modules>
