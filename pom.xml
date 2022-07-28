@@ -54,7 +54,7 @@
         <dependency.slf4j>1.7.25</dependency.slf4j>
         <dependency.netty>4.1.56.Final</dependency.netty>
 
-        <dependency.bungeecord.version>1.19.1-R0.1-SNAPSHOT</dependency.bungeecord.version>
+        <dependency.bungeecord.version>1.19-R0.1-SNAPSHOT</dependency.bungeecord.version>
         <dependency.bukkit.version>1.14.2-R0.1-SNAPSHOT</dependency.bukkit.version>
 
         <!-- Maven plugins -->

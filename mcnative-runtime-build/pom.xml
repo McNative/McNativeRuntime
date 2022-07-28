@@ -36,6 +36,7 @@
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
             <version>${dependency.bungeecord.version}</version>
+            <type>jar</type>
             <scope>compile</scope>
         </dependency>
 
